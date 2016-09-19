@@ -5,8 +5,7 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:ds="http://deltaspike.apache.org/jsf"
-      xmlns:p="http://primefaces.org/ui" >
+      xmlns:p="http://primefaces.org/ui">
 
 <h:head>
 </h:head>
@@ -17,6 +16,11 @@
         <p:menuitem value="Home" url="#" />
         <p:menuitem value="JavaEE" url="#" />
     </p:menubar>
+    <f:view>
+        <div id="container">
+            <ui:insert name="container"/>
+        </div>
+    </f:view>
 </h:body>
 
 </html>
