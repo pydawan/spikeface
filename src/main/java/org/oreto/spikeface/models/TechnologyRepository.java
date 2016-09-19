@@ -6,5 +6,5 @@ import org.apache.deltaspike.data.api.Repository;
 @Repository
 public interface TechnologyRepository extends EntityRepository<Technology, Long> {
 
-    Technology findByName(String ssn);
+    Technology findByName(String name);
 }
