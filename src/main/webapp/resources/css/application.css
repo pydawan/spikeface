@@ -1,0 +1,8 @@
+.ui-menu .ui-menuitem {
+    padding: 5px;
+}
+
+.ui-menu.ui-widget li > .ui-menuitem-link {
+    border-radius: 6px;
+    padding: 0.3em 3px;
+}
