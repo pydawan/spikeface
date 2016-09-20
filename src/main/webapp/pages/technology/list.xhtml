@@ -7,6 +7,10 @@
     <ui:define name="container">
         <p:spacer/>
         <p:dataTable var="tech" value="#{technologyController.list()}">
+            <p:column headerText="id">
+                <h:outputText value="#{tech.id}" />
+            </p:column>
+
             <p:column headerText="name">
                 <h:outputText value="#{tech.name}" />
             </p:column>

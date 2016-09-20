@@ -12,12 +12,17 @@ public class TechnologyController {
     @Inject TechnologyService technologyService
 
     Technology technology = new Technology()
+    Long id
 
-    public Technology save() {
-        technologyService.create(technology)
+    public Technology create() {
+        technologyService.save(technology)
     }
 
     public List<Technology> list() {
         technologyService.list()
+    }
+
+    public Technology show() {
+        technology = technologyService.get(id)
     }
 }
