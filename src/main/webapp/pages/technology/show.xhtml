@@ -12,6 +12,7 @@
 
     <ui:define name="container">
         <p:spacer/>
+        <h:form>
         <p:panelGrid columns="2">
             <f:facet name="header">
                 <h:outputText value="Technology" />
@@ -23,5 +24,8 @@
             <h:outputText value="Version:" />
             <h:outputText value="#{technologyController.technology.versionName}" />
         </p:panelGrid>
+
+        <p:commandButton value="Delete" ajax="false" title="delete" action="#{technologyController.delete}"/>
+        </h:form>
     </ui:define>
 </ui:composition>

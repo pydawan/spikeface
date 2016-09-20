@@ -8,9 +8,14 @@
     <ui:define name="container">
         <h:form>
             <ds:preventDoubleSubmit/>
-            <p:inputText value="#{technologyController.technology.name}" label="name"/>
-            <p:inputText value="#{technologyController.technology.versionName}" label="version"/>
-            <p:commandButton ajax="false" icon="ui-icon-disk" title="save" action="#{technologyController.create}"/>
+            <h:panelGrid columns="2" cellpadding="5">
+                <p:outputLabel value="Name:" for="name" />
+                <p:inputText id="name" value="#{technologyController.technology.name}" label="name"/>
+
+                <p:outputLabel value="Version:" for="version" />
+                <p:inputText id="version" value="#{technologyController.technology.versionName}" label="version"/>
+            </h:panelGrid>
+            <p:commandButton value="Create" ajax="false" icon="ui-icon-disk" title="save" action="#{technologyController.save}"/>
         </h:form>
     </ui:define>
 </ui:composition>
