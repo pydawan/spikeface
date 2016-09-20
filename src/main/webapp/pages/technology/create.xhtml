@@ -9,7 +9,7 @@
         <h:form>
             <ds:preventDoubleSubmit/>
             <p:inputText value="#{technologyController.technology.name}" label="name"/>
-            <p:inputText value="#{technologyController.technology.version}" label="version"/>
+            <p:inputText value="#{technologyController.technology.versionName}" label="version"/>
             <p:commandButton ajax="false" icon="ui-icon-disk" title="save" action="#{technologyController.save}"/>
         </h:form>
     </ui:define>

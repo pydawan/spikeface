@@ -5,6 +5,7 @@ import org.oreto.spikeface.services.TechnologyService;
 
 import javax.enterprise.inject.Model;
 import javax.inject.Inject;
+import java.util.List;
 
 @Model
 public class TechnologyController {
@@ -20,8 +21,12 @@ public class TechnologyController {
         this.technology = technology;
     }
 
-    public String save() {
-        technologyService.create(technology);
-        return "";
+    public Technology save() {
+        return technologyService.create(technology);
     }
+
+    public List<Technology> list() {
+        return technologyService.list();
+    }
+
 }
