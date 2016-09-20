@@ -23,6 +23,7 @@
    <persistence-unit name="org.hibernate.events.jpa" transaction-type="JTA">
       <properties>
          <!-- Properties for Hibernate -->
+          <property name="jboss.as.jpa.providerModule" value="org.hibernate:5.2.2.Final" />
           <property name="hibernate.connection.driver_class" value="org.h2.Driver"/>
           <property name="hibernate.connection.url" value="jdbc:h2:mem:spikeface;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1"/>
           <property name="hibernate.connection.username" value="sa"/>

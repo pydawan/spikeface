@@ -22,7 +22,7 @@
     <groupId>org.oreto.spikeface</groupId>
     <artifactId>spikeface</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>ear</packaging>
+    <packaging>war</packaging>
     <name>JaveEE</name>
     <description>A java enterprise JSF technology stack</description>
 
@@ -105,40 +105,6 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>1.4.192</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-spatial</artifactId>
-            <version>${hibernate.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>dom4j</artifactId>
-                    <groupId>dom4j</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>hibernate-core</artifactId>
-                    <groupId>org.hibernate</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>${hibernate.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>dom4j</artifactId>
-                    <groupId>dom4j</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-java8</artifactId>
-            <version>${hibernate.version}</version>
         </dependency>
 
         <dependency>
@@ -359,6 +325,26 @@
                         <version>2.9.2-01</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.10</version>
+                <configuration>
+                    <artifactItems>
+                        <!-- Hibernate ORM modules; Unpacked into wildfly_home/modules -->
+                        <artifactItem>
+                            <groupId>org.hibernate</groupId>
+                            <artifactId>hibernate-orm-modules</artifactId>
+                            <version>${hibernate.version}</version>
+                            <classifier>wildfly-10-dist</classifier>
+                            <type>zip</type>
+                            <overWrite>true</overWrite>
+                            <outputDirectory>${jboss.home}/modules</outputDirectory>
+                        </artifactItem>
+                    </artifactItems>
+                </configuration>
             </plugin>
         </plugins>
     </build>
