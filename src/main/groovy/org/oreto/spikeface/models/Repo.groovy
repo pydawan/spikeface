@@ -21,7 +21,7 @@ abstract class RepoImpl<E extends BaseEntity> implements Repo<E> {
     }
 
     @Override void delete(E entity) {
-        entityRepository.remove(entity)
+        entityRepository.attachAndRemove(entity)
     }
 
     @Override E get(Serializable id) {
