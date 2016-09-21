@@ -13,7 +13,7 @@
             </p:column>
 
             <p:column headerText="name">
-                <h:link value="#{tech.name}" outcome="show">
+                <h:link value="#{tech.name}" outcome="#{technologyController.getViewId('')}">
                     <f:param name="id" value="#{tech.id}" />
                 </h:link>
             </p:column>

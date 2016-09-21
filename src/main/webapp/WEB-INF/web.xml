@@ -17,4 +17,13 @@
         <param-name>primefaces.THEME</param-name>
         <param-value>bootstrap</param-value>
     </context-param>
+
+    <filter>
+        <filter-name>facesExceptionFilter</filter-name>
+        <filter-class>org.omnifaces.filter.FacesExceptionFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>facesExceptionFilter</filter-name>
+        <servlet-name>Faces Servlet</servlet-name>
+    </filter-mapping>
 </web-app>

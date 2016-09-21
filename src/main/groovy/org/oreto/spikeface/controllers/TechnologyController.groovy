@@ -17,7 +17,7 @@ public class TechnologyController implements ApplicationController {
     }
 
     public void show() {
-        technology = technologyService.get(id)
+        technology = technologyService.get(id as Long)
         if(!technology) notFound()
     }
 

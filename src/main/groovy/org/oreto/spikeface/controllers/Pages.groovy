@@ -11,6 +11,9 @@ interface Pages {
     @View(navigation = NavigationMode.REDIRECT, viewParams = ViewParameterMode.INCLUDE)
     interface RedirectedPages extends ViewConfig { }
 
+    @View(navigation = NavigationMode.FORWARD, viewParams = ViewParameterMode.INCLUDE)
+    interface ForwardedPages extends ViewConfig { }
+
     interface Technology extends ViewConfig
     {
         class List implements ViewConfig { }
@@ -19,7 +22,6 @@ interface Pages {
     }
 
     interface Error extends ViewConfig {
-        class Index implements ViewConfig { }
         class PageNotFound implements ViewConfig { }
     }
 }
