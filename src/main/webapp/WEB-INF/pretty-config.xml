@@ -5,6 +5,16 @@
 
     <rewrite match="" trailingSlash="remove"/>
 
+    <url-mapping id="not-found">
+        <pattern value="/404" />
+        <view-id value="/pages/error/notfound.xhtml" />
+    </url-mapping>
+
+    <url-mapping id="server-error">
+        <pattern value="/error" />
+        <view-id value="/pages/error/server.xhtml" />
+    </url-mapping>
+
     <url-mapping id="index">
         <pattern value="/" />
         <view-id value="/pages/index.xhtml" />

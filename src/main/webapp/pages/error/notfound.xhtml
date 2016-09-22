@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" template="../template.xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+    <ui:define name="container">
+        <p:outputPanel>
+            <h3>Page Not Found</h3>
+            <p>#{requestScope['javax.servlet.forward.request_uri']}</p>
+        </p:outputPanel>
+    </ui:define>
+</ui:composition>

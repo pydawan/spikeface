@@ -16,12 +16,13 @@ interface Pages {
 
     interface Technology extends ViewConfig
     {
-        class List implements ViewConfig { }
-        class Create implements ViewConfig { }
+        class List implements RedirectedPages { }
+        class Create implements RedirectedPages { }
         class Show implements RedirectedPages { }
     }
 
     interface Error extends ViewConfig {
-        class PageNotFound implements ViewConfig { }
+        class Notfound implements ForwardedPages { }
+        class Server implements ForwardedPages { }
     }
 }

@@ -5,6 +5,7 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:o="http://omnifaces.org/ui"
       xmlns:p="http://primefaces.org/ui">
 
 <h:head>
@@ -12,6 +13,7 @@
 
 <h:body>
     <h:outputStylesheet library="css" name="application.css" />
+    <o:importFunctions type="org.oreto.spikeface.controllers.Utils" />
     <p:menubar>
         <p:menuitem value="Home" url="#" />
         <p:menuitem value="JavaEE" url="#" />

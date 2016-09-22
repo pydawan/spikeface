@@ -21,15 +21,15 @@ public class TechnologyController implements ApplicationController {
         if(!technology) notFound()
     }
 
-    public void save() {
+    public String save() {
         technology = technologyService.save(technology)
-        navigationParameterContext.addPageParameter("id", technology.id)
-        this.viewNavigationHandler.navigateTo(Pages.Technology.Show)
+        navigationParameterContext.addPageParameter('id', technology.id)
+        getViewId(Pages.Technology.Show)
     }
 
-    public void delete() {
+    public String delete() {
         show()
         technologyService.delete(technology)
-        this.viewNavigationHandler.navigateTo(Pages.Technology.List)
+        getViewId(Pages.Technology.List)
     }
 }

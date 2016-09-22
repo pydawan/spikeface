@@ -13,7 +13,7 @@ import javax.inject.Inject
 trait ApplicationController {
     @Inject ViewNavigationHandler viewNavigationHandler
     @Inject NavigationParameterContext navigationParameterContext
-    @Inject private ViewConfigResolver viewConfigResolver;
+    @Inject ViewConfigResolver viewConfigResolver
 
     def id
 
@@ -28,16 +28,18 @@ trait ApplicationController {
     }
 
     public void notFound() {
-        render(Pages.Error.PageNotFound)
+        render(Pages.Error.Notfound)
+    }
+}
+
+class Utils {
+    public static String getHeader(String header) {
+        FacesContext.currentInstance.externalContext.requestHeaderMap.get(header)
     }
 
-    public static void addFacesMessage(String message, String summary = '', FacesMessage.Severity severity = FacesMessage.SEVERITY_ERROR) {
+    public static void addFacesMessage(String summary, String message = '', FacesMessage.Severity severity = FacesMessage.SEVERITY_ERROR) {
         FacesContext facesContext = FacesContext.currentInstance
-        FacesMessage facesMessage = summary ? new FacesMessage(severity, summary, message) : new FacesMessage(message)
+        FacesMessage facesMessage = summary ? new FacesMessage(severity, summary, message) : new FacesMessage(summary)
         facesContext.addMessage(null, facesMessage)
-    }
-
-    public static void addInfoMessage(String message) {
-        addFacesMessage(message)
     }
 }

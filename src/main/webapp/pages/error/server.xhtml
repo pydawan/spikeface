@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" template="../template.xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui">
+    <ui:define name="container">
+        <h:outputText value="#{pfExceptionHandler.formattedTimestamp}"/>
+        <p:separator/>
+        <h:outputText value="#{pfExceptionHandler.type}"/>
+        <p:separator/>
+        <h:outputText value="#{pfExceptionHandler.message}"/>
+        <p:separator/>
+        <h:outputText value="#{pfExceptionHandler.formattedStackTrace}" escape="false"/>
+    </ui:define>
+</ui:composition>
