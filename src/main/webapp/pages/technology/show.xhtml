@@ -6,8 +6,7 @@
                 xmlns:p="http://primefaces.org/ui">
 
     <f:metadata>
-        <f:viewParam name="id" value="#{technologyController.id}"/>
-        <f:viewAction action="#{technologyController.show}" />
+        <f:viewAction action="#{technologyController.get}" />
     </f:metadata>
 
     <ui:define name="container">
@@ -18,13 +17,14 @@
                     <h:outputText value="Technology" />
                 </f:facet>
 
-                <h:outputText value="Name:" />
-                <h:outputText value="#{technologyController.technology.name}" />
+                <p:outputLabel for="technology-name" value="Name:" />
+                <h:outputText id="technology-name" value="#{technologyController.entity.name}" />
 
-                <h:outputText value="Version:" />
-                <h:outputText value="#{technologyController.technology.versionName}" />
+                <p:outputLabel value="Version:" />
+                <h:outputText value="#{technologyController.entity.versionName}" />
             </p:panelGrid>
 
+            <p:commandButton value="Edit" ajax="false" title="edit" action="#{technologyController.edit}"/>
             <p:commandButton value="Delete" ajax="false" title="delete" action="#{technologyController.delete}"/>
         </h:form>
     </ui:define>

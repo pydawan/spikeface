@@ -1,6 +1,7 @@
 package org.oreto.spikeface.controllers
 
 import org.apache.deltaspike.core.api.config.view.ViewConfig
+import org.omnifaces.cdi.Param
 import org.oreto.spikeface.models.Technology
 import org.oreto.spikeface.services.TechnologyService
 
@@ -8,29 +9,18 @@ import javax.enterprise.inject.Model
 import javax.inject.Inject
 
 @Model
-public class TechnologyController implements ApplicationController {
+public class TechnologyController implements Scaffolding<Technology, Long> {
 
-    @Inject TechnologyService technologyService
-    @Inject Technology technology
+    @Inject @Param Long id
 
-    public List<Technology> list() {
-        technologyService.list()
-    }
+    @Inject TechnologyService repository
+    @Inject Technology entity
+    Class<? extends ViewConfig> showView = Pages.Technology.Show
+    Class<? extends ViewConfig> listView = Pages.Technology.List
+    Class<? extends ViewConfig> editView = Pages.Technology.Edit
+    Class<? extends ViewConfig> createView = Pages.Technology.Create
 
-    public void show() {
-        technology = technologyService.get(id as Long)
-        if(!technology) notFound()
-    }
-
-    public Class<? extends ViewConfig> save() {
-        technology = technologyService.save(technology)
-        navigationParameterContext.addPageParameter('id', technology.id)
-        Pages.Technology.Show
-    }
-
-    public Class<? extends ViewConfig> delete() {
-        show()
-        technologyService.delete(technology)
-        Pages.Technology.List
+    public Class<? extends ViewConfig> cancel() {
+        listView
     }
 }

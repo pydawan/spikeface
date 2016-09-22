@@ -19,6 +19,7 @@ interface Pages {
     {
         class List implements RedirectedPages { }
         class Create implements RedirectedPages { }
+        class Edit implements RedirectedPages { }
         class Show implements RedirectedPages { }
     }
 

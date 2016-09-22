@@ -4,6 +4,8 @@ import org.apache.deltaspike.core.api.config.view.ViewConfig
 import org.apache.deltaspike.core.api.config.view.metadata.ViewConfigResolver
 import org.apache.deltaspike.core.api.config.view.navigation.NavigationParameterContext
 import org.apache.deltaspike.core.api.config.view.navigation.ViewNavigationHandler
+import org.oreto.spikeface.models.BaseEntity
+import org.oreto.spikeface.models.RepoImpl
 
 import javax.faces.application.FacesMessage
 import javax.faces.component.UIViewRoot
@@ -12,10 +14,8 @@ import javax.inject.Inject
 
 trait ApplicationController {
     @Inject ViewNavigationHandler viewNavigationHandler
-    @Inject NavigationParameterContext navigationParameterContext
     @Inject ViewConfigResolver viewConfigResolver
-
-    def id
+    @Inject NavigationParameterContext navigationParameterContext
 
     public String getViewId(Class<? extends ViewConfig> view) {
         viewConfigResolver.getViewConfigDescriptor(view).viewId
@@ -33,6 +33,43 @@ trait ApplicationController {
 
     public void notFound() {
         render(Pages.Error.Notfound)
+    }
+}
+
+trait Scaffolding<E extends BaseEntity, T extends Serializable> extends ApplicationController {
+
+    abstract void setEntity(E entity)
+    abstract E getEntity()
+    abstract T getId()
+    abstract void setId(T id)
+    abstract RepoImpl<E> getRepository()
+    abstract Class<? extends ViewConfig> getShowView()
+    abstract Class<? extends ViewConfig> getListView()
+    abstract Class<? extends ViewConfig> getEditView()
+
+    public void get() {
+        entity = repository.get(id)
+        if(!entity) notFound()
+    }
+
+    public List<E> list() {
+        repository.list()
+    }
+
+    public Class<? extends ViewConfig> edit() {
+        get()
+        editView
+    }
+
+    public Class<? extends ViewConfig> save() {
+        entity = repository.save(entity)
+        navigationParameterContext.addPageParameter('id', entity.id)
+        showView
+    }
+
+    public Class<? extends ViewConfig> delete() {
+        repository.delete(repository.get(id))
+        listView
     }
 }
 

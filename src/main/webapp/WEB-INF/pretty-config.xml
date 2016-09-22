@@ -35,4 +35,9 @@
         <view-id value="/pages/technology/show.xhtml" />
     </url-mapping>
 
+    <url-mapping id="edit-technology">
+        <pattern value="/technology/#{id}/edit" />
+        <view-id value="/pages/technology/edit.xhtml" />
+    </url-mapping>
+
 </pretty-config>

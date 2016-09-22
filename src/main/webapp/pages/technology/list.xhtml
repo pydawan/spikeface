@@ -13,7 +13,7 @@
             </p:column>
 
             <p:column headerText="name">
-                <h:link value="#{tech.name}" outcome="show">
+                <h:link value="#{tech.name}" outcome="#{technologyController.showView}">
                     <f:param name="id" value="#{tech.id}" />
                 </h:link>
             </p:column>
@@ -22,5 +22,7 @@
                 <h:outputText value="#{tech.versionName}" />
             </p:column>
         </p:dataTable>
+        <br/>
+        <p:link outcome="#{technologyController.createView}" value="Create" />
     </ui:define>
 </ui:composition>
