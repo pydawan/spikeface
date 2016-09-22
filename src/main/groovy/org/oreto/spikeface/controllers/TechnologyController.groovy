@@ -1,5 +1,6 @@
 package org.oreto.spikeface.controllers
 
+import org.apache.deltaspike.core.api.config.view.ViewConfig
 import org.oreto.spikeface.models.Technology
 import org.oreto.spikeface.services.TechnologyService
 
@@ -21,15 +22,15 @@ public class TechnologyController implements ApplicationController {
         if(!technology) notFound()
     }
 
-    public String save() {
+    public Class<? extends ViewConfig> save() {
         technology = technologyService.save(technology)
         navigationParameterContext.addPageParameter('id', technology.id)
-        getViewId(Pages.Technology.Show)
+        Pages.Technology.Show
     }
 
-    public String delete() {
+    public Class<? extends ViewConfig> delete() {
         show()
         technologyService.delete(technology)
-        getViewId(Pages.Technology.List)
+        Pages.Technology.List
     }
 }

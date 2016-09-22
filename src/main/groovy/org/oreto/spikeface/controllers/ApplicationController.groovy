@@ -27,6 +27,10 @@ trait ApplicationController {
         facesContext.setViewRoot(viewRoot)
     }
 
+    public void navigate(Class<? extends ViewConfig> view) {
+        viewNavigationHandler.navigateTo(view)
+    }
+
     public void notFound() {
         render(Pages.Error.Notfound)
     }
