@@ -8,7 +8,7 @@
     <ui:define name="container">
         <p:link outcome="#{technologyController.createView}" value="Create" />
         <p:separator styleClass="blank"/>
-        <p:dataTable var="tech" value="#{technologyController.list()}" >
+        <p:dataTable var="tech" value="#{technologyController.list()}" reflow="true" >
             <p:column headerText="id">
                 <h:outputText value="#{tech.id}" />
             </p:column>

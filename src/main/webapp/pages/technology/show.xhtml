@@ -5,10 +5,6 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:p="http://primefaces.org/ui">
 
-    <f:metadata>
-        <f:viewAction action="#{technologyController.get}" />
-    </f:metadata>
-
     <ui:define name="container">
         <p:spacer/>
         <h:form>
@@ -24,8 +20,10 @@
                 <h:outputText value="#{technologyController.entity.versionName}" />
             </p:panelGrid>
 
-            <p:commandButton value="Edit" ajax="false" title="edit" action="#{technologyController.edit}"/>
-            <p:commandButton value="Delete" ajax="false" title="delete" action="#{technologyController.delete}"/>
+            <h:panelGrid columns="2">
+                <p:button value="Edit" title="edit" action="#{technologyController.edit}"/>
+                <p:button value="Delete" title="delete" action="#{technologyController.delete}"/>
+            </h:panelGrid>
         </h:form>
     </ui:define>
 </ui:composition>

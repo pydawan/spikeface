@@ -8,15 +8,18 @@
 
     <h:form>
         <ds:preventDoubleSubmit/>
-        <h:panelGrid columns="2" cellpadding="5">
+        <h:panelGrid columns="2" cellpadding="5" >
             <p:outputLabel value="Name:" for="name" />
             <p:inputText id="name" value="#{technologyController.entity.name}" label="name"/>
 
             <p:outputLabel value="Version:" for="version" />
             <p:inputText id="version" value="#{technologyController.entity.versionName}" label="version"/>
+
         </h:panelGrid>
-        <p:commandButton value="Save" ajax="false" icon="ui-icon-disk" title="save" action="#{technologyController.save}"/>
-        <p:commandButton value="Cancel" ajax="false" icon="ui-icon-cancel" title="cancel" action="#{technologyController.cancel}"/>
+        <h:panelGrid columns="2">
+            <p:button value="Save" icon="ui-icon-disk" styleClass="ui-sm-1" title="save" action="#{technologyController.save}"/>
+            <p:button value="Cancel" icon="ui-icon-cancel" styleClass="ui-sm-1" title="cancel" action="#{technologyController.cancel}"/>
+        </h:panelGrid>
     </h:form>
 
 </ui:composition>

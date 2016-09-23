@@ -14,12 +14,13 @@
 <h:body>
     <h:outputStylesheet library="css" name="application.css" />
     <o:importFunctions type="org.oreto.spikeface.controllers.Utils" />
+
     <p:menubar>
         <p:menuitem value="Home" url="/" />
         <p:menuitem value="JavaEE" url="#{navigationController.technologyView}" />
     </p:menubar>
     <f:view>
-        <div class="ui-g">
+        <div class="ui-g ui-fluid">
             <div class="ui-g-1"></div>
             <div id="container" class="ui-g-10">
                 <p:messages id="global-messages" autoUpdate="true" closable="false" />
