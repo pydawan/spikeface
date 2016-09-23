@@ -12,7 +12,7 @@ import javax.faces.component.UIViewRoot
 import javax.faces.context.FacesContext
 import javax.inject.Inject
 
-trait ApplicationController {
+trait ApplicationController implements Serializable {
     @Inject ViewNavigationHandler viewNavigationHandler
     @Inject ViewConfigResolver viewConfigResolver
     @Inject NavigationParameterContext navigationParameterContext
@@ -47,8 +47,10 @@ trait Scaffolding<E extends BaseEntity, T extends Serializable> extends Applicat
     abstract Class<? extends ViewConfig> getListView()
     abstract Class<? extends ViewConfig> getEditView()
 
+    public getIdName() { 'id' }
+
     public void get() {
-        entity = repository.get(id)
+        entity = id ? repository.get(id) : null
         if(!entity) notFound()
     }
 
@@ -58,18 +60,30 @@ trait Scaffolding<E extends BaseEntity, T extends Serializable> extends Applicat
 
     public Class<? extends ViewConfig> edit() {
         get()
+        navigationParameterContext.addPageParameter(idName, entity.id)
         editView
     }
 
     public Class<? extends ViewConfig> save() {
         entity = repository.save(entity)
-        navigationParameterContext.addPageParameter('id', entity.id)
+        navigationParameterContext.addPageParameter(idName, entity.id)
         showView
     }
 
     public Class<? extends ViewConfig> delete() {
-        repository.delete(repository.get(id))
-        listView
+        if(id) {
+            repository.delete(repository.get(id))
+            listView
+        } else notFound()
+    }
+
+    public Class<? extends ViewConfig> cancel() {
+        if(id) {
+            navigationParameterContext.addPageParameter(idName, id)
+            showView
+        } else {
+            listView
+        }
     }
 }
 

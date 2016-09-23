@@ -6,7 +6,8 @@
                 xmlns:p="http://primefaces.org/ui">
 
     <ui:define name="container">
-        <p:spacer/>
+        <p:link outcome="#{technologyController.createView}" value="Create" />
+        <p:separator styleClass="blank"/>
         <p:dataTable var="tech" value="#{technologyController.list()}" >
             <p:column headerText="id">
                 <h:outputText value="#{tech.id}" />
@@ -22,7 +23,5 @@
                 <h:outputText value="#{tech.versionName}" />
             </p:column>
         </p:dataTable>
-        <br/>
-        <p:link outcome="#{technologyController.createView}" value="Create" />
     </ui:define>
 </ui:composition>
