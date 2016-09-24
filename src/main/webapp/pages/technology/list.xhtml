@@ -6,7 +6,9 @@
                 xmlns:p="http://primefaces.org/ui">
 
     <ui:define name="container">
-        <p:link outcome="#{technologyController.createView}" value="Create" />
+        <h:panelGrid columns="1">
+            <p:button outcome="#{technologyController.saveView}" value="Create" />
+        </h:panelGrid>
         <p:separator styleClass="blank"/>
         <p:dataTable var="tech" value="#{technologyController.list()}" reflow="true" >
             <p:column headerText="id">

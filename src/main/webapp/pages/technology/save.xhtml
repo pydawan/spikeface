@@ -11,12 +11,11 @@
             <h:form>
                 <ds:preventDoubleSubmit/>
                 <ui:include src="form.xhtml">
-                    <ui:param name="mode" value="read"/>
+                    <ui:param name="mode" value="write"/>
                 </ui:include>
-                <h:panelGrid columns="3" layout="grid">
-                    <p:commandButton value="Edit" icon="fa fa-edit" title="edit" action="#{technologyController.edit}" ajax="false"/>
-                    <p:commandButton value="Delete" icon="fa fa-remove" title="delete" action="#{technologyController.delete}" ajax="false"/>
-                    <p:button value="Back" icon="fa fa-arrow-left" outcome="#{technologyController.listView}"/>
+                <h:panelGrid columns="2" layout="grid">
+                    <p:commandButton value="Save" icon="fa fa-save" styleClass="ui-sm-1" title="save" action="#{technologyController.save}" ajax="false"/>
+                    <p:commandButton value="Cancel" icon="fa fa-ban" styleClass="ui-sm-1" title="cancel" action="#{technologyController.cancel}" ajax="false"/>
                 </h:panelGrid>
             </h:form>
         </p:panel>

@@ -2,23 +2,19 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
-                xmlns:ds="http://deltaspike.apache.org/jsf"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:p="http://primefaces.org/ui">
 
-    <h:form>
-        <ds:preventDoubleSubmit/>
-        <h:panelGrid columns="2" cellpadding="5" >
-            <p:outputLabel value="Name:" for="name" />
-            <p:inputText id="name" value="#{technologyController.entity.name}" label="name"/>
+    <c:set var="isWrite" value="#{mode == 'write'}"/>
+    <c:set var="isRead" value="#{mode == 'read'}"/>
+    <h:panelGrid columns="2" cellpadding="5" >
+        <p:outputLabel value="Name:" for="name" />
+        <p:inputText id="name" value="#{technologyController.entity.name}" label="name" rendered="#{isWrite}"/>
+        <p:outputLabel value="#{technologyController.entity.name}" label="name" rendered="#{isRead}"/>
 
-            <p:outputLabel value="Version:" for="version" />
-            <p:inputText id="version" value="#{technologyController.entity.versionName}" label="version"/>
-
-        </h:panelGrid>
-        <h:panelGrid columns="2">
-            <p:commandButton value="Save" icon="ui-icon-disk" styleClass="ui-sm-1" title="save" action="#{technologyController.save}" ajax="false"/>
-            <p:commandButton value="Cancel" icon="ui-icon-cancel" styleClass="ui-sm-1" title="cancel" action="#{technologyController.cancel}" ajax="false"/>
-        </h:panelGrid>
-    </h:form>
+        <p:outputLabel value="Version:" for="version" />
+        <p:inputText id="version" value="#{technologyController.entity.versionName}" label="version" rendered="#{isWrite}"/>
+        <p:outputLabel value="#{technologyController.entity.versionName}" label="version" rendered="#{isRead}"/>
+    </h:panelGrid>
 
 </ui:composition>

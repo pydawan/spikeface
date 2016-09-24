@@ -48,7 +48,7 @@ trait Scaffolding<E extends BaseEntity, T extends Serializable> extends Applicat
     abstract RepoImpl<E> getRepository()
     abstract Class<? extends ViewConfig> getShowView()
     abstract Class<? extends ViewConfig> getListView()
-    abstract Class<? extends ViewConfig> getEditView()
+    abstract Class<? extends ViewConfig> getSaveView()
 
     public getIdName() { 'id' }
 
@@ -67,13 +67,13 @@ trait Scaffolding<E extends BaseEntity, T extends Serializable> extends Applicat
 
     public Class<? extends ViewConfig> edit() {
         navigationParameterContext.addPageParameter(idName, entity.id)
-        editView
+        saveView
     }
 
     public Class<? extends ViewConfig> save() {
         entity = repository.save(entity)
         navigationParameterContext.addPageParameter(idName, entity.id)
-        showView
+        listView
     }
 
     public Class<? extends ViewConfig> delete() {

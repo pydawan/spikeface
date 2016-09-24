@@ -18,8 +18,7 @@ interface Pages {
     interface Technology extends ViewConfig
     {
         class List implements RedirectedPages { }
-        class Create implements RedirectedPages { }
-        class Edit implements RedirectedPages { }
+        class Save implements RedirectedPages { }
         class Show implements RedirectedPages { }
     }
 

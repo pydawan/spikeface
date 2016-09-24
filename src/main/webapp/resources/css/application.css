@@ -1,3 +1,7 @@
+html {
+    background:#1f1f2e;
+}
+
 .ui-menu .ui-menuitem {
     padding: 5px;
 }
@@ -9,4 +13,8 @@
 
 .ui-separator.blank {
     height: 10px; background: none; border: none; margin: 0;
+}
+
+.ui-panel.panel-form {
+    max-width: 600px; margin: 0 auto;
 }

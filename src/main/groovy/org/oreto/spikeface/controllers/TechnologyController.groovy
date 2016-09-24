@@ -11,7 +11,7 @@ import org.oreto.spikeface.services.TechnologyService
 import javax.inject.Inject
 import javax.inject.Named
 
-@Named @ViewScoped @ViewRef(config = [Pages.Technology.Show, Pages.Technology.Edit, Pages.Technology.Create])
+@Named @ViewScoped @ViewRef(config = [Pages.Technology.Show, Pages.Technology.Save])
 public class TechnologyController implements Scaffolding<Technology, Long> {
 
     @Inject TechnologyService repository
@@ -20,8 +20,7 @@ public class TechnologyController implements Scaffolding<Technology, Long> {
 
     Class<? extends ViewConfig> showView = Pages.Technology.Show
     Class<? extends ViewConfig> listView = Pages.Technology.List
-    Class<? extends ViewConfig> editView = Pages.Technology.Edit
-    Class<? extends ViewConfig> createView = Pages.Technology.Create
+    Class<? extends ViewConfig> saveView = Pages.Technology.Save
 
     @PreRenderView protected void preRenderView() { get() }
 }
