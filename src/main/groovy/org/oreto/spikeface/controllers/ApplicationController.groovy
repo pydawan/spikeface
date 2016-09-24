@@ -4,12 +4,18 @@ import org.apache.deltaspike.core.api.config.view.ViewConfig
 import org.apache.deltaspike.core.api.config.view.metadata.ViewConfigResolver
 import org.apache.deltaspike.core.api.config.view.navigation.NavigationParameterContext
 import org.apache.deltaspike.core.api.config.view.navigation.ViewNavigationHandler
+import org.omnifaces.context.OmniPartialViewContext
 import org.oreto.spikeface.models.BaseEntity
 import org.oreto.spikeface.models.RepoImpl
 
 import javax.faces.application.FacesMessage
+import javax.faces.application.ViewHandler
 import javax.faces.component.UIViewRoot
+import javax.faces.context.ExternalContext
 import javax.faces.context.FacesContext
+import javax.faces.event.PhaseId
+import javax.faces.event.PreRenderViewEvent
+import javax.faces.view.ViewDeclarationLanguage
 import javax.inject.Inject
 
 trait ApplicationController implements Serializable {
@@ -22,9 +28,7 @@ trait ApplicationController implements Serializable {
     }
 
     public void render(Class<? extends ViewConfig> view) {
-        FacesContext facesContext = FacesContext.getCurrentInstance()
-        UIViewRoot viewRoot = facesContext.getApplication().getViewHandler().createView(facesContext, getViewId(view))
-        facesContext.setViewRoot(viewRoot)
+        Utils.render(getViewId(view))
     }
 
     public void navigate(Class<? extends ViewConfig> view) {
@@ -41,7 +45,6 @@ trait Scaffolding<E extends BaseEntity, T extends Serializable> extends Applicat
     abstract void setEntity(E entity)
     abstract E getEntity()
     abstract T getId()
-    abstract void setId(T id)
     abstract RepoImpl<E> getRepository()
     abstract Class<? extends ViewConfig> getShowView()
     abstract Class<? extends ViewConfig> getListView()
@@ -49,9 +52,13 @@ trait Scaffolding<E extends BaseEntity, T extends Serializable> extends Applicat
 
     public getIdName() { 'id' }
 
-    public void get() {
-        entity = id ? repository.get(id) : null
-        if(!entity) notFound()
+    public E get() {
+        entity = id ? repository.get(id) : entity
+        if(entity) entity
+        else {
+            notFound()
+            null
+        }
     }
 
     public List<E> list() {
@@ -59,7 +66,6 @@ trait Scaffolding<E extends BaseEntity, T extends Serializable> extends Applicat
     }
 
     public Class<? extends ViewConfig> edit() {
-        get()
         navigationParameterContext.addPageParameter(idName, entity.id)
         editView
     }
@@ -96,5 +102,44 @@ class Utils {
         FacesContext facesContext = FacesContext.currentInstance
         FacesMessage facesMessage = summary ? new FacesMessage(severity, summary, message) : new FacesMessage(summary)
         facesContext.addMessage(null, facesMessage)
+    }
+
+    static void render(String viewId) {
+        FacesContext context = FacesContext.getCurrentInstance()
+        if(context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
+            if(!context.getExternalContext().isResponseCommitted()) {
+                reRender(viewId)
+            }
+        } else {
+            ViewHandler viewHandler = context.getApplication().getViewHandler()
+            UIViewRoot viewRoot = viewHandler.createView(context, viewId)
+            context.setViewRoot(viewRoot)
+        }
+    }
+
+    static void reRender(String viewId) {
+        FacesContext context = FacesContext.getCurrentInstance()
+        resetResponse()
+        ViewHandler viewHandler = context.getApplication().getViewHandler()
+        UIViewRoot viewRoot = viewHandler.createView(context, viewId)
+        ViewDeclarationLanguage vdl = viewHandler.getViewDeclarationLanguage(context, viewId)
+        vdl.buildView(context, viewRoot)
+        context.getApplication().publishEvent(context, PreRenderViewEvent.class, viewRoot)
+        vdl.renderView(context, viewRoot)
+        context.responseComplete()
+    }
+
+    static void resetResponse() {
+        FacesContext context = FacesContext.getCurrentInstance()
+        //Hacks.removeViewState(context, context.getRenderKit().getResponseStateManager(), context.getViewRoot().viewId)
+        context.getAttributes().values().removeAll(Collections.singleton(true))
+
+        ExternalContext externalContext = context.getExternalContext()
+        String contentType = externalContext.getResponseContentType()
+        String characterEncoding = externalContext.getResponseCharacterEncoding()
+        externalContext.responseReset()
+        OmniPartialViewContext.getCurrentInstance(context).resetPartialResponse()
+        externalContext.setResponseContentType(contentType)
+        externalContext.setResponseCharacterEncoding(characterEncoding)
     }
 }

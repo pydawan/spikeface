@@ -21,8 +21,8 @@
             </p:panelGrid>
 
             <h:panelGrid columns="2">
-                <p:button value="Edit" title="edit" action="#{technologyController.edit}"/>
-                <p:button value="Delete" title="delete" action="#{technologyController.delete}"/>
+                <p:commandButton value="Edit" title="edit" action="#{technologyController.edit}" ajax="false"/>
+                <p:commandButton value="Delete" title="delete" action="#{technologyController.delete}" ajax="false"/>
             </h:panelGrid>
         </h:form>
     </ui:define>
