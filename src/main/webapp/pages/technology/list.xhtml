@@ -10,10 +10,8 @@
             <p:button outcome="#{technologyController.saveView}" value="Create" />
         </h:panelGrid>
         <p:separator styleClass="blank"/>
-        <p:dataTable var="tech" value="#{technologyController.list()}" reflow="true" >
-            <p:column headerText="id">
-                <h:outputText value="#{tech.id}" />
-            </p:column>
+        <p:dataTable var="tech" value="#{technologyController.lazyData}" reflow="true"
+                     rowsPerPageTemplate="5,10,20,50" paginator="true" lazy="true">
 
             <p:column headerText="name">
                 <h:link value="#{tech.name}" outcome="#{technologyController.showView}">

@@ -4,10 +4,10 @@ import org.oreto.spikeface.models.RepoImpl
 import org.oreto.spikeface.models.Technology
 import org.oreto.spikeface.models.TechnologyRepository
 
-import javax.faces.bean.SessionScoped
+import javax.enterprise.context.ApplicationScoped
 import javax.inject.Inject
 
-@SessionScoped
+@ApplicationScoped
 public class TechnologyService extends RepoImpl<Technology> implements Serializable {
     @Inject TechnologyRepository entityRepository
 }

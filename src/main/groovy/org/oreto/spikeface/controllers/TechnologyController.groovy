@@ -7,6 +7,7 @@ import org.omnifaces.cdi.Param
 import org.omnifaces.cdi.ViewScoped
 import org.oreto.spikeface.models.Technology
 import org.oreto.spikeface.services.TechnologyService
+import org.primefaces.model.LazyDataModel
 
 import javax.inject.Inject
 import javax.inject.Named
@@ -23,4 +24,8 @@ public class TechnologyController implements Scaffolding<Technology, Long> {
     Class<? extends ViewConfig> saveView = Pages.Technology.Save
 
     @PreRenderView protected void preRenderView() { get() }
+
+    LazyDataModel<Technology> getLazyData() {
+        repository.entityRepository as LazyDataModel<Technology>
+    }
 }
