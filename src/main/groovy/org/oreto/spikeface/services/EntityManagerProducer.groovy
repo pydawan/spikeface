@@ -1,4 +1,5 @@
-package org.oreto.spikeface.services;
+package org.oreto.spikeface.services
+
 
 import javax.enterprise.inject.Disposes
 import javax.enterprise.inject.Produces

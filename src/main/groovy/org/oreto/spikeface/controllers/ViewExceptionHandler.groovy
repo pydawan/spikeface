@@ -5,7 +5,6 @@ import org.apache.deltaspike.core.api.exception.control.ExceptionHandler
 import org.apache.deltaspike.core.api.exception.control.Handles
 import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent
 import org.codehaus.groovy.runtime.DateGroovyMethods
-import org.primefaces.util.ComponentUtils
 
 import javax.enterprise.inject.Model
 import javax.faces.application.FacesMessage
@@ -33,7 +32,7 @@ public class ViewExceptionHandler {
         StringWriter sw = new StringWriter()
         PrintWriter pw = new PrintWriter(sw)
         exception.printStackTrace(pw)
-        this.stackTrace = ComponentUtils.escapeXml(sw.toString()).replaceAll("(\r\n|\n)", "<br/>")
+        this.stackTrace = Utils.escapeXmlWithBreaks(sw.toString())
 
         FacesContext context = FacesContext.getCurrentInstance()
         String viewId = viewConfigResolver.getViewConfigDescriptor(Pages.Error.Server).viewId

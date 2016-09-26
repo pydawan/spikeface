@@ -15,7 +15,7 @@
 
     <context-param>
         <param-name>primefaces.THEME</param-name>
-        <param-value>midnight</param-value>
+        <param-value>bootstrap</param-value>
     </context-param>
     <context-param>
         <param-name>primefaces.FONT_AWESOME</param-name>
@@ -44,4 +44,5 @@
         <error-code>404</error-code>
         <location>/404</location>
     </error-page>
+
 </web-app>

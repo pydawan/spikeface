@@ -7,14 +7,16 @@
 
     <c:set var="isWrite" value="#{mode == 'write'}"/>
     <c:set var="isRead" value="#{mode == 'read'}"/>
-    <h:panelGrid columns="2" cellpadding="5" >
+    <h:panelGrid columns="3" cellpadding="5" >
         <p:outputLabel value="Name:" for="name" />
         <p:inputText id="name" value="#{technologyController.entity.name}" label="name" rendered="#{isWrite}"/>
         <p:outputLabel value="#{technologyController.entity.name}" label="name" rendered="#{isRead}"/>
+        <p:message for="name" />
 
         <p:outputLabel value="Version:" for="version" />
         <p:inputText id="version" value="#{technologyController.entity.versionName}" label="version" rendered="#{isWrite}"/>
         <p:outputLabel value="#{technologyController.entity.versionName}" label="version" rendered="#{isRead}"/>
+        <p:message for="version" />
     </h:panelGrid>
 
 </ui:composition>

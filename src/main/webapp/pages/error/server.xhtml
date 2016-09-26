@@ -4,12 +4,14 @@
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:p="http://primefaces.org/ui">
     <ui:define name="container">
-        <h:outputText value="#{viewExceptionHandler.time}"/>
-        <p:separator/>
-        <h:outputText value="#{viewExceptionHandler.type}"/>
-        <p:separator/>
-        <h:outputText value="#{viewExceptionHandler.message}"/>
-        <p:separator/>
-        <h:outputText value="#{viewExceptionHandler.stackTrace}" escape="false"/>
+        <p:panel>
+            <h:outputText value="#{viewExceptionHandler.time}"/>
+            <p:separator/>
+            <h:outputText value="#{viewExceptionHandler.type}"/>
+            <p:separator/>
+            <h:outputText value="#{viewExceptionHandler.message}"/>
+            <p:separator/>
+            <h:outputText value="#{viewExceptionHandler.stackTrace}" escape="false"/>
+        </p:panel>
     </ui:define>
 </ui:composition>

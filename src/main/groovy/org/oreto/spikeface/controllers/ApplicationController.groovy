@@ -7,6 +7,7 @@ import org.apache.deltaspike.core.api.config.view.navigation.ViewNavigationHandl
 import org.omnifaces.context.OmniPartialViewContext
 import org.oreto.spikeface.models.BaseEntity
 import org.oreto.spikeface.models.RepoImpl
+import org.primefaces.util.ComponentUtils
 
 import javax.faces.application.FacesMessage
 import javax.faces.application.ViewHandler
@@ -141,5 +142,9 @@ class Utils {
         OmniPartialViewContext.getCurrentInstance(context).resetPartialResponse()
         externalContext.setResponseContentType(contentType)
         externalContext.setResponseCharacterEncoding(characterEncoding)
+    }
+
+    static String escapeXmlWithBreaks(String text) {
+        ComponentUtils.escapeXml(text).replaceAll("(\r\n|\n)", "<br/>")
     }
 }

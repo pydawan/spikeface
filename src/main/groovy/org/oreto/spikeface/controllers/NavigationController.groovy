@@ -1,9 +1,11 @@
 package org.oreto.spikeface.controllers
 
-import javax.enterprise.inject.Model
+import javax.enterprise.context.ApplicationScoped
+import javax.inject.Named
 
-@Model
+@ApplicationScoped @Named
 class NavigationController implements ApplicationController {
+
     String getTechnologyView() {
         getViewId(Pages.Technology.List)
     }
