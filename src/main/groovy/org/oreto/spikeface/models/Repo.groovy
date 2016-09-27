@@ -1,7 +1,6 @@
 package org.oreto.spikeface.models
 
 import org.apache.deltaspike.data.api.EntityRepository
-import org.apache.deltaspike.data.api.QueryResult
 import org.primefaces.model.LazyDataModel
 import org.primefaces.model.SortOrder
 
@@ -14,13 +13,9 @@ interface Repo<E extends BaseEntity> {
     E get(Serializable id)
 }
 
-interface BaseEntityRepo<E extends BaseEntity, P extends Serializable> extends EntityRepository<E, P> {
-    QueryResult<E> list()
-}
-
 abstract class RepoImpl<E extends BaseEntity> extends LazyDataModel<E> implements Repo<E> {
 
-    abstract BaseEntityRepo getEntityRepository()
+    abstract EntityRepository getEntityRepository()
 
     @Override E save(E entity) {
         entityRepository.save(entity)
@@ -43,8 +38,15 @@ abstract class RepoImpl<E extends BaseEntity> extends LazyDataModel<E> implement
     }
 
     @Override public List<E> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String,Object> filters) {
-        QueryResult<E> result = entityRepository.list().withPageSize(pageSize).firstResult(first)
-        result = sortOrder == sortOrder.ASCENDING ? result.orderAsc(sortField) : result.orderDesc(sortField)
-        result.getResultList()
+        List<E> result = list(first, pageSize)
+//        if(sortField)
+//            result = sortOrder == SortOrder.ASCENDING ? result.orderAsc(sortField) : result.orderDesc(sortField)
+        this.setRowCount(entityRepository.count() as int)
+        result
+    }
+
+    @Override
+    public E getRowData(String rowKey) {
+        get(rowKey)
     }
 }
