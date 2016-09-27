@@ -11,12 +11,19 @@ import org.oreto.spikeface.services.TechnologyService
 import javax.inject.Inject
 import javax.inject.Named
 
-@Named @ViewScoped @ViewRef(config = [Pages.Technology.Show, Pages.Technology.Save])
+@Named @ViewScoped @ViewRef(config = [Pages.Technology.List, Pages.Technology.Show, Pages.Technology.Save])
 public class TechnologyController implements Scaffolding<Technology, Long> {
 
     @Inject TechnologyService repository
     @Inject Technology entity
     @Inject @Param Long id
+
+    @Inject @Param int page
+    @Inject @Param int size
+    @Inject @Param String sort
+    @Inject @Param String dir
+
+    List<Technology> entities
 
     Class<? extends ViewConfig> showView = Pages.Technology.Show
     Class<? extends ViewConfig> listView = Pages.Technology.List

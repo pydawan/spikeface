@@ -9,6 +9,7 @@ interface Repo<E extends BaseEntity> {
     E save(E entity)
     List<E> list()
     List<E> list(int start, int max)
+    List<E> list(int start, int max, String sort, String dir)
     void delete(E entity)
     E get(Serializable id)
 }
@@ -29,6 +30,12 @@ abstract class RepoImpl<E extends BaseEntity> extends LazyDataModel<E> implement
         entityRepository.findAll(start, max)
     }
 
+    @Override List<E> list(int start, int max, String sort, String dir = 'desc') {
+        def result = entityRepository.findAll(start, max)
+        Collections.sort(result, new Sorter<E>(sort, dir ?: 'desc'))
+        result
+    }
+
     @Override void delete(E entity) {
         entityRepository.attachAndRemove(entity)
     }
@@ -38,15 +45,32 @@ abstract class RepoImpl<E extends BaseEntity> extends LazyDataModel<E> implement
     }
 
     @Override public List<E> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String,Object> filters) {
-        List<E> result = list(first, pageSize)
-//        if(sortField)
-//            result = sortOrder == SortOrder.ASCENDING ? result.orderAsc(sortField) : result.orderDesc(sortField)
         this.setRowCount(entityRepository.count() as int)
-        result
+        list(first, pageSize, sortField, sortOrder == SortOrder.ASCENDING ? 'asc' : 'desc')
     }
 
     @Override
     public E getRowData(String rowKey) {
         get(rowKey)
+    }
+}
+
+public class Sorter<T> implements Comparator<T> {
+
+    String sortField
+    String sortOrder
+
+    Sorter(String sortField, String sortOrder) {
+        this.sortField = sortField
+        this.sortOrder = sortOrder
+    }
+
+    public int compare(T o1, T o2) {
+        String getter = "get${sortField.capitalize()}"
+        Object value1 = o1.class.getMethod(getter).invoke(o1)
+        Object value2 = o2.class.getMethod(getter).invoke(o2)
+
+        int value = ((Comparable) value1) <=> value2
+        sortOrder == 'asc' ? value : -1 * value
     }
 }

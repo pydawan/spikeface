@@ -18,6 +18,7 @@ import javax.faces.event.PhaseId
 import javax.faces.event.PreRenderViewEvent
 import javax.faces.view.ViewDeclarationLanguage
 import javax.inject.Inject
+import javax.servlet.http.HttpServletRequest
 
 trait ApplicationController implements Serializable {
     @Inject ViewNavigationHandler viewNavigationHandler
@@ -39,31 +40,46 @@ trait ApplicationController implements Serializable {
     public void notFound() {
         render(Pages.Error.Notfound)
     }
+
+    public String getRequestUrl() {
+        HttpServletRequest req = FacesContext.currentInstance.externalContext.request as HttpServletRequest
+        req.servletPath
+    }
 }
 
 trait Scaffolding<E extends BaseEntity, T extends Serializable> extends ApplicationController {
 
     abstract void setEntity(E entity)
     abstract E getEntity()
+    abstract void setEntities(List<E> entity)
+    abstract List<E> getEntities()
     abstract T getId()
     abstract RepoImpl<E> getRepository()
     abstract Class<? extends ViewConfig> getShowView()
     abstract Class<? extends ViewConfig> getListView()
     abstract Class<? extends ViewConfig> getSaveView()
+    // pagination
+    abstract int getPage()
+    abstract int getSize()
+    abstract String getSort()
+    abstract String getDir()
 
     public getIdName() { 'id' }
 
-    public E get() {
-        entity = id ? repository.get(id) : entity
-        if(entity) entity
-        else {
-            notFound()
-            null
-        }
+    public void get() {
+        if(requestUrl == getViewId(listView)) list()
+        else if(id)  {
+            entity = repository.get(id)
+            if(!entity) notFound()
+        } else notFound()
     }
 
     public List<E> list() {
-        repository.list()
+        int page = page ?: 1
+        int size = size ?: 10
+        int first = ((page - 1) * size) + 1 ?: 1
+        if(sort) entities = repository.list(first, size, sort, dir ?: 'desc')
+        else entities = repository.list(first, size)
     }
 
     public Class<? extends ViewConfig> edit() {
