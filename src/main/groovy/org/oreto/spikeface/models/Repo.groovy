@@ -1,6 +1,7 @@
 package org.oreto.spikeface.models
 
 import org.apache.deltaspike.data.api.EntityRepository
+import org.oreto.spikeface.controllers.DataPager
 import org.primefaces.model.LazyDataModel
 import org.primefaces.model.SortOrder
 
@@ -30,9 +31,9 @@ abstract class RepoImpl<E extends BaseEntity> extends LazyDataModel<E> implement
         entityRepository.findAll(start, max)
     }
 
-    @Override List<E> list(int start, int max, String sort, String dir = 'desc') {
+    @Override List<E> list(int start, int max, String sort, String dir = DataPager.defaultDirection) {
         def result = entityRepository.findAll(start, max)
-        Collections.sort(result, new Sorter<E>(sort, dir ?: 'desc'))
+        Collections.sort(result, new Sorter<E>(sort, dir ?: DataPager.defaultDirection))
         result
     }
 
@@ -46,7 +47,7 @@ abstract class RepoImpl<E extends BaseEntity> extends LazyDataModel<E> implement
 
     @Override public List<E> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String,Object> filters) {
         this.setRowCount(entityRepository.count() as int)
-        list(first, pageSize, sortField, sortOrder == SortOrder.ASCENDING ? 'asc' : 'desc')
+        list(first, pageSize, sortField, sortOrder == SortOrder.ASCENDING ? DataPager.ascendingOrder : DataPager.defaultDirection)
     }
 
     @Override
@@ -71,6 +72,6 @@ public class Sorter<T> implements Comparator<T> {
         Object value2 = o2.class.getMethod(getter).invoke(o2)
 
         int value = ((Comparable) value1) <=> value2
-        sortOrder == 'asc' ? value : -1 * value
+        sortOrder == DataPager.ascendingOrder ? value : -1 * value
     }
 }

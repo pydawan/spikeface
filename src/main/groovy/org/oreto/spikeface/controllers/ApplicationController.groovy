@@ -45,6 +45,13 @@ trait ApplicationController implements Serializable {
         HttpServletRequest req = FacesContext.currentInstance.externalContext.request as HttpServletRequest
         req.servletPath
     }
+
+    public boolean hasFacesError() {
+        for(FacesMessage message : FacesContext.currentInstance.messageList) {
+            if(message.severity == FacesMessage.SEVERITY_ERROR) return true
+        }
+        false
+    }
 }
 
 trait Scaffolding<E extends BaseEntity, T extends Serializable> extends ApplicationController {
@@ -71,14 +78,14 @@ trait Scaffolding<E extends BaseEntity, T extends Serializable> extends Applicat
         else if(id)  {
             entity = repository.get(id)
             if(!entity) notFound()
-        } else notFound()
+        } else if(hasFacesError()) notFound()
     }
 
     public List<E> list() {
-        int page = page ?: 1
-        int size = size ?: 10
-        int first = ((page - 1) * size) + 1 ?: 1
-        if(sort) entities = repository.list(first, size, sort, dir ?: 'desc')
+        int page = page ?: DataPager.defaultPage
+        int size = size ?: DataPager.defaultSize
+        int first = ((page - 1) * size) + 1 ?: DataPager.defaultPage
+        if(sort) entities = repository.list(first, size, sort, dir ?: DataPager.defaultDirection)
         else entities = repository.list(first, size)
     }
 
@@ -90,22 +97,22 @@ trait Scaffolding<E extends BaseEntity, T extends Serializable> extends Applicat
     public Class<? extends ViewConfig> save() {
         entity = repository.save(entity)
         navigationParameterContext.addPageParameter(idName, entity.id)
-        listView
+        showView
     }
 
     public Class<? extends ViewConfig> delete() {
-        if(id) {
+        if(entity?.isTransient()) notFound()
+        else {
             repository.delete(repository.get(id))
             listView
-        } else notFound()
+        }
     }
 
     public Class<? extends ViewConfig> cancel() {
-        if(id) {
+        if(entity?.isTransient()) listView
+        else {
             navigationParameterContext.addPageParameter(idName, id)
             showView
-        } else {
-            listView
         }
     }
 }
