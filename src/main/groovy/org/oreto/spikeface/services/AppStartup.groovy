@@ -27,7 +27,7 @@ public class AppStartup implements Serializable{
         technologies[FacesContext.class.package.name] = FacesContext.class.package.implementationVersion
         technologies[PrimeFacesContext.package.name] = PrimeFacesContext.package.implementationVersion
         technologies[PrettyContext.package.name] = PrettyContext.package.implementationVersion
-        technologies[OmniFaces.package.name] = OmniFaces.package.implementationVersion
+        technologies[OmniFaces.package.name] = OmniFaces.version
         technologies[Hibernate.package.name] = Hibernate.package.implementationVersion
         technologies['java.version'] = System.getProperty("java.version")
         20.times {
