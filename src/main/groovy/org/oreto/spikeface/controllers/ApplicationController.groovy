@@ -89,6 +89,10 @@ trait Scaffolding<E extends BaseEntity, T extends Serializable> extends Applicat
         else entities = repository.list(first, size)
     }
 
+    public int count() {
+        repository.count()
+    }
+
     public Class<? extends ViewConfig> edit() {
         navigationParameterContext.addPageParameter(idName, entity.id)
         saveView

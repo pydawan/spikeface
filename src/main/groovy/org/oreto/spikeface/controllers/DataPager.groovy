@@ -16,6 +16,7 @@ class DataPager extends UIComponentBase {
     int page
     int size
     int total
+    int totalPages
     String sort
     String dir
 
@@ -26,6 +27,9 @@ class DataPager extends UIComponentBase {
         page = temp.isInteger() ? temp.toInteger() : defaultPage
         temp = requestMap.getOrDefault('size', defaultPage.toString())
         size = temp.isInteger() ? temp.toInteger() : defaultSize
+        temp = requestMap.getOrDefault('total', 0.toString())
+        total = temp.isInteger() ? temp.toInteger() : 0
+        totalPages = total / size + (total % size > 0 ? 1 : 0)
         sort = requestMap.get('sort')
         dir = requestMap.getOrDefault('dir', defaultDirection)
     }
@@ -41,7 +45,7 @@ class DataPager extends UIComponentBase {
 
     public String resolvePagerHtml() {
         """<div class="ui-paginator ui-paginator-top ui-widget-header ui-corner-top" role="navigation" aria-label="Pagination">
-\t<span class="ui-paginator-current">($page of 5)</span>
+\t<span class="ui-paginator-current">($page of $totalPages)</span>
 \t<a href="#" class="ui-paginator-first ui-state-default ui-corner-all ui-state-disabled" aria-label="First Page" tabindex="-1">
 \t\t<span class="ui-icon ui-icon-seek-first">F</span>
 \t</a>

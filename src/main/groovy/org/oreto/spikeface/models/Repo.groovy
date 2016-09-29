@@ -11,6 +11,7 @@ interface Repo<E extends BaseEntity> {
     List<E> list()
     List<E> list(int start, int max)
     List<E> list(int start, int max, String sort, String dir)
+    int count()
     void delete(E entity)
     E get(Serializable id)
 }
@@ -35,6 +36,10 @@ abstract class RepoImpl<E extends BaseEntity> extends LazyDataModel<E> implement
         def result = entityRepository.findAll(start, max)
         Collections.sort(result, new Sorter<E>(sort, dir ?: DataPager.defaultDirection))
         result
+    }
+
+    @Override int count() {
+        entityRepository.count()
     }
 
     @Override void delete(E entity) {
