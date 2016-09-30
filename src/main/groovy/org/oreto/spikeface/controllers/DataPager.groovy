@@ -17,17 +17,20 @@ class DataPager extends UIComponentBase {
     static String defaultSizeOptions = "5,10,20,50"
     static String defaultDirection = 'desc'
     static String ascendingOrder = 'asc'
-    static int maxPages = 3
+    static int maxPages = 6
 
     int page
     int size
     int total
     int totalPages
+    int startPage
+    int endPage
     String sort
     String dir
     def sizeOptions = []
     UrlEncodedQueryString queryString
     String pageLessUrl
+    String location
 
     Integer next
     Integer prev
@@ -64,9 +67,29 @@ class DataPager extends UIComponentBase {
             def number = it.trim()
             if(number.isInteger()) sizeOptions.add(number.toInteger())
         }
+        computeStartEndPages()
 
         sort = requestMap.get('sort')
         dir = requestMap.getOrDefault('dir', defaultDirection)
+
+        location = this.getAttributes().get('location') as String == 'bottom' ? 'bottom' : 'top'
+    }
+
+    public computeStartEndPages() {
+        if(maxPages < totalPages) {
+            int right = page
+            int left = page
+
+            while (right - left < maxPages - 1){
+                if (right < totalPages) right++
+                if (right - left < maxPages - 1 && left > 1) left--
+            }
+            startPage = left
+            endPage = right
+        } else {
+            startPage = 1
+            endPage = totalPages
+        }
     }
 
     @Override String getFamily() { "data.pager" }
@@ -80,9 +103,9 @@ class DataPager extends UIComponentBase {
 
     protected String createPageLinks() {
         StringBuffer sb = new StringBuffer()
-        (1..totalPages).eachWithIndex { val, index ->
-            if(index == page - 1) sb.append(createPageLink(val as int, true))
-            else sb.append(createPageLink(val as int))
+        (startPage..endPage).each {
+            if(page == it) sb.append(createPageLink(it as int, true))
+            else sb.append(createPageLink(it as int))
         }
         sb.toString()
     }
@@ -140,7 +163,7 @@ class DataPager extends UIComponentBase {
     }
 
     protected String resolvePagerHtml() {
-        """<div class="ui-paginator ui-paginator-top ui-widget-header ui-corner-top" role="navigation" aria-label="Pagination">
+        """<div class="ui-paginator ui-paginator-$location ui-widget-header ui-corner-$location" role="navigation" aria-label="Pagination">
 \t<span class="ui-paginator-current">($page of $totalPages)</span>
 ${createFirstLink()}
 ${createPrevLink()}
