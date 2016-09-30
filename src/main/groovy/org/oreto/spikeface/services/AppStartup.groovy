@@ -30,9 +30,6 @@ public class AppStartup implements Serializable{
         technologies[OmniFaces.package.name] = OmniFaces.version
         technologies[Hibernate.package.name] = Hibernate.package.implementationVersion
         technologies['java.version'] = System.getProperty("java.version")
-        20.times {
-            technologies[it.toString()] = it
-        }
 
         technologies.each {
             String name = it.key

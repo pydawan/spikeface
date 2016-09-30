@@ -77,7 +77,7 @@ trait Scaffolding<E extends BaseEntity, T extends Serializable> extends Applicat
     public List<E> list() {
         int page = page ?: DataPager.defaultPage
         int size = size ?: DataPager.defaultSize
-        int first = ((page - 1) * size) + 1 ?: DataPager.defaultPage
+        int first = ((page - 1) * size)
         if(sort) entities = repository.list(first, size, sort, dir ?: DataPager.defaultDirection)
         else entities = repository.list(first, size)
     }

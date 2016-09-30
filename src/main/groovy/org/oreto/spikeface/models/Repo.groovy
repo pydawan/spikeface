@@ -34,7 +34,7 @@ abstract class RepoImpl<E extends BaseEntity> extends LazyDataModel<E> implement
 
     @Override List<E> list(int start, int max, String sort, String dir = DataPager.defaultDirection) {
         def result = entityRepository.findAll(start, max)
-        Collections.sort(result, new Sorter<E>(sort, dir ?: DataPager.defaultDirection))
+        if(sort) Collections.sort(result, new Sorter<E>(sort, dir ?: DataPager.defaultDirection))
         result
     }
 
