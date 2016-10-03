@@ -23,7 +23,7 @@ public class TechnologyController implements Scaffolding<Technology, Long> {
     @Inject @Param String sort
     @Inject @Param String dir
 
-    List<Technology> entities
+    Iterable<Technology> entities
 
     Class<? extends ViewConfig> showView = Pages.Technology.Show
     Class<? extends ViewConfig> listView = Pages.Technology.List

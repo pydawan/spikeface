@@ -51,8 +51,8 @@ trait Scaffolding<E extends BaseEntity, T extends Serializable> extends Applicat
 
     abstract void setEntity(E entity)
     abstract E getEntity()
-    abstract void setEntities(List<E> entity)
-    abstract List<E> getEntities()
+    abstract void setEntities(Iterable<E> entity)
+    abstract Iterable<E> getEntities()
     abstract T getId()
     abstract RepoImpl<E> getRepository()
     abstract Class<? extends ViewConfig> getShowView()
@@ -74,11 +74,11 @@ trait Scaffolding<E extends BaseEntity, T extends Serializable> extends Applicat
         } else if(hasFacesError()) notFound()
     }
 
-    public List<E> list() {
+    public Iterable<E> list() {
         int page = page ?: DataPager.defaultPage
         int size = size ?: DataPager.defaultSize
         int first = ((page - 1) * size)
-        if(sort) entities = repository.list(first, size, sort, dir ?: DataPager.defaultDirection)
+        if(sort) entities = repository.list(first, size, sort, dir ?: DataHeader.defaultDirection)
         else entities = repository.list(first, size)
     }
 

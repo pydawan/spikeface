@@ -1,13 +1,15 @@
 package org.oreto.spikeface.controllers
 
-import com.ocpsoft.pretty.PrettyContext
 import org.oreto.spikeface.utils.UrlEncodedQueryString
+import org.oreto.spikeface.utils.Utils
+import org.primefaces.component.api.UIColumn
+import org.primefaces.component.datatable.DataTable
+import org.primefaces.component.datatable.DataTableRenderer
 
 import javax.faces.component.FacesComponent
 import javax.faces.component.UIComponentBase
 import javax.faces.context.FacesContext
 import javax.faces.context.ResponseWriter
-import javax.servlet.http.HttpServletRequest
 
 @FacesComponent(value = "components.DataPagerComponent", createTag = true, namespace = "http://org.oreto/oui", tagName = "data-pager")
 class DataPager extends UIComponentBase {
@@ -15,12 +17,8 @@ class DataPager extends UIComponentBase {
     static Integer defaultPage = 1
     static Integer defaultSize = 10
     static String defaultSizeOptions = "5,10,20,50"
-    static String defaultDirection = 'desc'
-    static String ascendingOrder = 'asc'
     static String pageParamName = 'page'
     static String sizeParamName = 'size'
-    static String sortParamName = 'sort'
-    static String dirParamName = 'dir'
 
     int maxPages = 6
 
@@ -30,8 +28,6 @@ class DataPager extends UIComponentBase {
     int totalPages
     int startPage
     int endPage
-    String sort
-    String dir
     def sizeOptions = []
     UrlEncodedQueryString queryString
     String pageLessUrl
@@ -41,19 +37,16 @@ class DataPager extends UIComponentBase {
     Integer prev
 
     public boolean init(FacesContext context) {
-        def request = context.getExternalContext().request as HttpServletRequest
         Map requestMap = context.getExternalContext().getRequestParameterMap()
-
         def temp = this.getAttributes().get('value') as String
         total = temp?.isInteger() ? temp.toInteger() : 0
+
         if(total) {
             temp = requestMap.getOrDefault(sizeParamName, defaultSize.toString())
             size = temp.isInteger() ? temp.toInteger() : defaultSize
             totalPages = total / size + (total % size > 0 ? 1 : 0)
 
-            def pretty = PrettyContext.currentInstance
-            def baseUrl = "${request.getContextPath()}$pretty.requestURL"
-            def url = "$baseUrl${pretty.requestQueryString}"
+            def url = Utils.getPrettyUrl(context)
             queryString = UrlEncodedQueryString.parse(url)
             queryString.remove(pageParamName).remove(sizeParamName)
             pageLessUrl = queryString.toString()
@@ -73,9 +66,6 @@ class DataPager extends UIComponentBase {
                 if (number.isInteger()) sizeOptions.add(number.toInteger())
             }
             computeStartEndPages()
-
-            sort = requestMap.get(sortParamName)
-            dir = requestMap.getOrDefault(dirParamName, defaultDirection)
 
             location = this.getAttributes().get('location') as String == 'bottom' ? 'bottom' : 'top'
         }
@@ -191,5 +181,41 @@ ${createLastLink()}
 \t</select>
 </div>
 """
+    }
+}
+
+class DataHeader extends DataTableRenderer {
+
+    static String defaultDirection = 'desc'
+    static String ascendingOrder = 'asc'
+    static String sortParamName = 'sort'
+    static String dirParamName = 'dir'
+
+    @Override public void encodeColumnHeader(FacesContext context, DataTable table, UIColumn column) throws IOException {
+
+        Map requestMap = context.getExternalContext().getRequestParameterMap()
+        UrlEncodedQueryString queryString = Utils.newQueryString(context)
+        queryString.remove(sortParamName).remove(dirParamName)
+
+        String sort = requestMap.get(sortParamName)
+        String dir = requestMap.getOrDefault(dirParamName, defaultDirection)
+
+        String sortIconClass = 'ui-icon-carat-2-n-s'
+        String text = column.headerText
+        queryString.set(sortParamName, text)
+        if(sort == text) {
+            sortIconClass = dir == ascendingOrder ? 'ui-icon-triangle-1-n' : 'ui-icon-triangle-1-s'
+            queryString.set(dirParamName, dir == ascendingOrder ? defaultDirection : ascendingOrder)
+        } else {
+            queryString.set(dirParamName, defaultDirection)
+        }
+        String sortDirection = dir == ascendingOrder ? 'ascending' : 'descending'
+
+        ResponseWriter writer = context.getResponseWriter()
+        def header = """<th class="ui-state-default ui-state-hover" role="columnheader"
+aria-label="$text: activate to sort column $sortDirection" onclick="window.location.href='$queryString';"
+ scope="col" tabindex="0" aria-sort="other"><span class="ui-column-title">$text</span><span class="ui-sortable-column-icon ui-icon $sortIconClass"></span></th>
+"""
+        writer.write(header)
     }
 }

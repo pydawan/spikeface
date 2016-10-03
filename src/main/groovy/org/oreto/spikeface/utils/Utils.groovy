@@ -1,5 +1,6 @@
 package org.oreto.spikeface.utils
 
+import com.ocpsoft.pretty.PrettyContext
 import org.omnifaces.context.OmniPartialViewContext
 import org.primefaces.util.ComponentUtils
 
@@ -11,6 +12,7 @@ import javax.faces.context.FacesContext
 import javax.faces.event.PhaseId
 import javax.faces.event.PreRenderViewEvent
 import javax.faces.view.ViewDeclarationLanguage
+import javax.servlet.http.HttpServletRequest
 
 class Utils {
     public static String getHeader(String header) {
@@ -65,5 +67,16 @@ class Utils {
 
     static String escapeXmlWithBreaks(String text) {
         ComponentUtils.escapeXml(text).replaceAll("(\r\n|\n)", "<br/>")
+    }
+
+    static String getPrettyUrl(FacesContext context, boolean withQueryString = true) {
+        def request = context.getExternalContext().request as HttpServletRequest
+        def pretty = PrettyContext.currentInstance
+        if(withQueryString) "${request.getContextPath()}${pretty.requestURL}${pretty.requestQueryString}"
+        else "${request.getContextPath()}$pretty.requestURL"
+    }
+
+    static UrlEncodedQueryString newQueryString(FacesContext context) {
+        UrlEncodedQueryString.parse(getPrettyUrl(context))
     }
 }

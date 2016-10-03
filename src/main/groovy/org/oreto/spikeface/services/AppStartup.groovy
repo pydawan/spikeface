@@ -31,10 +31,10 @@ public class AppStartup implements Serializable{
         technologies[Hibernate.package.name] = Hibernate.package.implementationVersion
         technologies['java.version'] = System.getProperty("java.version")
 
-        technologies.each {
-            String name = it.key
+        technologies.eachWithIndex { val, i ->
+            String name = val.key
             if(!repository.findByName(name).isPresent()) {
-                Technology technology = new Technology(name: name, versionName: it.value)
+                Technology technology = new Technology(id: i, name: name, versionName: val.value)
                 repository.save(technology)
             }
         }

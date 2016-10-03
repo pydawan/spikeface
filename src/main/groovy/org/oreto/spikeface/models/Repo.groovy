@@ -1,58 +1,60 @@
 package org.oreto.spikeface.models
 
-import org.apache.deltaspike.data.api.EntityRepository
-import org.oreto.spikeface.controllers.DataPager
+import org.oreto.spikeface.controllers.DataHeader
 import org.primefaces.model.LazyDataModel
 import org.primefaces.model.SortOrder
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
+import org.springframework.data.repository.PagingAndSortingRepository
 
 
 interface Repo<E extends BaseEntity> {
     E save(E entity)
-    List<E> list()
-    List<E> list(int start, int max)
-    List<E> list(int start, int max, String sort, String dir)
+    Iterable<E> list()
+    Iterable<E> list(int start, int max)
+    Iterable<E> list(int start, int max, String sort, String dir)
     int count()
-    void delete(E entity)
+    void delete(Serializable id)
     E get(Serializable id)
 }
 
 abstract class RepoImpl<E extends BaseEntity> extends LazyDataModel<E> implements Repo<E> {
 
-    abstract EntityRepository getEntityRepository()
+    abstract PagingAndSortingRepository getEntityRepository()
 
     @Override E save(E entity) {
         entityRepository.save(entity)
     }
 
-    @Override List<E> list() {
+    @Override Iterable<E> list() {
         entityRepository.findAll()
     }
 
-    @Override List<E> list(int start, int max) {
-        entityRepository.findAll(start, max)
+    @Override Iterable<E> list(int start, int max) {
+        entityRepository.findAll(new PageRequest(start, max))
     }
 
-    @Override List<E> list(int start, int max, String sort, String dir = DataPager.defaultDirection) {
-        def result = entityRepository.findAll(start, max)
-        if(sort) Collections.sort(result, new Sorter<E>(sort, dir ?: DataPager.defaultDirection))
-        result
+    @Override Iterable<E> list(int start, int max, String sort, String dir) {
+        def direction = DataHeader.ascendingOrder == dir ? Sort.Direction.ASC : Sort.Direction.DESC
+        def page = new PageRequest(start, max, direction, sort)
+        entityRepository.findAll(page)
     }
 
     @Override int count() {
         entityRepository.count()
     }
 
-    @Override void delete(E entity) {
-        entityRepository.attachAndRemove(entity)
+    @Override void delete(Serializable id) {
+        entityRepository.delete(id)
     }
 
     @Override E get(Serializable id) {
-        entityRepository.findBy(id)
+        entityRepository.findOne(id)
     }
 
     @Override public List<E> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String,Object> filters) {
         this.setRowCount(entityRepository.count() as int)
-        list(first, pageSize, sortField, sortOrder == SortOrder.ASCENDING ? DataPager.ascendingOrder : DataPager.defaultDirection)
+        list(first, pageSize, sortField, sortOrder == SortOrder.ASCENDING ? DataHeader.ascendingOrder : DataHeader.defaultDirection).toList()
     }
 
     @Override
@@ -77,6 +79,6 @@ public class Sorter<T> implements Comparator<T> {
         Object value2 = o2.class.getMethod(getter).invoke(o2)
 
         int value = ((Comparable) value1) <=> value2
-        sortOrder == DataPager.ascendingOrder ? value : -1 * value
+        sortOrder == DataHeader.ascendingOrder ? value : -1 * value
     }
 }
