@@ -8,6 +8,7 @@ import org.omnifaces.config.OmniFaces
 import org.oreto.spikeface.models.Technology
 import org.oreto.spikeface.models.TechnologyRepository
 import org.primefaces.context.PrimeFacesContext
+import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.PostConstruct
 import javax.enterprise.context.ApplicationScoped
@@ -19,7 +20,7 @@ public class AppStartup implements Serializable{
 
     @Inject TechnologyRepository repository
 
-    @PostConstruct
+    @PostConstruct @Transactional
     public void initDatabase() {
         def technologies = [:]
         technologies[DeltaSpike.package.name] = DeltaSpike.package.implementationVersion
@@ -34,7 +35,7 @@ public class AppStartup implements Serializable{
         technologies.eachWithIndex { val, i ->
             String name = val.key
             if(!repository.findByName(name).isPresent()) {
-                Technology technology = new Technology(id: i, name: name, versionName: val.value)
+                Technology technology = new Technology(name: name, versionName: val.value)
                 repository.save(technology)
             }
         }

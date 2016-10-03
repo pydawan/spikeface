@@ -1,8 +1,9 @@
 package org.oreto.spikeface.models
 
 import org.hibernate.validator.constraints.NotEmpty
-import org.springframework.data.repository.PagingAndSortingRepository
+import org.springframework.data.jpa.repository.JpaRepository
 
+import javax.enterprise.context.Dependent
 import javax.persistence.Column
 import javax.persistence.Entity
 
@@ -12,6 +13,7 @@ public class Technology extends BaseEntity<Long> implements Named {
     @Column @NotEmpty String versionName
 }
 
-public interface TechnologyRepository extends PagingAndSortingRepository<Technology, Long> {
+@Dependent
+public interface TechnologyRepository extends JpaRepository<Technology, Long> {
     Optional<Technology> findByName(String name)
 }

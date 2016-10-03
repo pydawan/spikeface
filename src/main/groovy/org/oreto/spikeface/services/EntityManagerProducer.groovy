@@ -1,19 +1,22 @@
 package org.oreto.spikeface.services
 
-
+import javax.enterprise.context.Dependent
+import javax.enterprise.context.RequestScoped
 import javax.enterprise.inject.Disposes
 import javax.enterprise.inject.Produces
 import javax.persistence.EntityManager
-import javax.persistence.EntityManagerFactory
-import javax.persistence.PersistenceUnit
+import javax.persistence.PersistenceContext
 
+@Dependent
 public class EntityManagerProducer implements Serializable {
-    @PersistenceUnit
-    private EntityManagerFactory emf
+
+    @PersistenceContext(name = "sdpu")
+    EntityManager entityManager
 
     @Produces
-    public EntityManager create() {
-        emf.createEntityManager()
+    @RequestScoped
+    public EntityManager createEntityManager() {
+        entityManager
     }
 
     public void close( @Disposes EntityManager em ) {
