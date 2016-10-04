@@ -6,9 +6,7 @@ import org.hibernate.Hibernate
 import org.omnifaces.cdi.Eager
 import org.omnifaces.config.OmniFaces
 import org.oreto.spikeface.models.Technology
-import org.oreto.spikeface.models.TechnologyRepository
 import org.primefaces.context.PrimeFacesContext
-import org.springframework.transaction.annotation.Transactional
 
 import javax.annotation.PostConstruct
 import javax.enterprise.context.ApplicationScoped
@@ -18,9 +16,9 @@ import javax.inject.Inject
 @ApplicationScoped @Eager
 public class AppStartup implements Serializable{
 
-    @Inject TechnologyRepository repository
+    @Inject TechnologyService repository
 
-    @PostConstruct @Transactional
+    @PostConstruct
     public void initDatabase() {
         def technologies = [:]
         technologies[DeltaSpike.package.name] = DeltaSpike.package.implementationVersion
@@ -34,7 +32,8 @@ public class AppStartup implements Serializable{
 
         technologies.eachWithIndex { val, i ->
             String name = val.key
-            if(!repository.findByName(name).isPresent()) {
+            def techOption = repository.findByName(name)
+            if(!techOption.isPresent()) {
                 Technology technology = new Technology(name: name, versionName: val.value)
                 repository.save(technology)
             }

@@ -6,8 +6,13 @@ import org.oreto.spikeface.models.TechnologyRepository
 
 import javax.enterprise.context.ApplicationScoped
 import javax.inject.Inject
+import javax.transaction.Transactional
 
-@ApplicationScoped
+@ApplicationScoped @Transactional
 public class TechnologyService extends RepoImpl<Technology> implements Serializable {
     @Inject TechnologyRepository entityRepository
+
+    Optional<Technology> findByName(String name) {
+        entityRepository.findByName(name)
+    }
 }

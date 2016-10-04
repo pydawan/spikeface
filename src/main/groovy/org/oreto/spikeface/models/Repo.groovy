@@ -31,7 +31,7 @@ abstract class RepoImpl<E extends BaseEntity> extends LazyDataModel<E> implement
     }
 
     @Override Iterable<E> list(int start, int max) {
-        entityRepository.findAll(new PageRequest(start, max))
+        entityRepository.findAll(new PageRequest(start, max)).content
     }
 
     @Override Iterable<E> list(int start, int max, String sort, String dir) {
