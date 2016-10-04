@@ -9,8 +9,8 @@
 
     <ui:define name="container">
         <o:form>
-            <t:data-pager value="#{technologyController.count}"/>
-            <p:dataTable var="tech" value="#{technologyController.entities}" reflow="true">
+            <t:data-pager value="#{technologyController.entities.totalElements}"/>
+            <p:dataTable var="tech" value="#{technologyController.entities.content}" reflow="true">
 
                 <p:column headerText="name">
                     <h:link value="#{tech.name}" outcome="#{technologyController.showView}">

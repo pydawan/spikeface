@@ -5,7 +5,6 @@ import org.apache.deltaspike.core.api.common.DeltaSpike
 import org.hibernate.Hibernate
 import org.omnifaces.cdi.Eager
 import org.omnifaces.config.OmniFaces
-import org.oreto.spikeface.models.Technology
 import org.primefaces.context.PrimeFacesContext
 
 import javax.annotation.PostConstruct
@@ -30,13 +29,13 @@ public class AppStartup implements Serializable{
         technologies[Hibernate.package.name] = Hibernate.package.implementationVersion
         technologies['java.version'] = System.getProperty("java.version")
 
-        technologies.eachWithIndex { val, i ->
-            String name = val.key
-            def techOption = repository.findByName(name)
-            if(!techOption.isPresent()) {
-                Technology technology = new Technology(name: name, versionName: val.value)
-                repository.save(technology)
-            }
-        }
+//        technologies.eachWithIndex { val, i ->
+//            String name = val.key
+//            def techOption = repository.findByName(name)
+//            if(!techOption.isPresent()) {
+//                Technology technology = new Technology(name: name, versionName: val.value)
+//                repository.save(technology)
+//            }
+//        }
     }
 }

@@ -20,7 +20,10 @@
         <view-id value="/views/index.xhtml" />
     </url-mapping>
 
-
+    <url-mapping id="list-technology">
+        <pattern value="/technology" />
+        <view-id value="/views/technology/list.xhtml" />
+    </url-mapping>
 
     <url-mapping id="create-technology">
         <pattern value="/technology/create" />

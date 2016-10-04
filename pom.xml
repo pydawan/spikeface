@@ -282,13 +282,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.glassfish.ozark</groupId>
-            <artifactId>ozark</artifactId>
-            <version>1.0.0-m02</version>
-            <scope>compile</scope>
-        </dependency>
-
         <!-- Needed for running tests (you may also use TestNG) -->
         <dependency>
             <groupId>junit</groupId>

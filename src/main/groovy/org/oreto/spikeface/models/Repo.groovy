@@ -3,16 +3,16 @@ package org.oreto.spikeface.models
 import org.oreto.spikeface.controllers.DataHeader
 import org.primefaces.model.LazyDataModel
 import org.primefaces.model.SortOrder
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
-import org.springframework.data.repository.PagingAndSortingRepository
-
+import org.springframework.data.jpa.repository.JpaRepository
 
 interface Repo<E extends BaseEntity> {
     E save(E entity)
-    Iterable<E> list()
-    Iterable<E> list(int start, int max)
-    Iterable<E> list(int start, int max, String sort, String dir)
+    List<E> list()
+    Page<E> list(int start, int max)
+    Page<E> list(int start, int max, String sort, String dir)
     int count()
     void delete(Serializable id)
     E get(Serializable id)
@@ -20,21 +20,21 @@ interface Repo<E extends BaseEntity> {
 
 abstract class RepoImpl<E extends BaseEntity> extends LazyDataModel<E> implements Repo<E> {
 
-    abstract PagingAndSortingRepository getEntityRepository()
+    abstract JpaRepository getEntityRepository()
 
     @Override E save(E entity) {
         entityRepository.save(entity)
     }
 
-    @Override Iterable<E> list() {
+    @Override List<E> list() {
         entityRepository.findAll()
     }
 
-    @Override Iterable<E> list(int start, int max) {
-        entityRepository.findAll(new PageRequest(start, max)).content
+    @Override Page<E> list(int start, int max) {
+        entityRepository.findAll(new PageRequest(start, max))
     }
 
-    @Override Iterable<E> list(int start, int max, String sort, String dir) {
+    @Override Page<E> list(int start, int max, String sort, String dir) {
         def direction = DataHeader.ascendingOrder == dir ? Sort.Direction.ASC : Sort.Direction.DESC
         def page = new PageRequest(start, max, direction, sort)
         entityRepository.findAll(page)

@@ -7,6 +7,7 @@ import org.apache.deltaspike.core.api.config.view.navigation.ViewNavigationHandl
 import org.oreto.spikeface.models.BaseEntity
 import org.oreto.spikeface.models.RepoImpl
 import org.oreto.spikeface.utils.Utils
+import org.springframework.data.domain.Page
 
 import javax.faces.application.FacesMessage
 import javax.faces.context.FacesContext
@@ -51,8 +52,8 @@ abstract class Scaffolding<E extends BaseEntity, T extends Serializable> extends
 
     abstract void setEntity(E entity)
     abstract E getEntity()
-    abstract void setEntities(Iterable<E> entity)
-    abstract Iterable<E> getEntities()
+    abstract void setEntities(Page<E> entities)
+    abstract Page<E> getEntities()
     abstract T getId()
     abstract RepoImpl<E> getRepository()
     abstract Class<? extends ViewConfig> getShowView()
@@ -74,13 +75,12 @@ abstract class Scaffolding<E extends BaseEntity, T extends Serializable> extends
         } else if(hasFacesError()) notFound()
     }
 
-    public String list() {
+    public void list() {
         int page = page ?: DataPager.defaultPage
         int size = size ?: DataPager.defaultSize
         int first = ((page - 1) * size)
         if(sort) entities = repository.list(first, size, sort, dir ?: DataHeader.defaultDirection)
         else entities = repository.list(first, size)
-        "list.xhtml"
     }
 
     public int getCount() {
