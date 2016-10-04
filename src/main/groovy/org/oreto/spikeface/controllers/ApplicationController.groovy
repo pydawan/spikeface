@@ -13,7 +13,7 @@ import javax.faces.context.FacesContext
 import javax.inject.Inject
 import javax.servlet.http.HttpServletRequest
 
-trait ApplicationController implements Serializable {
+class ApplicationController implements Serializable {
     @Inject ViewNavigationHandler viewNavigationHandler
     @Inject ViewConfigResolver viewConfigResolver
     @Inject NavigationParameterContext navigationParameterContext
@@ -31,7 +31,7 @@ trait ApplicationController implements Serializable {
     }
 
     public void notFound() {
-        render(Pages.Error.Notfound)
+        render(Views.Error.Notfound)
     }
 
     public String getRequestUrl() {
@@ -47,7 +47,7 @@ trait ApplicationController implements Serializable {
     }
 }
 
-trait Scaffolding<E extends BaseEntity, T extends Serializable> extends ApplicationController {
+abstract class Scaffolding<E extends BaseEntity, T extends Serializable> extends ApplicationController {
 
     abstract void setEntity(E entity)
     abstract E getEntity()
@@ -74,12 +74,13 @@ trait Scaffolding<E extends BaseEntity, T extends Serializable> extends Applicat
         } else if(hasFacesError()) notFound()
     }
 
-    public Iterable<E> list() {
+    public String list() {
         int page = page ?: DataPager.defaultPage
         int size = size ?: DataPager.defaultSize
         int first = ((page - 1) * size)
         if(sort) entities = repository.list(first, size, sort, dir ?: DataHeader.defaultDirection)
         else entities = repository.list(first, size)
+        "list.xhtml"
     }
 
     public int getCount() {

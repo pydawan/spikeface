@@ -6,7 +6,7 @@ import org.apache.deltaspike.jsf.api.config.view.View
 import org.apache.deltaspike.jsf.api.config.view.View.NavigationMode
 import org.apache.deltaspike.jsf.api.config.view.View.ViewParameterMode
 
-interface Pages {
+interface Views {
     class Index implements ViewConfig { }
 
     @View(navigation = NavigationMode.REDIRECT, viewParams = ViewParameterMode.INCLUDE)

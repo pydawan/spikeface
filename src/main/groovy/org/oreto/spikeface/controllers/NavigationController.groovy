@@ -4,9 +4,9 @@ import javax.enterprise.context.ApplicationScoped
 import javax.inject.Named
 
 @ApplicationScoped @Named
-class NavigationController implements ApplicationController {
+class NavigationController extends ApplicationController {
 
     String getTechnologyView() {
-        getViewId(Pages.Technology.List)
+        getViewId(Views.Technology.List)
     }
 }

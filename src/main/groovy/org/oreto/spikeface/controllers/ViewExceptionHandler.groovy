@@ -36,7 +36,7 @@ public class ViewExceptionHandler {
         this.stackTrace = Utils.escapeXmlWithBreaks(sw.toString())
 
         FacesContext context = FacesContext.getCurrentInstance()
-        String viewId = viewConfigResolver.getViewConfigDescriptor(Pages.Error.Server).viewId
+        String viewId = viewConfigResolver.getViewConfigDescriptor(Views.Error.Server).viewId
         FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, this.message, exception.toString())
 
         context.addMessage(null, facesMessage)
