@@ -8,19 +8,19 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.repository.JpaRepository
 
-interface Repo<E extends BaseEntity> {
+interface Repo<E, ID extends Serializable> {
     E save(E entity)
     List<E> list()
     Page<E> list(int start, int max)
     Page<E> list(int start, int max, String sort, String dir)
     int count()
-    void delete(Serializable id)
-    E get(Serializable id)
+    void delete(E e)
+    E get(ID id)
 }
 
-abstract class RepoImpl<E extends BaseEntity> extends LazyDataModel<E> implements Repo<E> {
+abstract class RepoImpl<E, ID extends Serializable> extends LazyDataModel<E> implements Repo<E, ID> {
 
-    abstract JpaRepository getEntityRepository()
+    abstract JpaRepository<E, ID> getEntityRepository()
 
     @Override E save(E entity) {
         entityRepository.save(entity)
@@ -44,22 +44,17 @@ abstract class RepoImpl<E extends BaseEntity> extends LazyDataModel<E> implement
         entityRepository.count()
     }
 
-    @Override void delete(Serializable id) {
-        entityRepository.delete(id)
+    @Override void delete(E entity) {
+        entityRepository.delete(entity)
     }
 
-    @Override E get(Serializable id) {
+    @Override E get(ID id) {
         entityRepository.findOne(id)
     }
 
     @Override public List<E> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String,Object> filters) {
         this.setRowCount(entityRepository.count() as int)
         list(first, pageSize, sortField, sortOrder == SortOrder.ASCENDING ? DataHeader.ascendingOrder : DataHeader.defaultDirection).toList()
-    }
-
-    @Override
-    public E getRowData(String rowKey) {
-        get(rowKey)
     }
 }
 

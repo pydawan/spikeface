@@ -101,7 +101,7 @@ abstract class Scaffolding<E extends BaseEntity, T extends Serializable> extends
     public Class<? extends ViewConfig> delete() {
         if(entity?.isTransient()) notFound()
         else {
-            repository.delete(repository.get(id))
+            repository.delete(entity)
             listView
         }
     }
