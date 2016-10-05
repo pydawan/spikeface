@@ -4,10 +4,13 @@ import org.apache.deltaspike.core.api.config.view.ViewConfig
 import org.apache.deltaspike.core.api.config.view.metadata.ViewConfigResolver
 import org.apache.deltaspike.core.api.config.view.navigation.NavigationParameterContext
 import org.apache.deltaspike.core.api.config.view.navigation.ViewNavigationHandler
+import org.apache.deltaspike.jpa.api.transaction.Transactional
 import org.oreto.spikeface.models.BaseEntity
-import org.oreto.spikeface.models.RepoImpl
 import org.oreto.spikeface.utils.Utils
 import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
+import org.springframework.data.jpa.repository.JpaRepository
 
 import javax.faces.application.FacesMessage
 import javax.faces.context.FacesContext
@@ -48,17 +51,18 @@ class ApplicationController implements Serializable {
     }
 }
 
-abstract class Scaffolding<E extends BaseEntity, T extends Serializable> extends ApplicationController {
+abstract class Scaffolding<T extends BaseEntity, ID extends Serializable> extends ApplicationController {
 
-    abstract void setEntity(E entity)
-    abstract E getEntity()
-    abstract void setEntities(Page<E> entities)
-    abstract Page<E> getEntities()
-    abstract T getId()
-    abstract RepoImpl<E> getRepository()
+    abstract void setEntity(T entity)
+    abstract T getEntity()
+    abstract void setEntities(Page<T> entities)
+    abstract Page<T> getEntities()
+    abstract ID getId()
+    abstract JpaRepository<T, ID> getRepository()
     abstract Class<? extends ViewConfig> getShowView()
     abstract Class<? extends ViewConfig> getListView()
     abstract Class<? extends ViewConfig> getSaveView()
+
     // pagination
     abstract int getPage()
     abstract int getSize()
@@ -70,7 +74,7 @@ abstract class Scaffolding<E extends BaseEntity, T extends Serializable> extends
     public void get() {
         if(requestUrl == getViewId(listView)) list()
         else if(id)  {
-            entity = repository.get(id)
+            entity = repository.getOne(id)
             if(!entity) notFound()
         } else if(hasFacesError()) notFound()
     }
@@ -79,8 +83,9 @@ abstract class Scaffolding<E extends BaseEntity, T extends Serializable> extends
         int page = page ?: DataPager.defaultPage
         int size = size ?: DataPager.defaultSize
         int first = ((page - 1) * size)
-        if(sort) entities = repository.list(first, size, sort, dir ?: DataHeader.defaultDirection)
-        else entities = repository.list(first, size)
+        def direction = DataHeader.ascendingOrder == dir ? Sort.Direction.ASC : Sort.Direction.DESC
+        if(sort) entities = repository.findAll(new PageRequest(first, size, direction, sort))
+        else entities = repository.findAll(new PageRequest(first, size))
     }
 
     public int getCount() {
@@ -92,16 +97,18 @@ abstract class Scaffolding<E extends BaseEntity, T extends Serializable> extends
         saveView
     }
 
+    @Transactional
     public Class<? extends ViewConfig> save() {
         entity = repository.save(entity)
         navigationParameterContext.addPageParameter(idName, entity.id)
         showView
     }
 
+    @Transactional
     public Class<? extends ViewConfig> delete() {
         if(entity?.isTransient()) notFound()
         else {
-            repository.delete(entity)
+            repository.delete(entity.id as ID)
             listView
         }
     }

@@ -6,7 +6,7 @@ import org.apache.deltaspike.core.api.config.view.controller.PreRenderView
 import org.omnifaces.cdi.Param
 import org.omnifaces.cdi.ViewScoped
 import org.oreto.spikeface.models.Technology
-import org.oreto.spikeface.services.TechnologyService
+import org.oreto.spikeface.models.TechnologyRepository
 import org.springframework.data.domain.Page
 
 import javax.inject.Inject
@@ -16,7 +16,7 @@ import javax.inject.Named
 @Named @ViewScoped @ViewRef(config = [Views.Technology.List, Views.Technology.Show, Views.Technology.Save])
 public class TechnologyController extends Scaffolding<Technology, Long> {
 
-    @Inject TechnologyService repository
+    @Inject TechnologyRepository repository
     @Inject Technology entity
     @Inject @Param Long id
 

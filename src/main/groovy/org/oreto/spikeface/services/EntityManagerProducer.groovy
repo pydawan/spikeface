@@ -1,18 +1,26 @@
 package org.oreto.spikeface.services
 
 import javax.enterprise.context.RequestScoped
+import javax.enterprise.inject.Default
+import javax.enterprise.inject.Disposes
 import javax.enterprise.inject.Produces
 import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
+import javax.persistence.EntityManagerFactory
+import javax.persistence.PersistenceUnit
 
 public class EntityManagerProducer implements Serializable {
 
-    @PersistenceContext(name = "sdpu")
-    EntityManager entityManager
+    @PersistenceUnit
+    private EntityManagerFactory entityManagerFactory
 
-    @Produces
-    @RequestScoped
-    public EntityManager createEntityManager() {
-        entityManager
+    @Produces @Default @RequestScoped
+    public EntityManager create() {
+        return this.entityManagerFactory.createEntityManager()
+    }
+
+    public void dispose(@Disposes @Default EntityManager entityManager) {
+        if (entityManager.isOpen()) {
+            entityManager.close()
+        }
     }
 }

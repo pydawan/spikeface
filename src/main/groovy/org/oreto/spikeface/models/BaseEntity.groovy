@@ -14,6 +14,6 @@ public abstract class BaseEntity<P extends Serializable> implements Serializable
     Integer version
 
     public boolean isTransient() {
-        this.version == null;
+        this.version == null
     }
 }
