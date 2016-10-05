@@ -73,7 +73,7 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> extends Applica
     abstract String getSort()
     abstract String getDir()
 
-    boolean isReadOnly() { true }
+    boolean isReadOnly() { false }
     boolean isReadWrite() { !isReadOnly() }
 
     public getIdName() { 'id' }
