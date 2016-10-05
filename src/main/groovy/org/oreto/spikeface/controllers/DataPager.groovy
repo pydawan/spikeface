@@ -202,8 +202,9 @@ class DataHeader extends DataTableRenderer {
 
         String sortIconClass = 'ui-icon-carat-2-n-s'
         String text = column.headerText
-        queryString.set(sortParamName, text)
-        if(sort == text) {
+        String field = column.field
+        queryString.set(sortParamName, field)
+        if(sort == field) {
             sortIconClass = dir == ascendingOrder ? 'ui-icon-triangle-1-n' : 'ui-icon-triangle-1-s'
             queryString.set(dirParamName, dir == ascendingOrder ? defaultDirection : ascendingOrder)
         } else {

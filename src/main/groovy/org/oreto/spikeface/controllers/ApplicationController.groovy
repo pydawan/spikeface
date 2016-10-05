@@ -17,7 +17,7 @@ import javax.faces.context.FacesContext
 import javax.inject.Inject
 import javax.servlet.http.HttpServletRequest
 
-class ApplicationController implements Serializable {
+trait ApplicationController implements Serializable {
     @Inject ViewNavigationHandler viewNavigationHandler
     @Inject ViewConfigResolver viewConfigResolver
     @Inject NavigationParameterContext navigationParameterContext
@@ -38,6 +38,10 @@ class ApplicationController implements Serializable {
         render(Views.Error.Notfound)
     }
 
+    public void readOnly() {
+        render(Views.Error.Readonly)
+    }
+
     public String getRequestUrl() {
         HttpServletRequest req = FacesContext.currentInstance.externalContext.request as HttpServletRequest
         req.servletPath
@@ -51,7 +55,7 @@ class ApplicationController implements Serializable {
     }
 }
 
-abstract class Scaffolding<T extends BaseEntity, ID extends Serializable> extends ApplicationController {
+trait Scaffolding<T extends BaseEntity, ID extends Serializable> extends ApplicationController {
 
     abstract void setEntity(T entity)
     abstract T getEntity()
@@ -69,23 +73,28 @@ abstract class Scaffolding<T extends BaseEntity, ID extends Serializable> extend
     abstract String getSort()
     abstract String getDir()
 
+    boolean isReadOnly() { true }
+    boolean isReadWrite() { !isReadOnly() }
+
     public getIdName() { 'id' }
 
     public void get() {
-        if(requestUrl == getViewId(listView)) list()
+        if(isReadOnly() && requestUrl == getViewId(saveView)) readOnly()
+        else if(requestUrl == getViewId(listView)) list()
         else if(id)  {
-            entity = repository.getOne(id)
+            entity = repository.findOne(id)
             if(!entity) notFound()
-        } else if(hasFacesError()) notFound()
+        } else if(requestUrl == getViewId(showView) && hasFacesError()) notFound()
     }
 
     public void list() {
         int page = page ?: DataPager.defaultPage
         int size = size ?: DataPager.defaultSize
-        int first = ((page - 1) * size)
         def direction = DataHeader.ascendingOrder == dir ? Sort.Direction.ASC : Sort.Direction.DESC
-        if(sort) entities = repository.findAll(new PageRequest(first, size, direction, sort))
-        else entities = repository.findAll(new PageRequest(first, size))
+        if(sort)
+            entities = repository.findAll(new PageRequest(page - 1, size, direction, sort))
+        else
+            entities = repository.findAll(new PageRequest(page - 1, size))
     }
 
     public int getCount() {
@@ -99,14 +108,18 @@ abstract class Scaffolding<T extends BaseEntity, ID extends Serializable> extend
 
     @Transactional
     public Class<? extends ViewConfig> save() {
-        entity = repository.save(entity)
-        navigationParameterContext.addPageParameter(idName, entity.id)
-        showView
+        if(isReadOnly()) Views.Error.Readonly
+        else {
+            entity = repository.save(entity)
+            navigationParameterContext.addPageParameter(idName, entity.id)
+            showView
+        }
     }
 
     @Transactional
     public Class<? extends ViewConfig> delete() {
-        if(entity?.isTransient()) notFound()
+        if(entity?.isTransient() || isReadOnly()) notFound()
+        else if(isReadOnly()) readOnly()
         else {
             repository.delete(entity.id as ID)
             listView

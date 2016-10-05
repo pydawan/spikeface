@@ -23,6 +23,7 @@ interface Views {
     }
 
     interface Error extends ViewConfig {
+        class Readonly implements ForwardedPages { }
         class Notfound implements ForwardedPages { }
         class Server extends DefaultErrorView implements ForwardedPages { }
     }

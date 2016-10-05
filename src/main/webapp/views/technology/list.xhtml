@@ -12,17 +12,17 @@
             <t:data-pager value="#{technologyController.entities.totalElements}"/>
             <p:dataTable var="tech" value="#{technologyController.entities.content}" reflow="true">
 
-                <p:column headerText="name">
+                <p:column headerText="name" field="name">
                     <h:link value="#{tech.name}" outcome="#{technologyController.showView}">
                         <f:param name="id" value="#{tech.id}" />
                     </h:link>
                 </p:column>
 
-                <p:column headerText="version">
+                <p:column headerText="version" field="versionName">
                     <h:outputText value="#{tech.versionName}" />
                 </p:column>
             </p:dataTable>
-            <t:data-pager value="#{technologyController.count}" location="bottom"/>
+            <t:data-pager value="#{technologyController.entities.totalElements}" location="bottom"/>
         </o:form>
     </ui:define>
 </ui:composition>

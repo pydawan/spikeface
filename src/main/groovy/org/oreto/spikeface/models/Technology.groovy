@@ -1,5 +1,7 @@
 package org.oreto.spikeface.models
 
+import org.apache.deltaspike.data.api.EntityRepository
+import org.apache.deltaspike.data.api.Repository
 import org.hibernate.validator.constraints.NotEmpty
 import org.springframework.data.jpa.repository.JpaRepository
 
@@ -13,5 +15,9 @@ public class Technology extends BaseEntity<Long> implements Named {
 }
 
 public interface TechnologyRepository extends JpaRepository<Technology, Long> {
-    Optional<Technology> findByName(String name)
+}
+
+@Repository
+public interface TechnologyData extends EntityRepository<Technology, Long> {
+    Technology findOptionalByName(String name)
 }

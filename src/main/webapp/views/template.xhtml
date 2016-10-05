@@ -17,7 +17,10 @@
 
     <p:menubar>
         <p:menuitem value="Home" url="/" />
-        <p:menuitem value="JavaEE" url="#{navigationController.technologyView}" />
+        <p:submenu label="JaveEE">
+            <p:menuitem value="List" url="#{navigationController.techListView}" />
+            <p:menuitem value="Create" url="#{navigationController.techSaveView}" rendered="#{technologyController.readWrite}" />
+        </p:submenu>
     </p:menubar>
     <f:view>
         <div class="ui-g ui-fluid">
