@@ -13,9 +13,12 @@
 * Primefaces UI
 * modified primefaces datagrid component to use request based pagination and sorting
 * automatic scaffolding using spring data pagination and crud
+* datagrid is also scrollable on small devices and responsive
+* all around responsive design
 * request based views
 * type checked routes
 * pretty URLs
+* mavenized
 
 ### Hibernate use latest version on wildfly
  * copy hibernate to wildfly server

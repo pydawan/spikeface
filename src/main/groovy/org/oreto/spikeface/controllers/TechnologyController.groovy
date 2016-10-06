@@ -14,7 +14,7 @@ import javax.inject.Named
 
 
 @Named @ViewScoped @ViewRef(config = [Views.Technology.List, Views.Technology.Show, Views.Technology.Save])
-public class TechnologyController implements Scaffolding<Technology, Long> {
+public class TechnologyController extends ScaffoldingController<Technology, Long> {
 
     @Inject TechnologyRepository repository
     @Inject Technology entity

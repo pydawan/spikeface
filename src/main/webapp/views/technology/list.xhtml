@@ -5,11 +5,13 @@
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:o="http://omnifaces.org/ui"
                 xmlns:p="http://primefaces.org/ui"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:t="http://org.oreto/oui">
 
     <ui:define name="container">
         <o:form styleClass="hidden-sm-down">
-            <t:data-pager value="#{technologyController.entities.totalElements}"/>
+            <c:set var="totalElements" value="#{technologyController.list().totalElements}"/>
+            <t:data-pager value="#{totalElements}"/>
             <p:dataTable var="tech" value="#{technologyController.entities.content}" reflow="true">
 
                 <p:column headerText="name" field="name">
@@ -22,11 +24,12 @@
                     <h:outputText value="#{tech.versionName}" />
                 </p:column>
             </p:dataTable>
-            <t:data-pager value="#{technologyController.entities.totalElements}" location="bottom"/>
+            <t:data-pager value="#{totalElements}" location="bottom" rendered="#{technologyController.size >= 20}"/>
         </o:form>
 
-        <p:dataScroller value="#{technologyController.entities.content}" styleClass="hidden-md-up" var="tech">
-            <h:panelGrid columns="1" styleClass="full-width">
+        <p:dataScroller value="#{technologyController}" styleClass="hidden-md-up" var="tech" lazy="true" chunkSize="10">
+            <h:panelGrid columns="1" summary="#{tech.id}" styleClass="full-width clickable"
+                         onclick="var url = window.location;url.href=url.pathname + '/' + this.summary">
                 <p:outputPanel>
                     <h:panelGrid columns="2" cellpadding="5" style="word-break: break-all">
                         <h:outputText value="#{tech.name}" style="font-weight: bold"/>

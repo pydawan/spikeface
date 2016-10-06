@@ -28,6 +28,9 @@
           <property name="hibernate.connection.url" value="jdbc:h2:mem:spikeface;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1"/>
           <property name="hibernate.connection.username" value="sa"/>
           <property name="hibernate.connection.password" value="sa"/>
+          <property name="hibernate.cache.provider_class" value="org.hibernate.cache.ehcache.StrategyRegistrationProviderImpl"/>
+          <property name="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.EhCacheRegionFactory"/>
+          <property name="hibernate.cache.use_query_cache" value="true"/>
 
          <property name="hibernate.hbm2ddl.auto" value="update" />
          <property name="hibernate.show_sql" value="true" />

@@ -24,6 +24,10 @@ html {
     width: 100%;
 }
 
+.clickable {
+    cursor: pointer;
+}
+
 .text-hide {
     font: 0/0 a;
     color: transparent;

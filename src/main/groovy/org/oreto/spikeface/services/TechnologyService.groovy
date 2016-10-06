@@ -33,6 +33,9 @@ public class TechnologyService implements Serializable {
         technologies[JpaRepository.package.name] = SpringVersion.version
         technologies['java.version'] = System.getProperty("java.version")
 
+        20.times {
+            technologies[it] = it
+        }
 
         for(Map.Entry<Object, Object> val : technologies) {
             String name = val.key

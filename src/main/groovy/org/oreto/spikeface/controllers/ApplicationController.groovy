@@ -7,6 +7,8 @@ import org.apache.deltaspike.core.api.config.view.navigation.ViewNavigationHandl
 import org.apache.deltaspike.jpa.api.transaction.Transactional
 import org.oreto.spikeface.models.BaseEntity
 import org.oreto.spikeface.utils.Utils
+import org.primefaces.model.LazyDataModel
+import org.primefaces.model.SortOrder
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -80,14 +82,13 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> extends Applica
 
     public void get() {
         if(isReadOnly() && requestUrl == getViewId(saveView)) readOnly()
-        else if(requestUrl == getViewId(listView)) list()
         else if(id)  {
             entity = repository.findOne(id)
             if(!entity) notFound()
         } else if(requestUrl == getViewId(showView) && hasFacesError()) notFound()
     }
 
-    public void list() {
+    public Page<T> list() {
         int page = page ?: DataPager.defaultPage
         int size = size ?: DataPager.defaultSize
         def direction = DataHeader.ascendingOrder == dir ? Sort.Direction.ASC : Sort.Direction.DESC
@@ -132,6 +133,21 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> extends Applica
             navigationParameterContext.addPageParameter(idName, id)
             showView
         }
+    }
+}
+
+abstract class ScaffoldingController<T extends BaseEntity, ID extends Serializable> extends LazyDataModel<T> implements Scaffolding<T, ID> {
+    @Override public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String,Object> filters) {
+        int offset = first ?: 0
+        int size = pageSize ?: DataPager.defaultSize
+        int page = offset / size
+        def sortColumn = sortField ?: sort
+        def sortDir = sortOrder == SortOrder.ASCENDING ? Sort.Direction.ASC : Sort.Direction.DESC
+
+        def result = sortColumn ? repository.findAll(new PageRequest(page, size, sortDir, sortColumn)) :
+                repository.findAll(new PageRequest(page, size))
+        this.setRowCount(result.totalElements as int)
+        result.content
     }
 }
 
