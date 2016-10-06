@@ -8,7 +8,7 @@
                 xmlns:t="http://org.oreto/oui">
 
     <ui:define name="container">
-        <o:form>
+        <o:form styleClass="hidden-sm-down">
             <t:data-pager value="#{technologyController.entities.totalElements}"/>
             <p:dataTable var="tech" value="#{technologyController.entities.content}" reflow="true">
 
@@ -24,5 +24,17 @@
             </p:dataTable>
             <t:data-pager value="#{technologyController.entities.totalElements}" location="bottom"/>
         </o:form>
+
+        <p:dataScroller value="#{technologyController.entities.content}" styleClass="hidden-md-up" var="tech">
+            <h:panelGrid columns="1" styleClass="full-width">
+                <p:outputPanel>
+                    <h:panelGrid columns="2" cellpadding="5" style="word-break: break-all">
+                        <h:outputText value="#{tech.name}" style="font-weight: bold"/>
+                        <h:outputText value="#{tech.versionName}" />
+                    </h:panelGrid>
+                </p:outputPanel>
+                <p:separator/>
+            </h:panelGrid>
+        </p:dataScroller>
     </ui:define>
 </ui:composition>

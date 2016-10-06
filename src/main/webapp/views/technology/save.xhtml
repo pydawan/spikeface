@@ -13,12 +13,12 @@
                 <ui:include src="form.xhtml">
                     <ui:param name="mode" value="write"/>
                 </ui:include>
-                <h:panelGrid columns="2" layout="grid">
+                <p:panelGrid columns="4" layout="grid" styleClass="button-group">
                     <p:commandButton value="Save" icon="fa fa-save" styleClass="ui-sm-1" title="save"
                                      action="#{technologyController.save}" ajax="false" validateClient="true"/>
                     <p:commandButton value="Cancel" icon="fa fa-ban" styleClass="ui-sm-1" title="cancel"
                                      action="#{technologyController.cancel}" ajax="false" immediate="true" />
-                </h:panelGrid>
+                </p:panelGrid>
             </h:form>
         </p:panel>
     </ui:define>

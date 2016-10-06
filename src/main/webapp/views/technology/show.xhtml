@@ -13,13 +13,13 @@
                 <ui:include src="form.xhtml">
                     <ui:param name="mode" value="read"/>
                 </ui:include>
-                <h:panelGrid columns="3" layout="grid">
+                <p:panelGrid columns="4" layout="grid" styleClass="button-group">
                     <p:commandButton value="Edit" icon="fa fa-edit" title="edit" action="#{technologyController.edit}"
                                      ajax="false" rendered="#{technologyController.readWrite}"/>
                     <p:commandButton value="Delete" icon="fa fa-remove" title="delete" action="#{technologyController.delete}"
                                      ajax="false" rendered="#{technologyController.readWrite}"/>
                     <p:button value="Back" icon="fa fa-arrow-left" outcome="#{technologyController.listView}"/>
-                </h:panelGrid>
+                </p:panelGrid>
             </h:form>
         </p:panel>
     </ui:define>
