@@ -144,16 +144,22 @@ abstract class ScaffoldingController<T extends BaseEntity, ID extends Serializab
         def sortColumn = sortField ?: sort
         def sortDir = sortOrder == SortOrder.ASCENDING ? Sort.Direction.ASC : Sort.Direction.DESC
 
-        if(page == 0 && entities) {
+        if(first == getFirst() && entities) {
             this.setRowCount(entities.totalElements as int)
             entities.content
-        }
-        else {
+        } else {
             def result = sortColumn ? repository.findAll(new PageRequest(page, size, sortDir, sortColumn)) :
                     repository.findAll(new PageRequest(page, size))
             this.setRowCount(result.totalElements as int)
             result.content
         }
+    }
+
+    int getFirst() {
+        int page = page ?: DataPager.defaultPage
+        int size = this.size ?: DataPager.defaultSize
+        int first = (page - 1) * size
+        first
     }
 }
 
