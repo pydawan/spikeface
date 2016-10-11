@@ -16,6 +16,10 @@ html {
     max-width: 600px; margin: 0 auto;
 }
 
+.ui-datascroller tr:nth-child(odd):hover {
+    background-color: #e6e6e6;
+}
+
 .button-group .ui-grid {
     border: none;
 }

@@ -4,6 +4,7 @@ import org.apache.deltaspike.core.api.config.view.metadata.ViewConfigResolver
 import org.apache.deltaspike.core.api.exception.control.ExceptionHandler
 import org.apache.deltaspike.core.api.exception.control.Handles
 import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent
+import org.apache.deltaspike.security.api.authorization.ErrorViewAwareAccessDeniedException
 import org.codehaus.groovy.runtime.DateGroovyMethods
 import org.oreto.spikeface.utils.Utils
 
@@ -25,23 +26,29 @@ public class ViewExceptionHandler {
 
     public void onException(@Handles ExceptionEvent<Exception> event)
     {
-        this.time = DateGroovyMethods.format(new Date(), "MM-dd-yyyy hh:mm:ss a")
         exception = event.exception
-        this.type = exception.class.typeName
-        this.message = exception.message
+        if(exception instanceof ErrorViewAwareAccessDeniedException) {
+            String viewId = viewConfigResolver.getViewConfigDescriptor(Views.Login).viewId
+            Utils.render(viewId)
+            event.handled()
+        } else {
+            this.time = DateGroovyMethods.format(new Date(), "MM-dd-yyyy hh:mm:ss a")
+            this.type = exception.class.typeName
+            this.message = exception.message
 
-        StringWriter sw = new StringWriter()
-        PrintWriter pw = new PrintWriter(sw)
-        exception.printStackTrace(pw)
-        this.stackTrace = Utils.escapeXmlWithBreaks(sw.toString())
+            StringWriter sw = new StringWriter()
+            PrintWriter pw = new PrintWriter(sw)
+            exception.printStackTrace(pw)
+            this.stackTrace = Utils.escapeXmlWithBreaks(sw.toString())
 
-        FacesContext context = FacesContext.getCurrentInstance()
-        String viewId = viewConfigResolver.getViewConfigDescriptor(Views.Error.Server).viewId
-        FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, this.message, exception.toString())
+            FacesContext context = FacesContext.getCurrentInstance()
+            String viewId = viewConfigResolver.getViewConfigDescriptor(Views.Error.Server).viewId
+            FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, this.message, exception.toString())
 
-        context.addMessage(null, facesMessage)
-        Utils.render(viewId)
-        event.handled()
+            context.addMessage(null, facesMessage)
+            Utils.render(viewId)
+            event.handled()
+        }
     }
 }
 

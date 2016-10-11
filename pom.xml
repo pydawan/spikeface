@@ -52,6 +52,7 @@
         <deltaspike.version>1.7.1</deltaspike.version>
         <wildfly.version>10.1.0.Final</wildfly.version>
         <hibernate.version>5.2.2.Final</hibernate.version>
+        <picketlink.version>2.7.1.Final</picketlink.version>
         <jboss.home>${project.build.directory}/wildfly-run/wildfly-${wildfly.version}</jboss.home>
     </properties>
 
@@ -159,6 +160,34 @@
             <artifactId>deltaspike-data-module-impl</artifactId>
             <version>${deltaspike.version}</version>
             <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.deltaspike.modules</groupId>
+            <artifactId>deltaspike-security-module-api</artifactId>
+            <version>${deltaspike.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.deltaspike.modules</groupId>
+            <artifactId>deltaspike-security-module-impl</artifactId>
+            <version>${deltaspike.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.picketlink</groupId>
+            <artifactId>picketlink-api</artifactId>
+            <scope>compile</scope>
+            <version>${picketlink.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.picketlink</groupId>
+            <artifactId>picketlink-impl</artifactId>
+            <scope>compile</scope>
+            <version>${picketlink.version}</version>
         </dependency>
 
         <dependency>

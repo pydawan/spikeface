@@ -5,6 +5,7 @@ import org.apache.deltaspike.core.api.config.view.ViewConfig
 import org.apache.deltaspike.jsf.api.config.view.View
 import org.apache.deltaspike.jsf.api.config.view.View.NavigationMode
 import org.apache.deltaspike.jsf.api.config.view.View.ViewParameterMode
+import org.apache.deltaspike.security.api.authorization.Secured
 
 interface Views {
     class Index implements ViewConfig { }
@@ -15,8 +16,10 @@ interface Views {
     @View(navigation = NavigationMode.FORWARD, viewParams = ViewParameterMode.INCLUDE)
     interface ForwardedPages extends ViewConfig { }
 
-    interface Technology extends ViewConfig
-    {
+    class Login extends DefaultErrorView  { }
+
+    interface Technology extends ViewConfig {
+        @Secured(LoginController.class)
         class List implements RedirectedPages { }
         class Save implements RedirectedPages { }
         class Show implements RedirectedPages { }
@@ -25,6 +28,6 @@ interface Views {
     interface Error extends ViewConfig {
         class Readonly implements ForwardedPages { }
         class Notfound implements ForwardedPages { }
-        class Server extends DefaultErrorView implements ForwardedPages { }
+        class Server implements ForwardedPages { }
     }
 }

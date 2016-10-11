@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" template="template.xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ds="http://deltaspike.apache.org/jsf"
+                xmlns:p="http://primefaces.org/ui">
+
+    <ui:define name="container">
+        <p:spacer/>
+        <p:panel header="Login" styleClass="panel-form">
+            <h:form>
+                <ds:preventDoubleSubmit/>
+                <h:panelGrid columns="3" cellpadding="5" >
+                    <p:outputLabel value="username:" for="username" />
+                    <p:inputText id="username" value="#{loginCredentials.userId}" label="username" />
+                    <p:message for="username" />
+
+                    <p:outputLabel value="password:" for="password" />
+                    <p:inputText id="password" value="#{loginCredentials.password}" label="password" />
+                    <p:message for="password" />
+                </h:panelGrid>
+                <p:panelGrid columns="4" layout="grid" styleClass="button-group">
+                    <p:commandButton value="Login" icon="fa fa-sign-in" styleClass="ui-sm-1" title="save"
+                                     action="#{identity.login()}" ajax="false" validateClient="true"/>
+                </p:panelGrid>
+            </h:form>
+        </p:panel>
+    </ui:define>
+</ui:composition>
