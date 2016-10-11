@@ -12,7 +12,7 @@
         <o:form styleClass="hidden-sm-down">
             <c:set var="totalElements" value="#{technologyController.list().totalElements}"/>
             <t:data-pager value="#{totalElements}"/>
-            <p:dataTable var="tech" value="#{technologyController.entities.content}" reflow="true">
+            <p:dataTable var="tech" value="#{technologyController.entities.content}" reflow="true" selectionMode="single" rowKey="#{tech.id}">
 
                 <p:column headerText="name" field="name">
                     <h:link value="#{tech.name}" outcome="#{technologyController.showView}">

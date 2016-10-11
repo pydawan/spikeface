@@ -136,7 +136,8 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> extends Applica
     }
 }
 
-abstract class ScaffoldingController<T extends BaseEntity, ID extends Serializable> extends LazyDataModel<T> implements Scaffolding<T, ID> {
+abstract class ScaffoldingController<T extends BaseEntity, ID extends Serializable> extends LazyDataModel<T>
+        implements Scaffolding<T, ID> {
     @Override public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String,Object> filters) {
         int offset = getFirst() + first
         int size = pageSize ?: DataPager.defaultSize
