@@ -138,13 +138,13 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> extends Applica
 
 abstract class ScaffoldingController<T extends BaseEntity, ID extends Serializable> extends LazyDataModel<T> implements Scaffolding<T, ID> {
     @Override public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String,Object> filters) {
-        int offset = first ?: 0
+        int offset = getFirst() + first
         int size = pageSize ?: DataPager.defaultSize
         int page = offset / size
         def sortColumn = sortField ?: sort
         def sortDir = sortOrder == SortOrder.ASCENDING ? Sort.Direction.ASC : Sort.Direction.DESC
 
-        if(first == getFirst() && entities) {
+        if(first == 0 && entities) {
             this.setRowCount(entities.totalElements as int)
             entities.content
         } else {
