@@ -21,11 +21,16 @@
             <p:menuitem value="List" url="#{navigationController.techListView}" />
             <p:menuitem value="Create" url="#{navigationController.techSaveView}" rendered="#{technologyController.readWrite}" />
         </p:submenu>
+        <f:facet name="options">
+            <h:form>
+                <p:commandButton action="#{loginController.logout}" ajax="false" value="Logout" icon="ui-icon-extlink" rendered="#{identity.loggedIn}" />
+            </h:form>
+        </f:facet>
     </p:menubar>
     <f:view>
         <div class="ui-g ui-fluid">
             <div id="container" class="ui-g-12">
-                <p:messages id="global-messages" autoUpdate="true" closable="false" globalOnly="true"/>
+                <p:messages id="global-messages" autoUpdate="true" closable="false" globalOnly="true" />
                 <ui:insert name="container"/>
             </div>
         </div>

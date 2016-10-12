@@ -6,11 +6,10 @@ import org.apache.deltaspike.core.api.exception.control.Handles
 import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent
 import org.apache.deltaspike.security.api.authorization.ErrorViewAwareAccessDeniedException
 import org.codehaus.groovy.runtime.DateGroovyMethods
+import org.omnifaces.util.Messages
 import org.oreto.spikeface.utils.Utils
 
 import javax.enterprise.inject.Model
-import javax.faces.application.FacesMessage
-import javax.faces.context.FacesContext
 import javax.inject.Inject
 
 @ExceptionHandler
@@ -41,12 +40,9 @@ public class ViewExceptionHandler {
         PrintWriter pw = new PrintWriter(sw)
         exception.printStackTrace(pw)
         this.stackTrace = Utils.escapeXmlWithBreaks(sw.toString())
-
-        FacesContext context = FacesContext.getCurrentInstance()
         String viewId = viewConfigResolver.getViewConfigDescriptor(Views.Error.Server).viewId
-        FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, this.message, exception.toString())
 
-        context.addMessage(null, facesMessage)
+        Messages.addGlobalError(message)
         Utils.render(viewId)
         event.handled()
     }
