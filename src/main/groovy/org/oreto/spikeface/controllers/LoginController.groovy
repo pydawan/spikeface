@@ -25,7 +25,7 @@ import javax.inject.Inject
 class LoginController extends AbstractAccessDecisionVoter{
 
     @Inject private ViewConfigResolver viewConfigResolver
-    @Inject private Identity identity
+    @Inject Identity identity
     @Inject private ViewNavigationHandler viewNavigationHandler
 
     private Class<? extends ViewConfig> deniedPage = Views.Index.class
@@ -38,8 +38,6 @@ class LoginController extends AbstractAccessDecisionVoter{
                     'User must be logged in to access this resource'
                 }
             })
-
-            // remember the requested page
             deniedPage = viewConfigResolver
                     .getViewConfigDescriptor(FacesContext.getCurrentInstance().getViewRoot().getViewId())
                     .getConfigClass()

@@ -24,31 +24,31 @@ public class ViewExceptionHandler {
     String message
     String stackTrace
 
-    public void onException(@Handles ExceptionEvent<Exception> event)
-    {
+    public void onAccessDeniedException(@Handles ExceptionEvent<ErrorViewAwareAccessDeniedException> event) {
         exception = event.exception
-        if(exception instanceof ErrorViewAwareAccessDeniedException) {
-            String viewId = viewConfigResolver.getViewConfigDescriptor(Views.Login).viewId
-            Utils.render(viewId)
-            event.handled()
-        } else {
-            this.time = DateGroovyMethods.format(new Date(), "MM-dd-yyyy hh:mm:ss a")
-            this.type = exception.class.typeName
-            this.message = exception.message
+        String viewId = viewConfigResolver.getViewConfigDescriptor(Views.Login).viewId
+        Utils.render(viewId)
+        event.handled()
+    }
 
-            StringWriter sw = new StringWriter()
-            PrintWriter pw = new PrintWriter(sw)
-            exception.printStackTrace(pw)
-            this.stackTrace = Utils.escapeXmlWithBreaks(sw.toString())
+    public void onException(@Handles ExceptionEvent<Exception> event) {
+        exception = event.exception
+        this.time = DateGroovyMethods.format(new Date(), "MM-dd-yyyy hh:mm:ss a")
+        this.type = exception.class.typeName
+        this.message = exception.message
 
-            FacesContext context = FacesContext.getCurrentInstance()
-            String viewId = viewConfigResolver.getViewConfigDescriptor(Views.Error.Server).viewId
-            FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, this.message, exception.toString())
+        StringWriter sw = new StringWriter()
+        PrintWriter pw = new PrintWriter(sw)
+        exception.printStackTrace(pw)
+        this.stackTrace = Utils.escapeXmlWithBreaks(sw.toString())
 
-            context.addMessage(null, facesMessage)
-            Utils.render(viewId)
-            event.handled()
-        }
+        FacesContext context = FacesContext.getCurrentInstance()
+        String viewId = viewConfigResolver.getViewConfigDescriptor(Views.Error.Server).viewId
+        FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_ERROR, this.message, exception.toString())
+
+        context.addMessage(null, facesMessage)
+        Utils.render(viewId)
+        event.handled()
     }
 }
 

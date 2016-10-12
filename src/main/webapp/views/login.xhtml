@@ -8,16 +8,16 @@
     <ui:define name="container">
         <p:spacer/>
         <p:panel header="Login" styleClass="panel-form">
-            <h:form>
+            <h:form method="POST">
                 <ds:preventDoubleSubmit/>
                 <h:panelGrid columns="3" cellpadding="5" >
-                    <p:outputLabel value="username:" for="username" />
-                    <p:inputText id="username" value="#{loginCredentials.userId}" label="username" />
-                    <p:message for="username" />
+                    <p:outputLabel value="username:" for="j_username" />
+                    <p:inputText id="j_username" value="#{loginCredentials.userId}" label="username" />
+                    <p:message for="j_username" />
 
-                    <p:outputLabel value="password:" for="password" />
-                    <p:inputText id="password" value="#{loginCredentials.password}" label="password" />
-                    <p:message for="password" />
+                    <p:outputLabel value="password:" for="j_password" />
+                    <p:inputText id="j_password" value="#{loginCredentials.password}" label="password" type="password" />
+                    <p:message for="j_password" />
                 </h:panelGrid>
                 <p:panelGrid columns="4" layout="grid" styleClass="button-group">
                     <p:commandButton value="Login" icon="fa fa-sign-in" styleClass="ui-sm-1" title="save"
