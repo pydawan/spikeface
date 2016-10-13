@@ -20,6 +20,11 @@
         <view-id value="/views/index.xhtml" />
     </url-mapping>
 
+    <url-mapping id="login">
+        <pattern value="/login" />
+        <view-id value="/views/login.xhtml" />
+    </url-mapping>
+
     <url-mapping id="list-technology">
         <pattern value="/technology" />
         <view-id value="/views/technology/list.xhtml" />

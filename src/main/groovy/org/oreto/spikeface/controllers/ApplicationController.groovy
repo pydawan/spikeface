@@ -5,7 +5,7 @@ import org.apache.deltaspike.core.api.config.view.metadata.ViewConfigResolver
 import org.apache.deltaspike.core.api.config.view.navigation.NavigationParameterContext
 import org.apache.deltaspike.core.api.config.view.navigation.ViewNavigationHandler
 import org.apache.deltaspike.jpa.api.transaction.Transactional
-import org.oreto.spikeface.UserLoggedIn
+import org.omnifaces.util.Servlets
 import org.oreto.spikeface.models.BaseEntity
 import org.oreto.spikeface.utils.Utils
 import org.primefaces.model.LazyDataModel
@@ -19,6 +19,7 @@ import javax.faces.application.FacesMessage
 import javax.faces.context.FacesContext
 import javax.inject.Inject
 import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 
 trait ApplicationController implements Serializable {
     @Inject ViewNavigationHandler viewNavigationHandler
@@ -38,6 +39,10 @@ trait ApplicationController implements Serializable {
         viewNavigationHandler.navigateTo(view)
     }
 
+    public void redirect(Class<? extends ViewConfig> view) {
+        Servlets.facesRedirect(getRequest(), getResponse(), "${getBaseUrl()}${getViewId(view)}")
+    }
+
     public void notFound() {
         render(Views.Error.Notfound)
     }
@@ -46,9 +51,20 @@ trait ApplicationController implements Serializable {
         render(Views.Error.Readonly)
     }
 
+    public HttpServletRequest getRequest() {
+        facesContext.externalContext.request as HttpServletRequest
+    }
+
+    public HttpServletResponse getResponse() {
+        facesContext.externalContext.response as HttpServletResponse
+    }
+
     public String getRequestUrl() {
-        HttpServletRequest req = facesContext.externalContext.request as HttpServletRequest
-        req.servletPath
+        getRequest().servletPath
+    }
+
+    public String getBaseUrl() {
+        getRequest().contextPath
     }
 
     public boolean hasFacesError() {
@@ -89,7 +105,7 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> extends Applica
             if(!entity) notFound()
         } else if(requestUrl == getViewId(showView) && hasFacesError()) notFound()
     }
-    @UserLoggedIn
+
     public Page<T> list() {
         int page = page ?: DataPager.defaultPage
         int size = size ?: DataPager.defaultSize

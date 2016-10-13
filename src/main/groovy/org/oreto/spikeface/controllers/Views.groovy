@@ -5,6 +5,7 @@ import org.apache.deltaspike.core.api.config.view.ViewConfig
 import org.apache.deltaspike.jsf.api.config.view.View
 import org.apache.deltaspike.jsf.api.config.view.View.NavigationMode
 import org.apache.deltaspike.jsf.api.config.view.View.ViewParameterMode
+import org.apache.deltaspike.security.api.authorization.Secured
 
 interface Views {
     class Index implements ViewConfig { }
@@ -17,6 +18,7 @@ interface Views {
 
     class Login extends DefaultErrorView  { }
 
+    @Secured(LoginController.class)
     interface Technology extends ViewConfig {
         class List implements RedirectedPages { }
         class Save implements RedirectedPages { }
