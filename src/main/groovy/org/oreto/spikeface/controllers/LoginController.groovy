@@ -24,12 +24,10 @@ class LoginController extends BaseAuthenticator implements ApplicationController
 
     @Inject Identity identity
 
-    private Class<? extends ViewConfig> deniedPage = Views.Index.class
-
-    public Class<? extends ViewConfig> getDeniedPage() { deniedPage }
+    String returnUrl = ''
 
     public void handleLoggedIn(@Observes LoggedInEvent event) {
-        redirect(getDeniedPage())
+        redirect(returnUrl)
     }
 
     public void handleFailed(@Observes LoginFailedEvent event) {
@@ -52,9 +50,7 @@ class LoginController extends BaseAuthenticator implements ApplicationController
     Set<SecurityViolation> checkPermission(AccessDecisionVoterContext accessDecisionVoterContext) {
         List<SecurityViolation> violations = []
         if(!identity.loggedIn ) {
-            deniedPage = viewConfigResolver
-                    .getViewConfigDescriptor(facesContext.getViewRoot().getViewId())
-                    .getConfigClass()
+            returnUrl = requestFullUrlWithQueryString
             violations.add(new SecurityViolation() {@Override String getReason() { 'not logged in' }})
         }
         violations

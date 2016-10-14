@@ -39,8 +39,12 @@ trait ApplicationController implements Serializable {
         viewNavigationHandler.navigateTo(view)
     }
 
-    public void redirect(Class<? extends ViewConfig> view) {
-        Servlets.facesRedirect(getRequest(), getResponse(), "${getBaseUrl()}${getViewId(view)}")
+    public void redirect(String url) {
+        Servlets.facesRedirect(getRequest(), getResponse(), url)
+    }
+
+    public void redirect(Class<? extends ViewConfig> view, String queryString) {
+        redirect("${getBaseUrl()}${getViewId(view)}?$queryString")
     }
 
     public void notFound() {
@@ -57,6 +61,10 @@ trait ApplicationController implements Serializable {
 
     public HttpServletResponse getResponse() {
         facesContext.externalContext.response as HttpServletResponse
+    }
+
+    public String getRequestFullUrlWithQueryString() {
+        "${getBaseUrl()}${getRequestUrl()}?${request.queryString}"
     }
 
     public String getRequestUrl() {
