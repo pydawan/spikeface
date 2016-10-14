@@ -1,6 +1,7 @@
 package org.oreto.spikeface.controllers
 
 import org.apache.deltaspike.core.api.config.view.ViewConfig
+import org.apache.deltaspike.core.api.scope.WindowScoped
 import org.apache.deltaspike.security.api.authorization.AccessDecisionVoter
 import org.apache.deltaspike.security.api.authorization.AccessDecisionVoterContext
 import org.apache.deltaspike.security.api.authorization.SecurityViolation
@@ -14,12 +15,11 @@ import org.picketlink.authentication.event.LoginFailedEvent
 import org.picketlink.credential.DefaultLoginCredentials
 import org.picketlink.idm.model.basic.User
 
-import javax.enterprise.context.ApplicationScoped
 import javax.enterprise.event.Observes
 import javax.inject.Inject
 import javax.inject.Named
 
-@ApplicationScoped @Named @PicketLink
+@WindowScoped @Named @PicketLink
 class LoginController extends BaseAuthenticator implements ApplicationController, AccessDecisionVoter {
 
     @Inject Identity identity
@@ -50,7 +50,7 @@ class LoginController extends BaseAuthenticator implements ApplicationController
     Set<SecurityViolation> checkPermission(AccessDecisionVoterContext accessDecisionVoterContext) {
         List<SecurityViolation> violations = []
         if(!identity.loggedIn ) {
-            returnUrl = requestFullUrlWithQueryString
+            returnUrl = requestUrlWithQueryString
             violations.add(new SecurityViolation() {@Override String getReason() { 'not logged in' }})
         }
         violations

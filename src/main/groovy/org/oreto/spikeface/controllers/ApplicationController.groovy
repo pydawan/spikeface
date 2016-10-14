@@ -1,5 +1,6 @@
 package org.oreto.spikeface.controllers
 
+import com.ocpsoft.pretty.PrettyContext
 import org.apache.deltaspike.core.api.config.view.ViewConfig
 import org.apache.deltaspike.core.api.config.view.metadata.ViewConfigResolver
 import org.apache.deltaspike.core.api.config.view.navigation.NavigationParameterContext
@@ -59,16 +60,20 @@ trait ApplicationController implements Serializable {
         facesContext.externalContext.request as HttpServletRequest
     }
 
+    public PrettyContext getPretty() {
+        PrettyContext.currentInstance
+    }
+
     public HttpServletResponse getResponse() {
         facesContext.externalContext.response as HttpServletResponse
     }
 
-    public String getRequestFullUrlWithQueryString() {
-        "${getBaseUrl()}${getRequestUrl()}?${request.queryString}"
+    public String getRequestUrlWithQueryString() {
+        "${getBaseUrl()}${getRequestUrl()}${pretty.requestQueryString.toString()}"
     }
 
     public String getRequestUrl() {
-        getRequest().servletPath
+        pretty.getRequestURL().toString()
     }
 
     public String getBaseUrl() {
