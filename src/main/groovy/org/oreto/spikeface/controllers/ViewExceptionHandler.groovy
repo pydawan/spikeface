@@ -25,7 +25,7 @@ public class ViewExceptionHandler {
 
     public void onAccessDeniedException(@Handles ExceptionEvent<ErrorViewAwareAccessDeniedException> event) {
         exception = event.exception
-        String viewId = viewConfigResolver.getViewConfigDescriptor(Views.Login).viewId
+        String viewId = viewConfigResolver.getViewConfigDescriptor(exception.errorView).viewId
         Utils.render(viewId)
         event.handled()
     }

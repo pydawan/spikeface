@@ -21,7 +21,7 @@ interface Views {
     @Secured(LoginController.class)
     interface Technology extends ViewConfig {
         class List implements RedirectedPages { }
-        @Secured(ScaffoldingController.class)
+        @Secured(TechnologyController.class)
         class Save implements RedirectedPages { }
         class Show implements RedirectedPages { }
     }

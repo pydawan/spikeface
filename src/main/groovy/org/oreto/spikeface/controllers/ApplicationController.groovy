@@ -13,6 +13,8 @@ import org.omnifaces.util.Servlets
 import org.oreto.spikeface.models.BaseEntity
 import org.oreto.spikeface.utils.Utils
 import org.picketlink.Identity
+import org.picketlink.idm.IdentityManager
+import org.picketlink.idm.PermissionManager
 import org.primefaces.model.LazyDataModel
 import org.primefaces.model.SortOrder
 import org.springframework.data.domain.Page
@@ -32,6 +34,8 @@ trait ApplicationController implements Serializable {
     @Inject NavigationParameterContext navigationParameterContext
     @Inject FacesContext facesContext
     @Inject Identity identity
+    @Inject IdentityManager identityManager
+    @Inject PermissionManager permissionManager
 
     public String getViewId(Class<? extends ViewConfig> view) {
         viewConfigResolver.getViewConfigDescriptor(view).viewId
@@ -203,7 +207,7 @@ abstract class ScaffoldingController<T extends BaseEntity, ID extends Serializab
     Set<SecurityViolation> checkPermission(AccessDecisionVoterContext accessDecisionVoterContext) {
         List<SecurityViolation> violations = []
         if(entity && id && !identity.hasPermission(entity.class, id, "manage")) {
-            violations.add(new SecurityViolation() {@Override String getReason() { "you don't have permission for resource ${entity.class.simpleName} - $id" }})
+            violations.add(new SecurityViolation() {@Override String getReason() { "you don't have permission for resource ${entity.class.simpleName} ($id)" }})
         }
         violations
     }
