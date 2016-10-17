@@ -6,6 +6,7 @@ import org.apache.deltaspike.security.api.authorization.AccessDecisionVoter
 import org.apache.deltaspike.security.api.authorization.AccessDecisionVoterContext
 import org.apache.deltaspike.security.api.authorization.SecurityViolation
 import org.omnifaces.util.Messages
+import org.oreto.spikeface.models.Technology
 import org.picketlink.Identity
 import org.picketlink.annotations.PicketLink
 import org.picketlink.authentication.Authenticator
@@ -13,6 +14,10 @@ import org.picketlink.authentication.BaseAuthenticator
 import org.picketlink.authentication.event.LoggedInEvent
 import org.picketlink.authentication.event.LoginFailedEvent
 import org.picketlink.credential.DefaultLoginCredentials
+import org.picketlink.idm.IdentityManager
+import org.picketlink.idm.PartitionManager
+import org.picketlink.idm.PermissionManager
+import org.picketlink.idm.credential.Password
 import org.picketlink.idm.model.basic.User
 
 import javax.enterprise.event.Observes
@@ -22,7 +27,7 @@ import javax.inject.Named
 @WindowScoped @Named @PicketLink
 class LoginController extends BaseAuthenticator implements ApplicationController, AccessDecisionVoter {
 
-    @Inject Identity identity
+    @Inject PartitionManager partitionManager
 
     String returnUrl = ''
 
@@ -64,7 +69,13 @@ class LoginController extends BaseAuthenticator implements ApplicationController
         if (test == credentials.getUserId() &&
                 test == credentials.getPassword()) {
             setStatus(Authenticator.AuthenticationStatus.SUCCESS)
-            setAccount(new User(test))
+            User user = new User(test)
+            setAccount(user)
+            IdentityManager identityManager = partitionManager.createIdentityManager()
+            identityManager.add(user)
+            identityManager.updateCredential(user, new Password(test))
+            PermissionManager permissionManager = partitionManager.createPermissionManager()
+            permissionManager.grantPermission(user, new Technology(id: 1), "manage")
         } else {
             setStatus(Authenticator.AuthenticationStatus.FAILURE)
         }
