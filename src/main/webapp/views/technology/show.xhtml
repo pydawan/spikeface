@@ -15,9 +15,9 @@
                 </ui:include>
                 <p:panelGrid columns="4" layout="grid" styleClass="button-group">
                     <p:commandButton value="Edit" icon="fa fa-edit" title="edit" action="#{technologyController.edit}"
-                                     ajax="false" rendered="#{technologyController.readWrite}"/>
+                                     ajax="false" rendered="#{technologyController.readWrite and technologyController.hasPermission('manage')}"/>
                     <p:commandButton value="Delete" icon="fa fa-remove" title="delete" action="#{technologyController.delete}"
-                                     ajax="false" rendered="#{technologyController.readWrite}"/>
+                                     ajax="false" rendered="#{technologyController.readWrite and technologyController.hasPermission('manage')}"/>
                     <p:button value="Back" icon="fa fa-arrow-left" outcome="#{technologyController.listView}"/>
                 </p:panelGrid>
             </h:form>

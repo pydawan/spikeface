@@ -1,6 +1,7 @@
 package org.oreto.spikeface.controllers
 
-import org.apache.deltaspike.core.api.config.view.ViewConfig
+import org.apache.deltaspike.core.api.config.view.ViewRef
+import org.apache.deltaspike.core.api.config.view.controller.PreRenderView
 import org.apache.deltaspike.core.api.scope.WindowScoped
 import org.apache.deltaspike.security.api.authorization.AccessDecisionVoter
 import org.apache.deltaspike.security.api.authorization.AccessDecisionVoterContext
@@ -16,18 +17,32 @@ import org.picketlink.authentication.event.LoginFailedEvent
 import org.picketlink.credential.DefaultLoginCredentials
 import org.picketlink.idm.PartitionManager
 import org.picketlink.idm.credential.Password
+import org.picketlink.idm.model.basic.Realm
 import org.picketlink.idm.model.basic.User
 
+import javax.annotation.PostConstruct
 import javax.enterprise.event.Observes
 import javax.inject.Inject
 import javax.inject.Named
 
-@WindowScoped @Named @PicketLink
+@WindowScoped @Named @PicketLink @ViewRef(config = Views.Login)
 class LoginController extends BaseAuthenticator implements ApplicationController, AccessDecisionVoter {
 
     @Inject PartitionManager partitionManager
 
     String returnUrl = ''
+
+    @PostConstruct
+    public void init(){
+        Realm defaultRealm = this.partitionManager.getPartition(Realm.class, "default")
+        if (defaultRealm == null){
+            System.out.println("Couldn't find default partition, creating default partition")
+            defaultRealm = new Realm("default")
+            this.partitionManager.add(defaultRealm)
+        } else {
+            System.out.println("Found default partition")
+        }
+    }
 
     public void handleLoggedIn(@Observes LoggedInEvent event) {
         redirect(returnUrl)
@@ -38,15 +53,18 @@ class LoginController extends BaseAuthenticator implements ApplicationController
     }
 
     public void login() {
-        Identity.AuthenticationResult result = identity.login()
-        if (Identity.AuthenticationResult.FAILED == result) {
-            Messages.addFlashGlobalInfo('Authentication was unsuccessful.  Please check your username and password')
+        if(!identity.isLoggedIn()) {
+            Identity.AuthenticationResult result = identity.login()
+            if (Identity.AuthenticationResult.FAILED == result) {
+                Messages.addFlashGlobalInfo('Authentication was unsuccessful.  Please check your username and password')
+            }
         }
     }
 
-    public Class<? extends ViewConfig> logout() {
+    public void logout() {
+        identityManager.remove(identity.getAccount())
         identity.logout()
-        Views.Login
+        redirect(Views.Login)
     }
 
     @Override
@@ -75,5 +93,9 @@ class LoginController extends BaseAuthenticator implements ApplicationController
         } else {
             setStatus(Authenticator.AuthenticationStatus.FAILURE)
         }
+    }
+
+    @PreRenderView protected void preRenderView() {
+        if(identity.isLoggedIn()) redirect(Views.Index)
     }
 }

@@ -58,6 +58,10 @@ trait ApplicationController implements Serializable {
         redirect("${getBaseUrl()}${getViewId(view)}?$queryString")
     }
 
+    public void redirect(Class<? extends ViewConfig> view){
+        redirect("${getBaseUrl()}${getViewId(view)}")
+    }
+
     public void notFound() {
         render(Views.Error.Notfound)
     }
@@ -207,10 +211,18 @@ abstract class ScaffoldingController<T extends BaseEntity, ID extends Serializab
     @Override
     Set<SecurityViolation> checkPermission(AccessDecisionVoterContext accessDecisionVoterContext) {
         List<SecurityViolation> violations = []
-        if(entity && id && !identity.hasPermission(entity.class, id, "manage")) {
+        if(!hasPermission('manage')) {
             violations.add(new SecurityViolation() {@Override String getReason() { "you don't have permission for resource ${entity.class.simpleName} ($id)" }})
         }
         violations
+    }
+
+    boolean hasPermission(String action) {
+        if(entity && id) {
+            identity.hasPermission(entity.class, id, action)
+        } else {
+            true
+        }
     }
 }
 
