@@ -4,6 +4,7 @@ import org.apache.deltaspike.core.api.config.view.metadata.ViewConfigResolver
 import org.apache.deltaspike.core.api.exception.control.ExceptionHandler
 import org.apache.deltaspike.core.api.exception.control.Handles
 import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent
+import org.apache.deltaspike.security.api.authorization.AccessDeniedException
 import org.apache.deltaspike.security.api.authorization.ErrorViewAwareAccessDeniedException
 import org.codehaus.groovy.runtime.DateGroovyMethods
 import org.omnifaces.util.Messages
@@ -23,9 +24,14 @@ public class ViewExceptionHandler {
     String message
     String stackTrace
 
-    public void onAccessDeniedException(@Handles ExceptionEvent<ErrorViewAwareAccessDeniedException> event) {
-        exception = event.exception
-        String viewId = viewConfigResolver.getViewConfigDescriptor(exception.errorView).viewId
+    public void onErrorViewAccessDeniedException(@Handles ExceptionEvent<ErrorViewAwareAccessDeniedException> event) {
+        String viewId = viewConfigResolver.getViewConfigDescriptor(event.exception.errorView).viewId
+        Utils.render(viewId)
+        event.handled()
+    }
+
+    public void onAccessDeniedException(@Handles ExceptionEvent<AccessDeniedException> event) {
+        String viewId = viewConfigResolver.getViewConfigDescriptor(Views.Error.Server).viewId
         Utils.render(viewId)
         event.handled()
     }

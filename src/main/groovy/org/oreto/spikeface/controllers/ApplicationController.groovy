@@ -8,6 +8,7 @@ import org.apache.deltaspike.core.api.config.view.navigation.ViewNavigationHandl
 import org.apache.deltaspike.jpa.api.transaction.Transactional
 import org.apache.deltaspike.security.api.authorization.AccessDecisionVoter
 import org.apache.deltaspike.security.api.authorization.AccessDecisionVoterContext
+import org.apache.deltaspike.security.api.authorization.Secured
 import org.apache.deltaspike.security.api.authorization.SecurityViolation
 import org.omnifaces.util.Servlets
 import org.oreto.spikeface.models.BaseEntity
@@ -157,7 +158,7 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> extends Applica
         }
     }
 
-    @Transactional
+    @Transactional @Secured(value = TechnologyController.class, errorView = Views.Error.Server)
     public Class<? extends ViewConfig> delete() {
         if(entity?.isTransient() || isReadOnly()) notFound()
         else if(isReadOnly()) readOnly()

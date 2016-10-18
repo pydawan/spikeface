@@ -16,9 +16,9 @@ interface Views {
     @View(navigation = NavigationMode.FORWARD, viewParams = ViewParameterMode.INCLUDE)
     interface ForwardedPages extends ViewConfig { }
 
-    class Login extends DefaultErrorView  { }
+    class Login implements ViewConfig { }
 
-    @Secured(LoginController.class)
+    @Secured(value = LoginController.class, errorView = Login)
     interface Technology extends ViewConfig {
         class List implements RedirectedPages { }
         @Secured(TechnologyController.class)
@@ -29,6 +29,6 @@ interface Views {
     interface Error extends ViewConfig {
         class Readonly implements ForwardedPages { }
         class Notfound implements ForwardedPages { }
-        class Server implements ForwardedPages { }
+        class Server extends DefaultErrorView { }
     }
 }
