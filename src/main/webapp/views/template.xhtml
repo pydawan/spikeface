@@ -16,14 +16,14 @@
     <o:importFunctions type="org.oreto.spikeface.utils.Utils" />
 
     <p:menubar>
-        <p:menuitem value="Home" url="/" />
-        <p:submenu label="JaveEE">
-            <p:menuitem value="List" url="#{navigationController.techListView}" />
-            <p:menuitem value="Create" url="#{navigationController.techSaveView}" rendered="#{technologyController.readWrite}" />
+        <p:menuitem value="#{msg.homeNavLabel}" url="/" />
+        <p:submenu label="#{msg.technologyNavLabel}">
+            <p:menuitem value="#{msg.listLabel}" url="#{navigationController.techListView}" />
+            <p:menuitem value="#{msg.createLabel}" url="#{navigationController.techSaveView}" rendered="#{technologyController.readWrite}" />
         </p:submenu>
         <f:facet name="options">
             <h:form>
-                <p:commandButton action="#{loginController.logout}" ajax="false" value="Logout" icon="ui-icon-extlink" rendered="#{identity.loggedIn}" />
+                <p:commandButton action="#{loginController.logout}" ajax="false" value="#{msg.logoutLabel}" icon="ui-icon-extlink" rendered="#{identity.loggedIn}" />
             </h:form>
         </f:facet>
     </p:menubar>

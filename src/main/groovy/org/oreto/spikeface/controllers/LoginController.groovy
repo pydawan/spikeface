@@ -17,10 +17,8 @@ import org.picketlink.authentication.event.LoginFailedEvent
 import org.picketlink.credential.DefaultLoginCredentials
 import org.picketlink.idm.PartitionManager
 import org.picketlink.idm.credential.Password
-import org.picketlink.idm.model.basic.Realm
 import org.picketlink.idm.model.basic.User
 
-import javax.annotation.PostConstruct
 import javax.enterprise.event.Observes
 import javax.inject.Inject
 import javax.inject.Named
@@ -32,18 +30,6 @@ class LoginController extends BaseAuthenticator implements ApplicationController
     @Inject TechnologyData technologyData
 
     String returnUrl = ''
-
-    @PostConstruct
-    public void init(){
-        Realm defaultRealm = this.partitionManager.getPartition(Realm.class, "default")
-        if (defaultRealm == null){
-            System.out.println("Couldn't find default partition, creating default partition")
-            defaultRealm = new Realm("default")
-            this.partitionManager.add(defaultRealm)
-        } else {
-            System.out.println("Found default partition")
-        }
-    }
 
     public void handleLoggedIn(@Observes LoggedInEvent event) {
         redirect(returnUrl)
@@ -57,7 +43,7 @@ class LoginController extends BaseAuthenticator implements ApplicationController
         if(!identity.isLoggedIn()) {
             Identity.AuthenticationResult result = identity.login()
             if (Identity.AuthenticationResult.FAILED == result) {
-                Messages.addFlashGlobalInfo('Authentication was unsuccessful.  Please check your username and password')
+                Messages.addFlashGlobalInfo(bundle.getString('authenticationFailedMessage'))
             }
         }
     }
@@ -73,7 +59,7 @@ class LoginController extends BaseAuthenticator implements ApplicationController
         List<SecurityViolation> violations = []
         if(!identity.loggedIn ) {
             returnUrl = requestUrlWithQueryString
-            violations.add(new SecurityViolation() {@Override String getReason() { 'not logged in' }})
+            violations.add(new SecurityViolation() {@Override String getReason() { bundle.getString('notLoggedInMsg') }})
         }
         violations
     }

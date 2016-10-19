@@ -7,18 +7,18 @@
 
     <ui:define name="container">
         <p:spacer/>
-        <p:panel header="Technology" styleClass="panel-form">
+        <p:panel header="#{msg.technologyLabel}" styleClass="panel-form">
             <h:form>
                 <ds:preventDoubleSubmit/>
                 <ui:include src="form.xhtml">
                     <ui:param name="mode" value="read"/>
                 </ui:include>
                 <p:panelGrid columns="4" layout="grid" styleClass="button-group">
-                    <p:commandButton value="Edit" icon="fa fa-edit" title="edit" action="#{technologyController.edit}"
+                    <p:commandButton value="#{msg.editLabel}" icon="fa fa-edit" title="#{msg.editLabel}" action="#{technologyController.edit}"
                                      ajax="false" rendered="#{technologyController.readWrite and technologyController.hasPermission('manage')}"/>
-                    <p:commandButton value="Delete" icon="fa fa-remove" title="delete" action="#{technologyController.delete}"
+                    <p:commandButton value="#{msg.deleteLabel}" icon="fa fa-remove" title="#{msg.deleteLabel}" action="#{technologyController.delete}"
                                      ajax="false" rendered="#{technologyController.readWrite and technologyController.hasPermission('manage')}"/>
-                    <p:button value="Back" icon="fa fa-arrow-left" outcome="#{technologyController.listView}"/>
+                    <p:button value="#{msg.backLabel}" icon="fa fa-arrow-left" outcome="#{technologyController.listView}"/>
                 </p:panelGrid>
             </h:form>
         </p:panel>

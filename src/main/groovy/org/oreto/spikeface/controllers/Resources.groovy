@@ -13,7 +13,7 @@ class Resources {
 
     @Produces @RequestScoped
     public FacesContext produceFacesContext() {
-        return FacesContext.getCurrentInstance()
+        FacesContext.getCurrentInstance()
     }
 
     @PersistenceUnit
@@ -21,7 +21,7 @@ class Resources {
 
     @Produces @Default @RequestScoped
     public EntityManager createEntityManager() {
-        return this.entityManagerFactory.createEntityManager()
+        this.entityManagerFactory.createEntityManager()
     }
 
     public void disposeEntityManager(@Disposes @Default EntityManager entityManager) {

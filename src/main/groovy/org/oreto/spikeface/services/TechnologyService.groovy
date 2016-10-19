@@ -6,6 +6,7 @@ import org.hibernate.Hibernate
 import org.omnifaces.config.OmniFaces
 import org.oreto.spikeface.models.Technology
 import org.oreto.spikeface.models.TechnologyData
+import org.picketlink.authentication.Authenticator
 import org.primefaces.context.PrimeFacesContext
 import org.springframework.core.SpringVersion
 import org.springframework.data.jpa.repository.JpaRepository
@@ -31,6 +32,7 @@ public class TechnologyService implements Serializable {
         technologies[OmniFaces.package.name] = OmniFaces.version
         technologies[Hibernate.package.name] = Hibernate.package.implementationVersion
         technologies[JpaRepository.package.name] = SpringVersion.version
+        technologies[Authenticator.package.name] = Authenticator.package.implementationVersion ?: '2.7.1.Final'
         technologies['java.version'] = System.getProperty("java.version")
 
         20.times {

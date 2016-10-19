@@ -7,6 +7,8 @@
 * hibernate 5.2.2
 * Spring-data-jpa 4.2.8
 * prettyfaces 3.4.1
+* picketlink authentication/authorization
+* internationalization
 * Wildfly 10.1
 
 ### Features

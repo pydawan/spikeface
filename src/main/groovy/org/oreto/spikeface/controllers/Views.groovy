@@ -18,17 +18,17 @@ interface Views {
 
     class Login implements ViewConfig { }
 
+    interface Error extends ViewConfig {
+        class Readonly implements ForwardedPages { }
+        class Notfound implements ForwardedPages { }
+        class Server extends DefaultErrorView { }
+    }
+
     @Secured(value = LoginController.class, errorView = Login)
     interface Technology extends ViewConfig {
         class List implements RedirectedPages { }
         @Secured(TechnologyController.class)
         class Save implements RedirectedPages { }
         class Show implements RedirectedPages { }
-    }
-
-    interface Error extends ViewConfig {
-        class Readonly implements ForwardedPages { }
-        class Notfound implements ForwardedPages { }
-        class Server extends DefaultErrorView { }
     }
 }

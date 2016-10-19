@@ -24,6 +24,13 @@
         http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
 
     <application>
+        <locale-config>
+            <default-locale>en</default-locale>
+        </locale-config>
+        <resource-bundle>
+            <base-name>messages</base-name>
+            <var>msg</var>
+        </resource-bundle>
         <el-resolver>
             org.primefaces.application.exceptionhandler.PrimeExceptionHandlerELResolver
         </el-resolver>

@@ -14,13 +14,13 @@
             <t:data-pager value="#{totalElements}"/>
             <p:dataTable var="tech" value="#{technologyController.entities.content}" reflow="true" selectionMode="single" rowKey="#{tech.id}">
 
-                <p:column headerText="name" field="name">
+                <p:column headerText="#{msg.techNameLabel}" field="name">
                     <h:link value="#{tech.name}" outcome="#{technologyController.showView}">
                         <f:param name="id" value="#{tech.id}" />
                     </h:link>
                 </p:column>
 
-                <p:column headerText="version" field="versionName">
+                <p:column headerText="#{msg.techVersionLabel}" field="versionName">
                     <h:outputText value="#{tech.versionName}" />
                 </p:column>
             </p:dataTable>
@@ -40,6 +40,6 @@
             </h:panelGrid>
         </p:dataScroller>
         <br/>
-        <p:button outcome="#{technologyController.listView}" styleClass="hidden-md-up" value="Reload"/>
+        <p:button outcome="#{technologyController.listView}" styleClass="hidden-md-up" value="#{msg.reloadLabel}"/>
     </ui:define>
 </ui:composition>

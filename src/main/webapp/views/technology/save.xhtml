@@ -7,16 +7,16 @@
 
     <ui:define name="container">
         <p:spacer/>
-        <p:panel header="Technology" styleClass="panel-form">
+        <p:panel header="#{msg.technologyLabel}" styleClass="panel-form">
             <h:form>
                 <ds:preventDoubleSubmit/>
                 <ui:include src="form.xhtml">
                     <ui:param name="mode" value="write"/>
                 </ui:include>
                 <p:panelGrid columns="4" layout="grid" styleClass="button-group">
-                    <p:commandButton value="Save" icon="fa fa-save" styleClass="ui-sm-1" title="save"
+                    <p:commandButton value="#{msg.saveLabel}" icon="fa fa-save" styleClass="ui-sm-1" title="#{msg.saveLabel}"
                                      action="#{technologyController.save}" ajax="false" validateClient="true"/>
-                    <p:commandButton value="Cancel" icon="fa fa-ban" styleClass="ui-sm-1" title="cancel"
+                    <p:commandButton value="#{msg.cancelLabel}" icon="fa fa-ban" styleClass="ui-sm-1" title="#{msg.cancelLabel}"
                                      action="#{technologyController.cancel}" ajax="false" immediate="true" />
                 </p:panelGrid>
             </h:form>

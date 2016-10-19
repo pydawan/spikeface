@@ -23,6 +23,7 @@ import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.repository.JpaRepository
 
 import javax.faces.application.FacesMessage
+import javax.faces.bean.ManagedProperty
 import javax.faces.context.FacesContext
 import javax.inject.Inject
 import javax.servlet.http.HttpServletRequest
@@ -36,6 +37,20 @@ trait ApplicationController implements Serializable {
     @Inject Identity identity
     @Inject IdentityManager identityManager
     @Inject PermissionManager permissionManager
+
+    @ManagedProperty("#{msg}") ResourceBundle bundle
+
+    public String getLanguage() {
+        facesContext.getViewRoot().getLocale().language
+    }
+
+    public void changeLanguage(String language) {
+        facesContext.viewRoot.locale = new Locale(language)
+    }
+
+    public ResourceBundle getBundle() {
+        facesContext.application.getResourceBundle(facesContext, 'msg')
+    }
 
     public String getViewId(Class<? extends ViewConfig> view) {
         viewConfigResolver.getViewConfigDescriptor(view).viewId
