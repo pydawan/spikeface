@@ -40,7 +40,7 @@ public class TechnologyService implements Serializable {
         for(Map.Entry<Object, Object> val : technologies) {
             String name = val.key
             def techOption = entityRepository.findOptionalByName(name)
-            if(techOption == null) {
+            if(!techOption.isPresent()) {
                 Technology technology = new Technology(name: name, versionName: val.value)
                 entityRepository.save(technology)
             }

@@ -22,5 +22,5 @@ public interface TechnologyRepository extends JpaRepository<Technology, Long> {
 
 @Repository
 public interface TechnologyData extends EntityRepository<Technology, Long> {
-    Technology findOptionalByName(String name)
+    Optional<Technology> findOptionalByName(String name)
 }

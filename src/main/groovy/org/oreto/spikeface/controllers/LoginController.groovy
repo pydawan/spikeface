@@ -7,7 +7,7 @@ import org.apache.deltaspike.security.api.authorization.AccessDecisionVoter
 import org.apache.deltaspike.security.api.authorization.AccessDecisionVoterContext
 import org.apache.deltaspike.security.api.authorization.SecurityViolation
 import org.omnifaces.util.Messages
-import org.oreto.spikeface.models.Technology
+import org.oreto.spikeface.models.TechnologyData
 import org.picketlink.Identity
 import org.picketlink.annotations.PicketLink
 import org.picketlink.authentication.Authenticator
@@ -29,6 +29,7 @@ import javax.inject.Named
 class LoginController extends BaseAuthenticator implements ApplicationController, AccessDecisionVoter {
 
     @Inject PartitionManager partitionManager
+    @Inject TechnologyData technologyData
 
     String returnUrl = ''
 
@@ -89,7 +90,9 @@ class LoginController extends BaseAuthenticator implements ApplicationController
             setAccount(user)
             identityManager.add(user)
             identityManager.updateCredential(user, new Password(test))
-            permissionManager.grantPermission(user, new Technology(id: 1), "manage")
+            20.times {
+                permissionManager.grantPermission(user, technologyData.findOptionalByName(it.toString()).get(), "manage")
+            }
         } else {
             setStatus(Authenticator.AuthenticationStatus.FAILURE)
         }

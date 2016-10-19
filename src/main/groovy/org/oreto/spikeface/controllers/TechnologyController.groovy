@@ -3,6 +3,7 @@ package org.oreto.spikeface.controllers
 import org.apache.deltaspike.core.api.config.view.ViewConfig
 import org.apache.deltaspike.core.api.config.view.ViewRef
 import org.apache.deltaspike.core.api.config.view.controller.PreRenderView
+import org.apache.deltaspike.security.api.authorization.Secured
 import org.omnifaces.cdi.Param
 import org.omnifaces.cdi.ViewScoped
 import org.oreto.spikeface.models.Technology
@@ -32,4 +33,7 @@ public class TechnologyController extends ScaffoldingController<Technology, Long
     Class<? extends ViewConfig> saveView = Views.Technology.Save
 
     @PreRenderView protected void preRenderView() { get() }
+
+    @Override @Secured(TechnologyController.class)
+    Class<? extends ViewConfig> save() { super.save() }
 }
