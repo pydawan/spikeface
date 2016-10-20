@@ -491,12 +491,13 @@
                 in your WildFly instance -->
             <!-- This profile will start a new WildFly instance, and execute the
                 test, shutting it down when done -->
-            <!-- Run with: mvn clean test -Parq-wildfly-managed -->
+            <!-- Run with: mvn test -Parq-wildfly-managed -->
             <id>arq-wildfly-managed</id>
             <dependencies>
                 <dependency>
                     <groupId>org.wildfly</groupId>
                     <artifactId>wildfly-arquillian-container-managed</artifactId>
+                    <version>8.2.1.Final</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>
@@ -505,12 +506,13 @@
         <profile>
             <!-- An optional Arquillian testing profile that executes tests
                 in a remote WildFly instance -->
-            <!-- Run with: mvn clean test -Parq-wildfly-remote -->
+            <!-- Run with: mvn test -Parq-wildfly-remote -->
             <id>arq-wildfly-remote</id>
             <dependencies>
                 <dependency>
                     <groupId>org.wildfly</groupId>
                     <artifactId>wildfly-arquillian-container-remote</artifactId>
+                    <version>8.2.1.Final</version>
                     <scope>test</scope>
                 </dependency>
             </dependencies>

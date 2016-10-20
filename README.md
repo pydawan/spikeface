@@ -31,13 +31,8 @@
 mvn dependency:unpack
 ```
 
- * hibernate statistics
-```
-persistence.xml
-<property name="hibernate.generate_statistics" value="true"/>
+### running tests
 
-wildfly standalone.xml
-<logger category="org.hibernate.stat">
-    <level name="DEBUG"/>
-</logger>
-```
+* use maven profile arq-wildfly-managed
+* run the test or tests: mvn test -Parq-wildfly-remote
+ 
