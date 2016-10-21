@@ -19,8 +19,11 @@ class AppTest {
 
     @Deployment
     public static WebArchive createDeployment() {
-         ShrinkWrap.create(WebArchive.class)
-                .addClass(NavigationController.class)
+        ShrinkWrap.create(WebArchive.class)
+                .addPackage('org.oreto.spikeface.controllers')
+                .addPackage('org.oreto.spikeface.models')
+                .addPackage('org.oreto.spikeface.services')
+                .addPackage('org.oreto.spikeface.utils')
                 .addAsWebInfResource(EmptyAsset.INSTANCE, 'beans.xml')
     }
 

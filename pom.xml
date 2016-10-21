@@ -54,6 +54,7 @@
         <hibernate.version>5.2.2.Final</hibernate.version>
         <picketlink.version>2.7.1.Final</picketlink.version>
         <jboss.home>${project.build.directory}/wildfly-run/wildfly-${wildfly.version}</jboss.home>
+        <arquillian.version>1.1.11.Final</arquillian.version>
     </properties>
 
     <repositories>
@@ -96,6 +97,14 @@
                 <version>${deltaspike.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>${version.arquillian}</version>
+                <scope>import</scope>
+                <type>pom</type>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -397,29 +406,17 @@
             </plugin>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
-                <configuration>
-                    <!-- Bind Groovy Eclipse Compiler -->
-                    <compilerId>groovy-eclipse-compiler</compilerId>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.source}</target>
-                </configuration>
-                <dependencies>
-                    <!-- Define which Groovy version will be used for build -->
-                    <dependency>
-                        <groupId>org.codehaus.groovy</groupId>
-                        <artifactId>groovy-eclipse-batch</artifactId>
-                        <version>2.4.3-01</version>
-                    </dependency>
-                    <!-- Define dependency to Groovy Eclipse Compiler  -->
-                    <dependency>
-                        <groupId>org.codehaus.groovy</groupId>
-                        <artifactId>groovy-eclipse-compiler</artifactId>
-                        <version>2.9.2-01</version>
-                    </dependency>
-                </dependencies>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
