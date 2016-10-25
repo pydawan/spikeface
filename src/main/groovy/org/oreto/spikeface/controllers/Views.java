@@ -1,11 +1,11 @@
-package org.oreto.spikeface.controllers
+package org.oreto.spikeface.controllers;
 
-import org.apache.deltaspike.core.api.config.view.DefaultErrorView
-import org.apache.deltaspike.core.api.config.view.ViewConfig
-import org.apache.deltaspike.jsf.api.config.view.View
-import org.apache.deltaspike.jsf.api.config.view.View.NavigationMode
-import org.apache.deltaspike.jsf.api.config.view.View.ViewParameterMode
-import org.apache.deltaspike.security.api.authorization.Secured
+import org.apache.deltaspike.core.api.config.view.DefaultErrorView;
+import org.apache.deltaspike.core.api.config.view.ViewConfig;
+import org.apache.deltaspike.jsf.api.config.view.View;
+import org.apache.deltaspike.jsf.api.config.view.View.NavigationMode;
+import org.apache.deltaspike.jsf.api.config.view.View.ViewParameterMode;
+import org.apache.deltaspike.security.api.authorization.Secured;
 
 interface Views {
     class Index implements ViewConfig { }
@@ -24,7 +24,7 @@ interface Views {
         class Server extends DefaultErrorView { }
     }
 
-    @Secured(value = LoginController.class, errorView = Login)
+    @Secured(value = LoginController.class, errorView = Login.class)
     interface Technology extends ViewConfig {
         class List implements RedirectedPages { }
         @Secured(TechnologyController.class)

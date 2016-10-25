@@ -7,7 +7,7 @@ import org.apache.deltaspike.security.api.authorization.Secured
 import org.omnifaces.cdi.Param
 import org.omnifaces.cdi.ViewScoped
 import org.oreto.spikeface.models.Technology
-import org.oreto.spikeface.models.TechnologyRepository
+import org.oreto.spikeface.services.TechnologyRepository
 import org.springframework.data.domain.Page
 
 import javax.inject.Inject

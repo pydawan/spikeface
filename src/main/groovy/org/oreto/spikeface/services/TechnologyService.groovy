@@ -5,7 +5,6 @@ import org.apache.deltaspike.core.api.common.DeltaSpike
 import org.hibernate.Hibernate
 import org.omnifaces.config.OmniFaces
 import org.oreto.spikeface.models.Technology
-import org.oreto.spikeface.models.TechnologyData
 import org.picketlink.authentication.Authenticator
 import org.primefaces.context.PrimeFacesContext
 import org.springframework.core.SpringVersion
