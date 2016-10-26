@@ -1,4 +1,4 @@
-package org.oreto.spikeface.controllers
+package org.oreto.spikeface.controllers.common
 
 import com.ocpsoft.pretty.PrettyContext
 import org.apache.deltaspike.core.api.config.view.ViewConfig
@@ -10,7 +10,7 @@ import org.apache.deltaspike.security.api.authorization.AccessDecisionVoter
 import org.apache.deltaspike.security.api.authorization.AccessDecisionVoterContext
 import org.apache.deltaspike.security.api.authorization.SecurityViolation
 import org.omnifaces.util.Servlets
-import org.oreto.spikeface.models.BaseEntity
+import org.oreto.spikeface.models.common.BaseEntity
 import org.oreto.spikeface.utils.Utils
 import org.picketlink.Identity
 import org.picketlink.idm.IdentityManager
@@ -28,6 +28,7 @@ import javax.faces.context.FacesContext
 import javax.inject.Inject
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
+import java.text.MessageFormat
 
 trait ApplicationController implements Serializable {
     @Inject ViewNavigationHandler viewNavigationHandler
@@ -226,7 +227,10 @@ abstract class ScaffoldingController<T extends BaseEntity, ID extends Serializab
     Set<SecurityViolation> checkPermission(AccessDecisionVoterContext accessDecisionVoterContext) {
         List<SecurityViolation> violations = []
         if(!hasPermission('manage')) {
-            violations.add(new SecurityViolation() {@Override String getReason() { "you don't have permission for resource ${entity.class.simpleName} ($id)" }})
+            violations.add(new SecurityViolation() {
+                @Override String getReason() {
+                    MessageFormat.format(bundle.getString('permissionError'), entity.class.simpleName, id)
+                }})
         }
         violations
     }

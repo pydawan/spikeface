@@ -1,4 +1,4 @@
-package org.oreto.spikeface.controllers
+package org.oreto.spikeface.controllers.common
 
 import org.apache.deltaspike.core.api.config.view.metadata.ViewConfigResolver
 import org.apache.deltaspike.core.api.exception.control.ExceptionHandler

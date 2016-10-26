@@ -3,9 +3,12 @@ package org.oreto.spikeface.controllers
 import org.apache.deltaspike.core.api.config.view.ViewConfig
 import org.apache.deltaspike.core.api.config.view.ViewRef
 import org.apache.deltaspike.core.api.config.view.controller.PreRenderView
+import org.apache.deltaspike.jpa.api.transaction.Transactional
 import org.apache.deltaspike.security.api.authorization.Secured
 import org.omnifaces.cdi.Param
 import org.omnifaces.cdi.ViewScoped
+import org.oreto.spikeface.controllers.common.ScaffoldingController
+import org.oreto.spikeface.controllers.common.Views
 import org.oreto.spikeface.models.Technology
 import org.oreto.spikeface.models.TechnologyRepository
 import org.springframework.data.domain.Page
@@ -34,6 +37,6 @@ public class TechnologyController extends ScaffoldingController<Technology, Long
 
     @PreRenderView protected void preRenderView() { get() }
 
-    @Override @Secured(TechnologyController.class)
+    @Override @Secured(TechnologyController.class) @Transactional
     Class<? extends ViewConfig> save() { super.save() }
 }

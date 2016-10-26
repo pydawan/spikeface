@@ -5,6 +5,8 @@ import org.apache.deltaspike.data.api.Repository
 import org.hibernate.annotations.Cache
 import org.hibernate.annotations.CacheConcurrencyStrategy
 import org.hibernate.validator.constraints.NotEmpty
+import org.oreto.spikeface.models.common.BaseEntity
+import org.oreto.spikeface.models.common.Named
 import org.springframework.data.jpa.repository.JpaRepository
 
 import javax.persistence.Cacheable
@@ -18,6 +20,7 @@ public class Technology extends BaseEntity<Long> implements Named {
 }
 
 public interface TechnologyRepository extends JpaRepository<Technology, Long> {
+    Technology findOneByName(String name)
 }
 
 @Repository

@@ -46,7 +46,7 @@
             <description>Overrides the PrimeFaces table renderer with customized headers</description>
             <component-family>org.primefaces.component</component-family>
             <renderer-type>org.primefaces.component.DataTableRenderer</renderer-type>
-            <renderer-class>org.oreto.spikeface.controllers.DataHeader</renderer-class>
+            <renderer-class>org.oreto.spikeface.controllers.common.DataHeader</renderer-class>
         </renderer>
     </render-kit>
 </faces-config>

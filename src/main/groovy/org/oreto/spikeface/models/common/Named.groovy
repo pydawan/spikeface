@@ -1,4 +1,4 @@
-package org.oreto.spikeface.models
+package org.oreto.spikeface.models.common
 
 trait Named {
     abstract String getName()

@@ -1,4 +1,4 @@
-package org.oreto.spikeface.controllers
+package org.oreto.spikeface.controllers.common
 
 
 import javax.enterprise.context.ApplicationScoped

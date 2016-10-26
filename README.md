@@ -6,18 +6,20 @@
 * Primefaces 6.0
 * hibernate 5.2.2
 * Spring-data-jpa 4.2.8
-* prettyfaces 3.4.1
+* Prettyfaces 3.4.1
 * picketlink authentication/authorization
 * internationalization
 * Wildfly 10.1
 
 ### Features
 
-* Compiles with groovy lang
+* compiles with groovy lang
+* Wildfly ready
+* Arquillian test cases
 * Primefaces UI
-* modified primefaces datagrid component to use request based pagination and sorting
+* modified Primefaces data grid component to use request based pagination and sorting
 * automatic scaffolding using spring data pagination and crud
-* datagrid is also scrollable on small devices and responsive
+* data grid is also scrollable on small devices and responsive
 * all around responsive design
 * request based views
 * type checked routes

@@ -1,10 +1,7 @@
 package org.oreto.spikeface.utils
 
-import org.oreto.spikeface.controllers.DataHeader
+import org.oreto.spikeface.controllers.common.DataHeader
 
-/**
- * Created by Ross on 10/4/2016.
- */
 public class Sorter<T> implements Comparator<T> {
 
     String sortField

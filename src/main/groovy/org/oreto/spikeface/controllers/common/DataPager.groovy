@@ -1,4 +1,4 @@
-package org.oreto.spikeface.controllers
+package org.oreto.spikeface.controllers.common
 
 import org.oreto.spikeface.utils.UrlEncodedQueryString
 import org.oreto.spikeface.utils.Utils
