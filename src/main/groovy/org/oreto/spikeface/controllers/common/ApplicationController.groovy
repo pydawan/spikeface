@@ -115,6 +115,18 @@ trait ApplicationController implements Serializable {
         }
         false
     }
+
+    public Map<String, Object> getSession() {
+        facesContext.externalContext.sessionMap
+    }
+
+    public Object getSession(String key) {
+        getSession().get(key)
+    }
+
+    public void putSession(String key, Object val) {
+        getSession().put(key, val)
+    }
 }
 
 trait Scaffolding<T extends BaseEntity, ID extends Serializable> extends ApplicationController {
