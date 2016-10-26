@@ -12,12 +12,12 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 
-class DataHeader extends DataTableRenderer {
+public class DataHeader extends DataTableRenderer {
 
-    static String defaultDirection = "desc";
-    static String ascendingOrder = "asc";
-    static String sortParamName = "sort";
-    static String dirParamName = "dir";
+    public static String defaultDirection = "desc";
+    public static String ascendingOrder = "asc";
+    public static String sortParamName = "sort";
+    public static String dirParamName = "dir";
 
     @Override
     public void encodeColumnHeader(FacesContext context, DataTable table, UIColumn column) throws IOException {

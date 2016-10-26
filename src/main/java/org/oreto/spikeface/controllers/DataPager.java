@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.*;
 
 @FacesComponent(value = "components.DataPagerComponent", createTag = true, namespace = "http://org.oreto/oui", tagName = "data-pager")
-class DataPager extends UIComponentBase {
+public class DataPager extends UIComponentBase {
 
     static Integer defaultPage = 1;
     static Integer defaultSize = 10;
@@ -38,7 +38,7 @@ class DataPager extends UIComponentBase {
 
     public boolean init(FacesContext context) {
         Map<String, String> requestMap = context.getExternalContext().getRequestParameterMap();
-        String temp = (String) this.getAttributes().get("value");
+        String temp = String.valueOf(this.getAttributes().get("value"));
         total = StringUtils.isNumber(temp) ? Integer.parseInt(temp) : 0;
 
         if(total > 0) {
@@ -114,7 +114,7 @@ class DataPager extends UIComponentBase {
         String activeState = active ? " ui-state-active" : "";
         queryString.set(pageParamName, page);
         return String.format("<%s class=\"ui-paginator-page ui-state-default ui-corner-all%s\"" +
-                " aria-label=\"Page %d\" tabindex=\"0\" href=\"%s\">$page</$tag>", tag, activeState, page, queryString);
+                " aria-label=\"Page %d\" tabindex=\"0\" href=\"%s\">%d</%s>", tag, activeState, page, queryString, page, tag);
     }
 
     protected String createSizeOptions() {
@@ -170,14 +170,15 @@ class DataPager extends UIComponentBase {
     }
 
     protected String resolvePagerHtml() {
-        return "<div class='ui-paginator ui-paginator-$location ui-widget-header ui-corner-$location' role='navigation'" +
-                " aria-label='Pagination'>\t<span class='ui-paginator-current'>($page of $totalPages)</span>" +
+        return String.format("<div class='ui-paginator ui-paginator-%s ui-widget-header ui-corner-%s' role='navigation'" +
+                " aria-label='Pagination'>\t<span class='ui-paginator-current'>(%d of %d)</span>" +
                 createFirstLink() + createPrevLink() + "\t<span class='ui-paginator-pages'>" + "\t" + createPageLinks() + "\t</span>" + createNextLink() +
                 createLastLink() +
                 "\t<label class='ui-paginator-rpp-label ui-helper-hidden'>Rows Per Page</label>" +
-                "\t<select class='ui-paginator-rpp-options ui-widget ui-state-default ui-corner-left' value='$size'" +
-                " autocomplete='off' onchange='window.location.href='$pageLessUrl&size='+this.value'>" +
-                "\t\t" + createSizeOptions() + "\t</select>" + "</div>";
+                "\t<select class='ui-paginator-rpp-options ui-widget ui-state-default ui-corner-left' value='%d'" +
+                " autocomplete='off' onchange='window.location.href='%s&size='+this.value'>" +
+                "\t\t" + createSizeOptions() + "\t</select>" + "</div>",
+                location, location, page, totalPages, size, pageLessUrl);
     }
 }
 

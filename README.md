@@ -1,6 +1,5 @@
-### Java EE7 Stack using Groovy
+### Java EE7 Stack
 
-* Groovy 2.4.7
 * Apache Deltaspike 1.7
 * JSF 2.2
 * Primefaces 6.0
@@ -13,7 +12,6 @@
 
 ### Features
 
-* Compiles with groovy lang
 * Primefaces UI
 * modified primefaces datagrid component to use request based pagination and sorting
 * automatic scaffolding using spring data pagination and crud

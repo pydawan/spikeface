@@ -1,6 +1,12 @@
-package org.oreto.spikeface.utils
+package org.oreto.spikeface.utils;
 
 
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.*;
 
 /**
  * Represents a www-form-urlencoded query string containing an (ordered) list of parameters.
@@ -45,19 +51,19 @@ package org.oreto.spikeface.utils
  * from a query string by passing either a URI or a query string:
  * <p>
  * <code>
- * 		URI uri = new URI("http://java.sun.com?forum=2");<br/>
- *     	UrlEncodedQueryString queryString = UrlEncodedQueryString.parse(uri);<br/>
- *     	System.out.println(queryString.get("forum"));<br/>
+ * URI uri = new URI("http://java.sun.com?forum=2");<br/>
+ * UrlEncodedQueryString queryString = UrlEncodedQueryString.parse(uri);<br/>
+ * System.out.println(queryString.get("forum"));<br/>
  * </code>
  * <h4>Modifying parameters</h4> UrlEncodedQueryString can be used to set, append or remove
  * parameters from a query string:
  * <p>
  * <code>
- *     	URI uri = new URI("/forum/article.jsp?id=2&amp;para=4");<br/>
- *     	UrlEncodedQueryString queryString = UrlEncodedQueryString.parse(uri);<br/>
- *     	queryString.set("id", 3);<br/>
- *     	queryString.remove("para");<br/>
- *     	System.out.println(queryString);<br/>
+ * URI uri = new URI("/forum/article.jsp?id=2&amp;para=4");<br/>
+ * UrlEncodedQueryString queryString = UrlEncodedQueryString.parse(uri);<br/>
+ * queryString.set("id", 3);<br/>
+ * queryString.remove("para");<br/>
+ * System.out.println(queryString);<br/>
  * </code>
  * <p>
  * When modifying parameters, the ordering of existing parameters is maintained. Parameters are
@@ -67,10 +73,10 @@ package org.oreto.spikeface.utils
  * back to a URI, creating a new URI:
  * <p>
  * <code>
- *     	URI uri = new URI("/forum/article.jsp?id=2");<br/>
- *     	UrlEncodedQueryString queryString = UrlEncodedQueryString.parse(uri);<br/>
- *     	queryString.set("id", 3);<br/>
- *     	uri = queryString.apply(uri);<br/>
+ * URI uri = new URI("/forum/article.jsp?id=2");<br/>
+ * UrlEncodedQueryString queryString = UrlEncodedQueryString.parse(uri);<br/>
+ * queryString.set("id", 3);<br/>
+ * uri = queryString.apply(uri);<br/>
  * </code>
  * <p>
  * When reconstructing query strings, there are two valid separator parameters defined by the W3C
@@ -88,69 +94,28 @@ package org.oreto.spikeface.utils
 
 public class UrlEncodedQueryString {
 
-    //
-    // Public statics
-    //
+    /**
+     * Separators to honour when parsing query strings.
+     * <p>
+     * <em>All</em> Separators are recognized when parsing parameters, regardless of what the user
+     * later nominates as their <code>toString</code> output parameter.
+     */
+    private static final String PARSE_PARAMETER_SEPARATORS = String.valueOf(Separator.AMPERSAND) + Separator.SEMICOLON;
+    /**
+     * Map of query parameters.
+     */
+    // Note: we initialize this Map upon object creation because, realistically, it
+    // is always going to be needed (eg. there is little point lazy-initializing it)
+    private final Map<String, List<String>> queryMap = new LinkedHashMap<String, List<String>>();
 
     /**
-     * Enumeration of recommended www-form-urlencoded separators.
+     * Private constructor.
      * <p>
-     * Recommended separators are defined by <a
-     * href="http://www.w3.org/TR/REC-html40/interact/forms.html#h-17.13.4.1">HTML 4.01
-     * Specification: application/x-www-form-urlencoded</a> and <a
-     * href="http://www.w3.org/TR/html401/appendix/notes.html#h-B.2.2">HTML 4.01 Specification:
-     * Ampersands in URI attribute values</a>.
-     * <p>
-     * <em>All</em> separators are recognised when parsing query strings. <em>One</em> separator may
-     * be passed to <code>toString</code> and <code>apply</code> when outputting query strings.
+     * Clients should use one of the <code>create</code> or <code>parse</code> methods to create a
+     * <code>UrlEncodedQueryString</code>.
      */
-
-    public static enum Separator {
-        /**
-         * An ampersand <code>&amp;</code> - the separator recommended by <a
-         * href="http://www.w3.org/TR/REC-html40/interact/forms.html#h-17.13.4.1">HTML 4.01
-         * Specification: application/x-www-form-urlencoded</a>.
-         */
-
-        AMPERSAND {
-
-            /**
-             * Returns a String representation of this Separator.
-             * <p>
-             * The String representation matches that defined by the <a
-             * href="http://www.w3.org/TR/REC-html40/interact/forms.html#h-17.13.4.1">HTML 4.01
-             * Specification: application/x-www-form-urlencoded</a>.
-             */
-
-            @Override
-            public String toString() {
-
-                return "&";
-            }
-        },
-
-        /**
-         * A semicolon <code>;</code> - the separator recommended by <a
-         * href="http://www.w3.org/TR/html401/appendix/notes.html#h-B.2.2">HTML 4.01 Specification:
-         * Ampersands in URI attribute values</a>.
-         */
-
-                SEMICOLON {
-
-            /**
-             * Returns a String representation of this Separator.
-             * <p>
-             * The String representation matches that defined by the <a
-             * href="http://www.w3.org/TR/html401/appendix/notes.html#h-B.2.2">HTML 4.01
-             * Specification: Ampersands in URI attribute values</a>.
-             */
-
-            @Override
-            public String toString() {
-
-                return ";";
-            }
-        };
+    private UrlEncodedQueryString() {
+        // Can never be called
     }
 
     /**
@@ -158,9 +123,7 @@ public class UrlEncodedQueryString {
      * <p>
      * Calling <code>toString()</code> on the created instance will return an empty String.
      */
-
     public static UrlEncodedQueryString create() {
-
         return new UrlEncodedQueryString();
     }
 
@@ -169,20 +132,14 @@ public class UrlEncodedQueryString {
      * <p>
      * The order the parameters are created in corresponds to the iteration order of the Map.
      *
-     * @param parameterMap
-     *            <code>Map</code> containing parameter names and values.
+     * @param parameterMap <code>Map</code> containing parameter names and values.
      */
-
-    public static UrlEncodedQueryString create( Map<String, List<String>> parameterMap ) {
-
+    public static UrlEncodedQueryString create(Map<String, List<String>> parameterMap) {
         UrlEncodedQueryString queryString = new UrlEncodedQueryString();
-
         // Defensively copy the List<String>'s
-
-        for ( Map.Entry<String, List<String>> entry : parameterMap.entrySet() ) {
-            queryString.queryMap.put( entry.getKey(), new ArrayList<String>( entry.getValue() ) );
+        for (Map.Entry<String, List<String>> entry : parameterMap.entrySet()) {
+            queryString.queryMap.put(entry.getKey(), new ArrayList<>(entry.getValue()));
         }
-
         return queryString;
     }
 
@@ -197,19 +154,13 @@ public class UrlEncodedQueryString {
      * (eg. passing an entire URI, not just its query string) will likely be mismatched parameter
      * names.
      *
-     * @param query
-     *            query string to be parsed
+     * @param query query string to be parsed
      */
-
-    public static UrlEncodedQueryString parse( final CharSequence query ) {
-
+    public static UrlEncodedQueryString parse(final CharSequence query) {
         UrlEncodedQueryString queryString = new UrlEncodedQueryString();
-
         // Note: import to call appendOrSet with 'true', in
         // case the given query contains multi-valued parameters
-
-        queryString.appendOrSet( query, true );
-
+        queryString.appendOrSet(query, true);
         return queryString;
     }
 
@@ -223,46 +174,13 @@ public class UrlEncodedQueryString {
      * The result of calling this method with a query component that is not
      * <code>www-form-urlencoded</code> will likely be mismatched parameter names.
      *
-     * @param uri
-     *            URI to be parsed
+     * @param uri URI to be parsed
      */
-
-    public static UrlEncodedQueryString parse( final URI uri ) {
-
+    public static UrlEncodedQueryString parse(final URI uri) {
         // Note: use uri.getRawQuery, not uri.getQuery, in case the
         // query parameters contain encoded ampersands (%26)
-
-        return parse( uri.getRawQuery() );
+        return parse(uri.getRawQuery());
     }
-
-    //
-    // Private statics
-    //
-
-    /**
-     * Separators to honour when parsing query strings.
-     * <p>
-     * <em>All</em> Separators are recognized when parsing parameters, regardless of what the user
-     * later nominates as their <code>toString</code> output parameter.
-     */
-
-    private static final String				PARSE_PARAMETER_SEPARATORS	= String.valueOf( Separator.AMPERSAND ) + Separator.SEMICOLON;
-
-    //
-    // Private members
-    //
-
-    /**
-     * Map of query parameters.
-     */
-
-    // Note: we initialize this Map upon object creation because, realistically, it
-    // is always going to be needed (eg. there is little point lazy-initializing it)
-    private final Map<String, List<String>>	queryMap					= new LinkedHashMap<String, List<String>>();
-
-    //
-    // Public methods
-    //
 
     /**
      * Returns the value of the named parameter as a String. Returns <code>null</code> if the
@@ -276,22 +194,20 @@ public class UrlEncodedQueryString {
      * If you use this method with a multivalued parameter, the value returned is equal to the first
      * value in the List returned by <a href="#getValues(java.lang.String)">getValues</a>.
      *
-     * @param name
-     *            <code>String</code> specifying the name of the parameter
+     * @param name <code>String</code> specifying the name of the parameter
      * @return <code>String</code> representing the single value of the parameter, or
-     *         <code>null</code> if the parameter does not exist or exists but with a null value
-     *         (see {@link #contains contains}).
+     * <code>null</code> if the parameter does not exist or exists but with a null value
+     * (see {@link #contains contains}).
      */
+    public String get(final String name) {
 
-    public String get( final String name ) {
+        List<String> parameters = getValues(name);
 
-        List<String> parameters = getValues( name );
-
-        if ( parameters == null || parameters.isEmpty() ) {
+        if (parameters == null || parameters.isEmpty()) {
             return null;
         }
 
-        return parameters.get( 0 );
+        return parameters.get(0);
     }
 
     /**
@@ -301,10 +217,9 @@ public class UrlEncodedQueryString {
      * but with a <code>null</code> value (eg. <code>foo=1&bar</code>). This is distinct from a
      * parameter existing with a value of the empty String (eg. <code>foo=1&bar=</code>).
      */
+    public boolean contains(final String name) {
 
-    public boolean contains( final String name ) {
-
-        return this.queryMap.containsKey( name );
+        return this.queryMap.containsKey(name);
     }
 
     /**
@@ -313,9 +228,8 @@ public class UrlEncodedQueryString {
      * multiple values, only one copy of the name is returned.
      *
      * @return an <code>Iterator</code> of <code>String</code> objects, each String containing the
-     *         name of a parameter; or an empty Iterator if there are no parameters
+     * name of a parameter; or an empty Iterator if there are no parameters
      */
-
     public Iterator<String> getNames() {
 
         return this.queryMap.keySet().iterator();
@@ -327,36 +241,33 @@ public class UrlEncodedQueryString {
      * <p>
      * If the parameter has a single value, the List has a size of 1.
      *
-     * @param name
-     *            name of the parameter to retrieve
+     * @param name name of the parameter to retrieve
      * @return a List of String objects containing the parameter's values, or <code>null</code> if
-     *         the paramater does not exist
+     * the paramater does not exist
      */
+    public List<String> getValues(final String name) {
 
-    public List<String> getValues( final String name ) {
-
-        return this.queryMap.get( name );
+        return this.queryMap.get(name);
     }
 
     /**
      * Returns a mutable <code>Map</code> of the query parameters.
      *
      * @return <code>Map</code> containing parameter names as keys and parameter values as map
-     *         values. The keys in the parameter map are of type <code>String</code>. The values in
-     *         the parameter map are Lists of type <code>String</code>, and their ordering is
-     *         consistent with their ordering in the query string. Will never return
-     *         <code>null</code>.
+     * values. The keys in the parameter map are of type <code>String</code>. The values in
+     * the parameter map are Lists of type <code>String</code>, and their ordering is
+     * consistent with their ordering in the query string. Will never return
+     * <code>null</code>.
      */
-
     public Map<String, List<String>> getMap() {
 
         LinkedHashMap<String, List<String>> map = new LinkedHashMap<String, List<String>>();
 
         // Defensively copy the List<String>'s
 
-        for ( Map.Entry<String, List<String>> entry : this.queryMap.entrySet() ) {
+        for (Map.Entry<String, List<String>> entry : this.queryMap.entrySet()) {
             List<String> listValues = entry.getValue();
-            map.put( entry.getKey(), new ArrayList<String>( listValues ) );
+            map.put(entry.getKey(), new ArrayList<String>(listValues));
         }
 
         return map;
@@ -368,16 +279,13 @@ public class UrlEncodedQueryString {
      * If one or more parameters with this name already exist, they will be replaced with a single
      * parameter with the given value. If no such parameters exist, one will be added.
      *
-     * @param name
-     *            name of the query parameter
-     * @param value
-     *            value of the query parameter. If <code>null</code>, the parameter is removed
+     * @param name  name of the query parameter
+     * @param value value of the query parameter. If <code>null</code>, the parameter is removed
      * @return a reference to this object
      */
+    public UrlEncodedQueryString set(final String name, final String value) {
 
-    public UrlEncodedQueryString set( final String name, final String value ) {
-
-        appendOrSet( name, value, false );
+        appendOrSet(name, value, false);
         return this;
     }
 
@@ -391,24 +299,21 @@ public class UrlEncodedQueryString {
      * example:
      * <p>
      * <code>
-     * 	queryString.set( "id", 3 );<br/>
+     * queryString.set( "id", 3 );<br/>
      * </code>
      *
-     * @param name
-     *            name of the query parameter
-     * @param value
-     *            value of the query parameter. If <code>null</code>, the parameter is removed
+     * @param name  name of the query parameter
+     * @param value value of the query parameter. If <code>null</code>, the parameter is removed
      * @return a reference to this object
      */
+    public UrlEncodedQueryString set(final String name, final Number value) {
 
-    public UrlEncodedQueryString set( final String name, final Number value ) {
-
-        if ( value == null ) {
-            remove( name );
+        if (value == null) {
+            remove(name);
             return this;
         }
 
-        appendOrSet( name, value.toString(), false );
+        appendOrSet(name, value.toString(), false);
         return this;
     }
 
@@ -425,14 +330,11 @@ public class UrlEncodedQueryString {
      * given string, it is stored as a multivalued parameter. When parsing, all <a
      * href="UrlEncodedQueryString.Separator.html">Separators</a> are recognised.
      *
-     * @param query
-     *            <code>www-form-urlencoded</code> string. If <code>null</code>, does nothing
+     * @param query <code>www-form-urlencoded</code> string. If <code>null</code>, does nothing
      * @return a reference to this object
      */
-
-    public UrlEncodedQueryString set( final String query ) {
-
-        appendOrSet( query, false );
+    public UrlEncodedQueryString set(final String query) {
+        appendOrSet(query, false);
         return this;
     }
 
@@ -443,16 +345,13 @@ public class UrlEncodedQueryString {
      * given value will be stored as a multivalued parameter. If no such parameters exist, one will
      * be added.
      *
-     * @param name
-     *            name of the query parameter
-     * @param value
-     *            value of the query parameter. If <code>null</code>, does nothing
+     * @param name  name of the query parameter
+     * @param value value of the query parameter. If <code>null</code>, does nothing
      * @return a reference to this object
      */
+    public UrlEncodedQueryString append(final String name, final String value) {
 
-    public UrlEncodedQueryString append( final String name, final String value ) {
-
-        appendOrSet( name, value, true );
+        appendOrSet(name, value, true);
         return this;
     }
 
@@ -467,19 +366,15 @@ public class UrlEncodedQueryString {
      * For example:
      * <p>
      * <code>
-     * 	queryString.append( "id", 3 );<br/>
+     * queryString.append( "id", 3 );<br/>
      * </code>
      *
-     * @param name
-     *            name of the query parameter
-     * @param value
-     *            value of the query parameter. If <code>null</code>, does nothing
+     * @param name  name of the query parameter
+     * @param value value of the query parameter. If <code>null</code>, does nothing
      * @return a reference to this object
      */
-
-    public UrlEncodedQueryString append( final String name, final Number value ) {
-
-        appendOrSet( name, value.toString(), true );
+    public UrlEncodedQueryString append(final String name, final Number value) {
+        appendOrSet(name, value.toString(), true);
         return this;
     }
 
@@ -495,14 +390,11 @@ public class UrlEncodedQueryString {
      * than once in the given string, it is stored as a multivalued parameter. When parsing, all <a
      * href="UrlEncodedQueryString.Separator.html">Separators</a> are recognised.
      *
-     * @param query
-     *            <code>www-form-urlencoded</code> string. If <code>null</code>, does nothing
+     * @param query <code>www-form-urlencoded</code> string. If <code>null</code>, does nothing
      * @return a reference to this object
      */
-
-    public UrlEncodedQueryString append( final String query ) {
-
-        appendOrSet( query, true );
+    public UrlEncodedQueryString append(final String query) {
+        appendOrSet(query, true);
         return this;
     }
 
@@ -511,9 +403,7 @@ public class UrlEncodedQueryString {
      *
      * @return true if the query string has no parameters
      */
-
     public boolean isEmpty() {
-
         return queryMap.isEmpty();
     }
 
@@ -522,14 +412,11 @@ public class UrlEncodedQueryString {
      * <p>
      * If the parameter has multiple values, all its values are removed.
      *
-     * @param name
-     *            name of the parameter to remove
+     * @param name name of the parameter to remove
      * @return a reference to this object
      */
-
-    public UrlEncodedQueryString remove( final String name ) {
-
-        appendOrSet( name, null, false );
+    public UrlEncodedQueryString remove(final String name) {
+        appendOrSet(name, null, false);
         return this;
     }
 
@@ -539,14 +426,11 @@ public class UrlEncodedQueryString {
      * A copy of the given URI is taken and its existing query string, if there is one, is replaced.
      * The query string parameters are separated by <code>Separator.Ampersand</code>.
      *
-     * @param uri
-     *            URI to copy and update
+     * @param uri URI to copy and update
      * @return a copy of the given URI, with an updated query string
      */
-
-    public URI apply( URI uri ) {
-
-        return apply( uri, Separator.AMPERSAND );
+    public URI apply(URI uri) {
+        return apply(uri, Separator.AMPERSAND);
     }
 
     /**
@@ -555,61 +439,57 @@ public class UrlEncodedQueryString {
      * A copy of the given URI is taken and its existing query string, if there is one, is replaced.
      * The query string parameters are separated using the given <code>Separator</code>.
      *
-     * @param uri
-     *            URI to copy and update
-     * @param separator
-     *            separator to use between parameters
+     * @param uri       URI to copy and update
+     * @param separator separator to use between parameters
      * @return a copy of the given URI, with an updated query string
      */
-
-    public URI apply( URI uri, Separator separator ) {
-
+    public URI apply(URI uri, Separator separator) {
         // Note this code is essentially a copy of 'java.net.URI.defineString',
         // which is private. We cannot use the 'new URI( scheme, userInfo, ... )' or
         // 'new URI( scheme, authority, ... )' constructors because they double
         // encode the query string using 'java.net.URI.quote'
 
         StringBuilder builder = new StringBuilder();
-        if ( uri.getScheme() != null ) {
-            builder.append( uri.getScheme() );
-            builder.append( ':' );
+        if (uri.getScheme() != null) {
+            builder.append(uri.getScheme());
+            builder.append(':');
         }
-        if ( uri.getHost() != null ) {
-            builder.append( "//" );
-            if ( uri.getUserInfo() != null ) {
-                builder.append( uri.getUserInfo() );
-                builder.append( '@' );
+        if (uri.getHost() != null) {
+            builder.append("//");
+            if (uri.getUserInfo() != null) {
+                builder.append(uri.getUserInfo());
+                builder.append('@');
             }
-            builder.append( uri.getHost() );
-            if ( uri.getPort() != -1 ) {
-                builder.append( ':' );
-                builder.append( uri.getPort() );
+            builder.append(uri.getHost());
+            if (uri.getPort() != -1) {
+                builder.append(':');
+                builder.append(uri.getPort());
             }
-        } else if ( uri.getAuthority() != null ) {
-            builder.append( "//" );
-            builder.append( uri.getAuthority() );
+        } else if (uri.getAuthority() != null) {
+            builder.append("//");
+            builder.append(uri.getAuthority());
         }
-        if ( uri.getPath() != null ) {
-            builder.append( uri.getPath() );
+        if (uri.getPath() != null) {
+            builder.append(uri.getPath());
         }
 
-        String query = toString( separator );
-        if ( query.length() != 0 ) {
-            builder.append( '?' );
-            builder.append( query );
+        String query = toString(separator);
+        if (query.length() != 0) {
+            builder.append('?');
+            builder.append(query);
         }
-        if ( uri.getFragment() != null ) {
-            builder.append( '#' );
-            builder.append( uri.getFragment() );
+        if (uri.getFragment() != null) {
+            builder.append('#');
+            builder.append(uri.getFragment());
         }
 
         try {
-            return new URI( builder.toString() );
-        } catch ( URISyntaxException e ) {
+            return new URI(builder.toString());
+        } catch (URISyntaxException e) {
             // Can never happen, as the given URI will always be valid,
             // and getQuery() will always return a valid query string
 
-            throw new RuntimeException( e );
+            throw new RuntimeException(e);
         }
     }
 
@@ -631,26 +511,24 @@ public class UrlEncodedQueryString {
      * UrlEncodedQueryString; if not, it returns <code>false</code>. Otherwise, it returns
      * <code>true</code>
      *
-     * @param obj
-     *            object to be compared for equality with this UrlEncodedQueryString.
+     * @param obj object to be compared for equality with this UrlEncodedQueryString.
      * @return <code>true</code> if the specified object is equal to this UrlEncodedQueryString.
      */
-
     @Override
-    public boolean equals( Object obj ) {
+    public boolean equals(Object obj) {
 
-        if ( obj == this ) {
+        if (obj == this) {
             return true;
         }
 
-        if ( !( obj instanceof UrlEncodedQueryString ) ) {
+        if (!(obj instanceof UrlEncodedQueryString)) {
             return false;
         }
 
         String query = toString();
-        String thatQuery = ( (UrlEncodedQueryString) obj ).toString();
+        String thatQuery = obj.toString();
 
-        return query.equals( thatQuery );
+        return query.equals(thatQuery);
     }
 
     /**
@@ -665,7 +543,6 @@ public class UrlEncodedQueryString {
      *
      * @return a hash code value for this UrlEncodedQueryString.
      */
-
     @Override
     public int hashCode() {
 
@@ -683,23 +560,20 @@ public class UrlEncodedQueryString {
      * commonly used and this method defaults to that.
      *
      * @return <code>www-form-urlencoded</code> string, or <code>null</code> if there are no
-     *         parameters.
+     * parameters.
      */
-
     @Override
     public String toString() {
-
-        return toString( Separator.AMPERSAND );
+        return toString(Separator.AMPERSAND);
     }
 
     /**
      * Returns a <code>www-form-urlencoded</code> string of the query parameters, using the given
      * separator between parameters.
      *
-     * @param separator
-     *            separator to use between parameters
+     * @param separator separator to use between parameters
      * @return <code>www-form-urlencoded</code> string, or an empty String if there are no
-     *         parameters
+     * parameters
      */
 
     // Note: this method takes a Separator, not just any String. Taking any String may
@@ -709,174 +583,177 @@ public class UrlEncodedQueryString {
     //
     // It was thought better to leave it to the user to explictly break this contract
     // (eg. toString().replaceAll( '&', '&amp;' ))
-    public String toString( Separator separator, boolean encode = false ) {
-
+    public String toString(Separator separator, boolean encode) {
         StringBuilder builder = new StringBuilder();
 
-        for ( String name : this.queryMap.keySet() ) {
-            for ( String value : this.queryMap.get( name ) ) {
-                if ( builder.length() != 0 ) {
-                    builder.append( separator );
+        for (String name : this.queryMap.keySet()) {
+            for (String value : this.queryMap.get(name)) {
+                if (builder.length() != 0) {
+                    builder.append(separator);
                 }
-
                 // Encode names and values. Do this in toString(), rather than
                 // append/set, so that the Map always contains the
                 // raw, unencoded values
-
                 try {
-                    builder.append( encode ? URLEncoder.encode( name, "UTF-8" ) : name );
-
-                    if ( value != null ) {
-                        builder.append( '=' );
-                        builder.append( encode ? URLEncoder.encode( value, "UTF-8" ) : value );
+                    builder.append(encode ? URLEncoder.encode(name, "UTF-8") : name);
+                    if (value != null) {
+                        builder.append('=');
+                        builder.append(encode ? URLEncoder.encode(value, "UTF-8") : value);
                     }
-                } catch ( UnsupportedEncodingException e ) {
+                } catch (UnsupportedEncodingException e) {
                     // Should never happen. UTF-8 should always be available
                     // according to Java spec
-
-                    throw new RuntimeException( e );
+                    throw new RuntimeException(e);
                 }
             }
         }
-
         return builder.toString();
     }
 
-    //
-    // Private methods
-    //
-
-    /**
-     * Private constructor.
-     * <p>
-     * Clients should use one of the <code>create</code> or <code>parse</code> methods to create a
-     * <code>UrlEncodedQueryString</code>.
-     */
-
-    private UrlEncodedQueryString() {
-
-        // Can never be called
+    public String toString(Separator separator) {
+        return toString(separator, false);
     }
 
     /**
      * Helper method for append and set
      *
-     * @param name
-     *            the parameter's name
-     * @param value
-     *            the parameter's value
-     * @param append
-     *            whether to append (or set)
+     * @param name   the parameter's name
+     * @param value  the parameter's value
+     * @param append whether to append (or set)
      */
-
-    private void appendOrSet( final String name, final String value, final boolean append ) {
-
-        if ( name == null ) {
-            throw new NullPointerException( "name" );
+    private void appendOrSet(final String name, final String value, final boolean append) {
+        if (name == null) {
+            throw new NullPointerException("name");
         }
-
         // If we're appending, and there's an existing parameter...
-
-        if ( append ) {
-            List<String> listValues = this.queryMap.get( name );
-
-            // ...add to it
-
-            if ( listValues != null ) {
-                listValues.add( value );
+        if (append) {
+            List<String> listValues = this.queryMap.get(name);
+            if (listValues != null) {
+                listValues.add(value);
                 return;
             }
         }
-
         // ...otherwise, if we're setting and the value is null...
-
-        else if ( value == null ) {
+        else if (value == null) {
             // ...remove it
 
-            this.queryMap.remove( name );
+            this.queryMap.remove(name);
             return;
         }
-
         // ...otherwise, create a new one
-
         List<String> listValues = new ArrayList<String>();
-        listValues.add( value );
-
-        this.queryMap.put( name, listValues );
+        listValues.add(value);
+        this.queryMap.put(name, listValues);
     }
 
     /**
      * Helper method for append and set
      *
-     * @param query
-     *            <code>www-form-urlencoded</code> string
-     * @param append
-     *            whether to append (or set)
+     * @param parameters string
+     * @param append     whether to append (or set)
      */
+    private void appendOrSet(final CharSequence parameters, final boolean append) {
 
-    private void appendOrSet( final CharSequence parameters, final boolean append ) {
-
-        // Nothing to do?
-
-        if ( parameters == null ) {
+        if (parameters == null) {
             return;
         }
-
         // Note we always parse using PARSE_PARAMETER_SEPARATORS, regardless
         // of what the user later nominates as their output parameter
         // separator using toString()
-
-        StringTokenizer tokenizer = new StringTokenizer( parameters.toString(), PARSE_PARAMETER_SEPARATORS );
-
+        StringTokenizer tokenizer = new StringTokenizer(parameters.toString(), PARSE_PARAMETER_SEPARATORS);
         Set<String> setAlreadyParsed = null;
 
-        while ( tokenizer.hasMoreTokens() ) {
+        while (tokenizer.hasMoreTokens()) {
             String parameter = tokenizer.nextToken();
-
-            int indexOf = parameter.indexOf( '=' );
-
+            int indexOf = parameter.indexOf('=');
             String name;
             String value;
 
             try {
-                if ( indexOf == -1 ) {
+                if (indexOf == -1) {
                     name = parameter;
                     value = null;
                 } else {
-                    name = parameter.substring( 0, indexOf );
-                    value = parameter.substring( indexOf + 1 );
+                    name = parameter.substring(0, indexOf);
+                    value = parameter.substring(indexOf + 1);
                 }
-
                 // Decode the name if necessary (i.e. %70age=1 becomes page=1)
-
-                name = URLDecoder.decode( name, "UTF-8" );
+                name = URLDecoder.decode(name, "UTF-8");
 
                 // When not appending, the first time we see a given
                 // name it is important to remove it from the existing
                 // parameters
-
-                if ( !append ) {
-                    if ( setAlreadyParsed == null ) {
+                if (!append) {
+                    if (setAlreadyParsed == null) {
                         setAlreadyParsed = new HashSet<String>();
                     }
 
-                    if ( !setAlreadyParsed.contains( name ) ) {
-                        remove( name );
+                    if (!setAlreadyParsed.contains(name)) {
+                        remove(name);
                     }
 
-                    setAlreadyParsed.add( name );
+                    setAlreadyParsed.add(name);
                 }
-
-                if ( value != null ) {
-                    value = URLDecoder.decode( value, "UTF-8" );
+                if (value != null) {
+                    value = URLDecoder.decode(value, "UTF-8");
                 }
-
-                appendOrSet( name, value, true );
-            } catch ( UnsupportedEncodingException e ) {
+                appendOrSet(name, value, true);
+            } catch (UnsupportedEncodingException e) {
                 // Should never happen. UTF-8 should always be available
                 // according to Java spec
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
-                throw new RuntimeException( e );
+    /**
+     * Enumeration of recommended www-form-urlencoded separators.
+     * <p>
+     * Recommended separators are defined by <a
+     * href="http://www.w3.org/TR/REC-html40/interact/forms.html#h-17.13.4.1">HTML 4.01
+     * Specification: application/x-www-form-urlencoded</a> and <a
+     * href="http://www.w3.org/TR/html401/appendix/notes.html#h-B.2.2">HTML 4.01 Specification:
+     * Ampersands in URI attribute values</a>.
+     * <p>
+     * <em>All</em> separators are recognised when parsing query strings. <em>One</em> separator may
+     * be passed to <code>toString</code> and <code>apply</code> when outputting query strings.
+     */
+    public static enum Separator {
+        /**
+         * An ampersand <code>&amp;</code> - the separator recommended by <a
+         * href="http://www.w3.org/TR/REC-html40/interact/forms.html#h-17.13.4.1">HTML 4.01
+         * Specification: application/x-www-form-urlencoded</a>.
+         */
+        AMPERSAND {
+            /**
+             * Returns a String representation of this Separator.
+             * <p>
+             * The String representation matches that defined by the <a
+             * href="http://www.w3.org/TR/REC-html40/interact/forms.html#h-17.13.4.1">HTML 4.01
+             * Specification: application/x-www-form-urlencoded</a>.
+             */
+            @Override
+            public String toString() {
+                return "&";
+            }
+        },
+
+        /**
+         * A semicolon <code>;</code> - the separator recommended by <a
+         * href="http://www.w3.org/TR/html401/appendix/notes.html#h-B.2.2">HTML 4.01 Specification:
+         * Ampersands in URI attribute values</a>.
+         */
+        SEMICOLON {
+            /**
+             * Returns a String representation of this Separator.
+             * <p>
+             * The String representation matches that defined by the <a
+             * href="http://www.w3.org/TR/html401/appendix/notes.html#h-B.2.2">HTML 4.01
+             * Specification: Ampersands in URI attribute values</a>.
+             */
+            @Override
+            public String toString() {
+                return ";";
             }
         }
     }
