@@ -12,11 +12,11 @@
                 <ds:preventDoubleSubmit/>
                 <h:panelGrid columns="3" cellpadding="5" >
                     <p:outputLabel value="#{msg.usernameLabel}:" for="j_username" />
-                    <p:inputText id="j_username" value="#{loginCredentials.userId}" label="username" />
+                    <p:inputText id="j_username" value="#{loginCredentials.userId}" label="username" required="true" />
                     <p:message for="j_username" />
 
                     <p:outputLabel value="#{msg.passwordLabel}:" for="j_password" />
-                    <p:inputText id="j_password" value="#{loginCredentials.password}" label="password" type="password" />
+                    <p:inputText id="j_password" value="#{loginCredentials.password}" label="password" type="password" required="true" />
                     <p:message for="j_password" />
                 </h:panelGrid>
                 <p:panelGrid columns="4" layout="grid" styleClass="button-group">

@@ -31,6 +31,9 @@
             <base-name>messages</base-name>
             <var>msg</var>
         </resource-bundle>
+        <message-bundle>
+            messages
+        </message-bundle>
         <el-resolver>
             org.primefaces.application.exceptionhandler.PrimeExceptionHandlerELResolver
         </el-resolver>
