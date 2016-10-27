@@ -24,7 +24,6 @@ interface Views {
     }
 
     @Secured(value = LoginController.class, errorView = Login)
-    @View(navigation = NavigationMode.REDIRECT, viewParams = View.ViewParameterMode.INCLUDE)
     interface Technology extends ViewConfig {
         class List implements RedirectedPages { }
         @Secured(TechnologyController.class)
