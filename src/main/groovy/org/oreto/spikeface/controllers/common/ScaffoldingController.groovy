@@ -18,26 +18,6 @@ import java.text.MessageFormat
 abstract class ScaffoldingController<T extends BaseEntity, ID extends Serializable> extends LazyDataModel<T>
         implements Scaffolding<T, ID>, AccessDecisionVoter {
 
-    @Override @Transactional
-    public Class<? extends ViewConfig> save() {
-        if(isReadOnly()) Views.Error.Readonly
-        else {
-            entity = repository.save(entity)
-            navigationParameterContext.addPageParameter(idName, entity.id)
-            showView
-        }
-    }
-
-    @Override @Transactional
-    public Class<? extends ViewConfig> delete() {
-        if(!entity?.id || isReadOnly()) notFound()
-        else if(isReadOnly()) readOnly()
-        else {
-            repository.delete(entity.id as ID)
-            listView
-        }
-    }
-
     @Override
     public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
         int offset = getFirst() + first
@@ -112,7 +92,7 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> extends Applica
 
     public void get() {
         if(isReadOnly() && requestUrl == getViewId(saveView)) readOnly()
-        else if(id)  {
+        else if(id != null)  {
             entity = repository.findOne(id)
             if(!entity) notFound()
         } else if(requestUrl == getViewId(showView) && hasFacesError()) notFound()
@@ -149,7 +129,7 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> extends Applica
 
     @Transactional
     public Class<? extends ViewConfig> delete() {
-        if(!entity?.id || isReadOnly()) notFound()
+        if(id == null || isReadOnly()) notFound()
         else if(isReadOnly()) readOnly()
         else {
             repository.delete(entity.id as ID)
@@ -158,7 +138,7 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> extends Applica
     }
 
     public Class<? extends ViewConfig> cancel() {
-        if(!entity?.id) listView
+        if(id == null) listView
         else {
             navigationParameterContext.addPageParameter(idName, id)
             showView

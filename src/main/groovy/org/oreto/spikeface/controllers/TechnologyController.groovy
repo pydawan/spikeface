@@ -16,7 +16,6 @@ import org.springframework.data.domain.Page
 import javax.inject.Inject
 import javax.inject.Named
 
-
 @Named @ViewScoped @ViewRef(config = [Views.Technology.List, Views.Technology.Show, Views.Technology.Save])
 public class TechnologyController extends ScaffoldingController<Technology, Long> {
 
