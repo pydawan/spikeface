@@ -26,9 +26,15 @@
 * pretty URLs
 * mavenized
 
+### initialize Wildfly
+
+```
+mvn wildfly:start
+```
+
 ### Hibernate use latest version on wildfly
 
- * copy hibernate to wildfly server
+ * copy hibernate to Wildfly server
 ```
 mvn dependency:unpack
 ```
