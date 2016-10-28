@@ -93,6 +93,10 @@ trait ApplicationController implements Serializable {
         pretty.getRequestURL().toString()
     }
 
+    public boolean requestEqualsView(Class<? extends ViewConfig> view) {
+        pretty.config.getMappingForUrl(pretty.requestURL).viewId == getViewId(view)
+    }
+
     public String getBaseUrl() {
         getRequest().contextPath
     }

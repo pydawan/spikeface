@@ -9,9 +9,11 @@
                 xmlns:t="http://org.oreto/oui">
 
     <ui:define name="container">
+        <c:set var="totalElements" value="#{technologyController.entities.totalElements}"/>
         <o:form styleClass="hidden-sm-down">
-            <c:set var="totalElements" value="#{technologyController.list().totalElements}"/>
-            <t:data-pager value="#{totalElements}"/>
+            <ui:include src="../datatable/pager.xhtml">
+                <ui:param name="totalElements" value="#{totalElements}"/>
+            </ui:include>
             <p:dataTable var="tech" value="#{technologyController.entities.content}" reflow="true" selectionMode="single" rowKey="#{tech.id}">
 
                 <p:column headerText="#{msg.techNameLabel}" field="name">

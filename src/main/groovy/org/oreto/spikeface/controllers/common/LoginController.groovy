@@ -69,8 +69,7 @@ class LoginController extends BaseAuthenticator implements ApplicationController
     @Override
     public void authenticate() {
         def test = 'test'
-        if (test == credentials.getUserId() &&
-                test == credentials.getPassword()) {
+        if (test == credentials.getUserId() && test == credentials.getPassword()) {
             setStatus(Authenticator.AuthenticationStatus.SUCCESS)
             User user = new User(test)
             setAccount(user)

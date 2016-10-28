@@ -26,7 +26,7 @@ abstract class ScaffoldingController<T extends BaseEntity, ID extends Serializab
         def sortColumn = sortField ?: sort
         def sortDir = sortOrder == SortOrder.ASCENDING ? Sort.Direction.ASC : Sort.Direction.DESC
 
-        if (first == 0 && entities) {
+        if (first == 0 as int && entities) {
             this.setRowCount(entities.totalElements as int)
             entities.content
         } else {
@@ -91,11 +91,13 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> extends Applica
     public getIdName() { 'id' }
 
     public void get() {
-        if(isReadOnly() && requestUrl == getViewId(saveView)) readOnly()
+        if(requestEqualsView(listView))
+            entities = list()
+        else if(isReadOnly() && requestEqualsView(saveView)) readOnly()
         else if(id != null)  {
             entity = repository.findOne(id)
             if(!entity) notFound()
-        } else if(requestUrl == getViewId(showView) && hasFacesError()) notFound()
+        } else if(requestEqualsView(showView) && hasFacesError()) notFound()
     }
 
     public Page<T> list() {
@@ -144,6 +146,8 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> extends Applica
             showView
         }
     }
+
+
 }
 
 
