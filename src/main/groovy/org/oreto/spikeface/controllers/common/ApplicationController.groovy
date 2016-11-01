@@ -6,6 +6,7 @@ import org.apache.deltaspike.core.api.config.view.metadata.ViewConfigResolver
 import org.apache.deltaspike.core.api.config.view.navigation.NavigationParameterContext
 import org.apache.deltaspike.core.api.config.view.navigation.ViewNavigationHandler
 import org.omnifaces.util.Servlets
+import org.oreto.spikeface.utils.UrlEncodedQueryString
 import org.oreto.spikeface.utils.Utils
 import org.picketlink.Identity
 import org.picketlink.idm.IdentityManager
@@ -53,12 +54,28 @@ trait ApplicationController implements Serializable {
         viewNavigationHandler.navigateTo(view)
     }
 
+    public void redirect(Map query) {
+        UrlEncodedQueryString queryString = UrlEncodedQueryString.parse(pretty.requestQueryString.toString())
+        for (Map.Entry<String, String> entry : query.entrySet()) {
+            queryString.append(entry.key, entry.value)
+        }
+        redirect("${getBaseUrl()}${pretty.requestURL}$queryString")
+    }
+
+    public void redirect(Class<? extends ViewConfig> view, Map query) {
+        UrlEncodedQueryString queryString = UrlEncodedQueryString.parse(pretty.requestQueryString.toString())
+        for (Map.Entry<String, String> entry : query.entrySet()) {
+            queryString.append(entry.key, entry.value)
+        }
+        redirect(view, queryString.toString())
+    }
+
     public void redirect(String url) {
         Servlets.facesRedirect(getRequest(), getResponse(), url)
     }
 
     public void redirect(Class<? extends ViewConfig> view, String queryString) {
-        redirect("${getBaseUrl()}${getViewId(view)}?$queryString")
+        redirect("${getBaseUrl()}${getViewId(view)}$queryString")
     }
 
     public void redirect(Class<? extends ViewConfig> view){

@@ -145,12 +145,12 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements Appl
 
     @Override void next() {
         page = page + 1
-        redirect(listView, "page=$page")
+        redirect(["page" : page])
     }
 
     @Override void page(int page) {
         this.page = page
-        redirect(listView, "page=$page")
+        redirect(["page" : page])
     }
 }
 

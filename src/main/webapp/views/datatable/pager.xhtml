@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://primefaces.org/ui">
 
@@ -13,16 +13,16 @@
             <span class="ui-icon ui-icon-seek-prev">P</span>
         </div>
         <span class="ui-paginator-pages">
-            <ui:repeat value="#{paginator.pages}" var="page">
+            <c:forEach items="#{paginator.pages}" var="page">
                 <p:outputLabel rendered="#{paginator.page eq page}"
                         styleClass="ui-paginator-page ui-state-default ui-corner-all ui-state-active">
                         #{page}
                 </p:outputLabel>
 
-                <p:commandLink id="nonAjax" action="#{paginator.page(page)}" ajax="false" value="#{page}"
+                <p:commandLink action="#{paginator.page(page)}" ajax="false" value="#{page}"
                                styleClass="ui-paginator-page ui-state-default ui-corner-all" rendered="#{paginator.page ne page}">
                 </p:commandLink>
-            </ui:repeat>
+            </c:forEach>
 	    </span>
         <a class="ui-paginator-next ui-state-default ui-corner-all" aria-label="Next Page" tabindex="0">
             <span class="ui-icon ui-icon-seek-next">N</span>
