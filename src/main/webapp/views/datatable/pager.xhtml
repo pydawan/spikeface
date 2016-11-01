@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
->
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://primefaces.org/ui">
 
     <div class="ui-paginator ui-paginator-top ui-widget-header ui-corner-top" role="navigation" aria-label="Pagination">
-        <span class="ui-paginator-current">(#{paginator.firstPage} of #{paginator.lastPage})</span>
+        <span class="ui-paginator-current">(#{paginator.page} of #{paginator.totalPages})</span>
         <div class="ui-paginator-first ui-state-default ui-corner-all ui-state-disabled" aria-label="First Page" tabindex="-1">
             <span class="ui-icon ui-icon-seek-first">F</span>
         </div>
@@ -12,21 +13,27 @@
             <span class="ui-icon ui-icon-seek-prev">P</span>
         </div>
         <span class="ui-paginator-pages">
-	        <span class="ui-paginator-page ui-state-default ui-corner-all ui-state-active" aria-label="Page 1" tabindex="0">1</span>
-            <a class="ui-paginator-page ui-state-default ui-corner-all" aria-label="Page 2" tabindex="0"
-               href="/spikeface/technology?dswid=5512&amp;page=2">2</a>
-            <a class="ui-paginator-page ui-state-default ui-corner-all" aria-label="Page 3" tabindex="0" href="/spikeface/technology?dswid=5512&amp;page=3">3</a>
+            <ui:repeat value="#{paginator.pages}" var="page">
+                <p:outputLabel rendered="#{paginator.page eq page}"
+                        styleClass="ui-paginator-page ui-state-default ui-corner-all ui-state-active">
+                        #{page}
+                </p:outputLabel>
+
+                <p:commandLink id="nonAjax" action="#{paginator.page(page)}" ajax="false" value="#{page}"
+                               styleClass="ui-paginator-page ui-state-default ui-corner-all" rendered="#{paginator.page ne page}">
+                </p:commandLink>
+            </ui:repeat>
 	    </span>
-        <a href="/spikeface/technology?dswid=5512&amp;page=2" class="ui-paginator-next ui-state-default ui-corner-all" aria-label="Next Page" tabindex="0">
+        <a class="ui-paginator-next ui-state-default ui-corner-all" aria-label="Next Page" tabindex="0">
             <span class="ui-icon ui-icon-seek-next">N</span>
         </a>
-        <a href="/spikeface/technology?dswid=5512&amp;page=3" class="ui-paginator-last ui-state-default ui-corner-all" aria-label="Last Page" tabindex="0">
+        <a class="ui-paginator-last ui-state-default ui-corner-all" aria-label="Last Page" tabindex="0">
             <span class="ui-icon ui-icon-seek-end">E</span>
         </a>
         <label class="ui-paginator-rpp-label ui-helper-hidden">Rows Per Page</label>
-        <select class="ui-paginator-rpp-options ui-widget ui-state-default ui-corner-left" autocomplete="off"
-                onchange="window.location.href='/spikeface/technology?dswid=5512&amp;size='+this.value">
-            <option value="10" selected="">10</option><option value="5">5</option><option value="20">20</option><option value="50">50</option>
-        </select>
+        <h:selectOneMenu value="#{paginator.size}"
+                            styleClass="ui-paginator-rpp-options ui-widget ui-state-default ui-corner-left">
+            <f:selectItems value="#{paginator.sizeOptions}" />
+        </h:selectOneMenu>
     </div>
 </ui:composition>

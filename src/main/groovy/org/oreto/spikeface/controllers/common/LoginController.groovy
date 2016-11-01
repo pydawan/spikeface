@@ -15,6 +15,7 @@ import org.picketlink.authentication.BaseAuthenticator
 import org.picketlink.authentication.event.LoggedInEvent
 import org.picketlink.authentication.event.LoginFailedEvent
 import org.picketlink.credential.DefaultLoginCredentials
+import org.picketlink.idm.IdentityManagementException
 import org.picketlink.idm.PartitionManager
 import org.picketlink.idm.credential.Password
 import org.picketlink.idm.model.basic.User
@@ -73,8 +74,10 @@ class LoginController extends BaseAuthenticator implements ApplicationController
             setStatus(Authenticator.AuthenticationStatus.SUCCESS)
             User user = new User(test)
             setAccount(user)
-            identityManager.add(user)
-            identityManager.updateCredential(user, new Password(test))
+            try {
+                identityManager.add(user)
+                identityManager.updateCredential(user, new Password(test))
+            } catch (IdentityManagementException e) { logout() }
             20.times {
                 permissionManager.grantPermission(user, technologyData.findOptionalByName(it.toString()).get(), 'manage')
             }

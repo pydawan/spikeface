@@ -12,7 +12,7 @@
         <c:set var="totalElements" value="#{technologyController.entities.totalElements}"/>
         <o:form styleClass="hidden-sm-down">
             <ui:include src="../datatable/pager.xhtml">
-                <ui:param name="totalElements" value="#{totalElements}"/>
+                <ui:param name="paginator" value="#{technologyController}"/>
             </ui:include>
             <p:dataTable var="tech" value="#{technologyController.entities.content}" reflow="true" selectionMode="single" rowKey="#{tech.id}">
 

@@ -67,7 +67,7 @@ abstract class ScaffoldingController<T extends BaseEntity, ID extends Serializab
     }
 }
 
-trait Scaffolding<T extends BaseEntity, ID extends Serializable> extends ApplicationController {
+trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements ApplicationController, Pageable  {
 
     abstract void setEntity(T entity)
     abstract T getEntity()
@@ -78,12 +78,6 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> extends Applica
     abstract Class<? extends ViewConfig> getShowView()
     abstract Class<? extends ViewConfig> getListView()
     abstract Class<? extends ViewConfig> getSaveView()
-
-    // pagination
-    abstract int getPage()
-    abstract int getSize()
-    abstract String getSort()
-    abstract String getDir()
 
     boolean isReadOnly() { false }
     boolean isReadWrite() { !isReadOnly() }
@@ -147,7 +141,62 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> extends Applica
         }
     }
 
+    @Override public int getTotal() { entities?.totalElements ?: 0 }
 
+    @Override void next() {
+        page = page + 1
+        redirect(listView, "page=$page")
+    }
+
+    @Override void page(int page) {
+        this.page = page
+        redirect(listView, "page=$page")
+    }
+}
+
+trait Pageable {
+    static Integer defaultPage = 1
+    static Integer defaultSize = 10
+
+    abstract int getTotal()
+    abstract int getPage()
+    abstract void setPage(int page)
+    abstract int getSize()
+    abstract String getSort()
+    abstract String getDir()
+    abstract void next()
+    abstract void page(int page)
+
+    List getSizeOptions() {
+        ([size] + [5, 10, 20, 50]).unique()
+    }
+
+    int getTotalPages(){
+        int size = size ?: defaultSize
+        total / size + (total % size > 0 ? 1 : 0)
+    }
+
+    List getPages() {
+        int page = page ?: defaultPage
+        int maxPages = 6
+        int firstPage
+        int lastPage
+        if(maxPages < totalPages) {
+            int right = page
+            int left = page
+
+            while (right - left < maxPages - 1){
+                if (left > 1) left--
+                if (right - left < maxPages - 1 && right < totalPages) right++
+            }
+            firstPage = left
+            lastPage = right
+        } else {
+            firstPage = 1
+            lastPage = totalPages
+        }
+        (firstPage..lastPage)
+    }
 }
 
 
