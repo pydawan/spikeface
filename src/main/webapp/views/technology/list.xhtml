@@ -2,13 +2,14 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" template="../template.xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:o="http://omnifaces.org/ui"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:c="http://java.sun.com/jsp/jstl/core"
-                xmlns:t="http://org.oreto/oui">
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
 
     <ui:define name="container">
+        <script type="application/javascript">
+            var defaultUrl = "#{technologyController.defaultUrl}";
+        </script>
         <c:set var="totalElements" value="#{technologyController.entities.totalElements}"/>
         <o:form styleClass="hidden-sm-down">
             <ui:include src="../datatable/pager.xhtml">
@@ -17,16 +18,18 @@
             <p:dataTable var="tech" value="#{technologyController.entities.content}" reflow="true" selectionMode="single" rowKey="#{tech.id}">
 
                 <p:column headerText="#{msg.techNameLabel}" field="name">
-                    <h:link value="#{tech.name}" outcome="#{technologyController.showView}">
-                        <f:param name="id" value="#{tech.id}" />
-                    </h:link>
+                    <p:commandLink value="#{tech.name}" action="#{technologyController.show(tech.id)}" ajax="false"/>
                 </p:column>
 
                 <p:column headerText="#{msg.techVersionLabel}" field="versionName">
                     <h:outputText value="#{tech.versionName}" />
                 </p:column>
             </p:dataTable>
-            <t:data-pager value="#{totalElements}" location="bottom" rendered="#{technologyController.size >= 20}"/>
+            <ui:include src="../datatable/pager.xhtml">
+                <ui:param name="location" value="bottom"/>
+                <ui:param name="visible" value="#{technologyController.size >= 20}"/>
+                <ui:param name="paginator" value="#{technologyController}"/>
+            </ui:include>
         </o:form>
 
         <p:dataScroller value="#{technologyController}" styleClass="hidden-md-up" var="tech" lazy="true" chunkSize="10">

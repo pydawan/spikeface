@@ -3,15 +3,18 @@
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://primefaces.org/ui">
-
-    <div class="ui-paginator ui-paginator-top ui-widget-header ui-corner-top" role="navigation" aria-label="Pagination">
+    <c:set var="locationClass" value="#{location == 'bottom' ? 'ui-corner-bottom' : 'ui-corner-top'}"/>
+    <c:set var="display" value="#{visible == false ? 'none' : 'inherit'}"/>
+    <div class="ui-paginator ui-paginator-top ui-widget-header #{locationClass}" style="display: #{display};" role="navigation" aria-label="Pagination">
         <span class="ui-paginator-current">(#{paginator.page} of #{paginator.totalPages})</span>
-        <div class="ui-paginator-first ui-state-default ui-corner-all ui-state-disabled" aria-label="First Page" tabindex="-1">
+        <p:commandLink action="#{paginator.first()}" ajax="false" disabled="#{paginator.page == 1}"
+                       styleClass="ui-paginator-first ui-state-default ui-corner-all" >
             <span class="ui-icon ui-icon-seek-first">F</span>
-        </div>
-        <div class="ui-paginator-prev ui-state-default ui-corner-all ui-state-disabled" aria-label="Previous Page" tabindex="-1">
+        </p:commandLink>
+        <p:commandLink action="#{paginator.previous()}" ajax="false" disabled="#{paginator.page == 1}"
+                       styleClass="ui-paginator-prev ui-state-default ui-corner-all" >
             <span class="ui-icon ui-icon-seek-prev">P</span>
-        </div>
+        </p:commandLink>
         <span class="ui-paginator-pages">
             <c:forEach items="#{paginator.pages}" var="page">
                 <p:outputLabel rendered="#{paginator.page eq page}"
@@ -27,11 +30,12 @@
                        styleClass="ui-paginator-next ui-state-default ui-corner-all" >
             <span class="ui-icon ui-icon-seek-next">N</span>
         </p:commandLink>
-        <a class="ui-paginator-last ui-state-default ui-corner-all" aria-label="Last Page" tabindex="0">
+        <p:commandLink action="#{paginator.last()}" ajax="false" disabled="#{paginator.page == paginator.totalPages}"
+                       styleClass="ui-paginator-last ui-state-default ui-corner-all" >
             <span class="ui-icon ui-icon-seek-end">E</span>
-        </a>
+        </p:commandLink>
         <label class="ui-paginator-rpp-label ui-helper-hidden">Rows Per Page</label>
-        <h:selectOneMenu value="#{paginator.size}"
+        <h:selectOneMenu value="#{paginator.size}" onchange="window.location.href = defaultUrl + '&amp;page=1&amp;size=' + this.value;"
                             styleClass="ui-paginator-rpp-options ui-widget ui-state-default ui-corner-left">
             <f:selectItems value="#{paginator.sizeOptions}" />
         </h:selectOneMenu>

@@ -6,6 +6,8 @@ import org.apache.deltaspike.security.api.authorization.AccessDecisionVoter
 import org.apache.deltaspike.security.api.authorization.AccessDecisionVoterContext
 import org.apache.deltaspike.security.api.authorization.SecurityViolation
 import org.oreto.spikeface.models.common.BaseEntity
+import org.oreto.spikeface.utils.UrlEncodedQueryString
+import org.oreto.spikeface.utils.Utils
 import org.primefaces.model.LazyDataModel
 import org.primefaces.model.SortOrder
 import org.springframework.data.domain.Page
@@ -21,7 +23,7 @@ abstract class ScaffoldingController<T extends BaseEntity, ID extends Serializab
     @Override
     public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
         int offset = getFirst() + first
-        int size = pageSize ?: DataPager.defaultSize
+        int size = pageSize ?: Pageable.defaultSize
         int page = offset / size
         def sortColumn = sortField ?: sort
         def sortDir = sortOrder == SortOrder.ASCENDING ? Sort.Direction.ASC : Sort.Direction.DESC
@@ -38,8 +40,8 @@ abstract class ScaffoldingController<T extends BaseEntity, ID extends Serializab
     }
 
     int getFirst() {
-        int page = page ?: DataPager.defaultPage
-        int size = this.size ?: DataPager.defaultSize
+        int page = page ?: Pageable.defaultPage
+        int size = this.size ?: Pageable.defaultSize
         int first = (page - 1) * size
         first
     }
@@ -74,6 +76,7 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements Appl
     abstract void setEntities(Page<T> entities)
     abstract Page<T> getEntities()
     abstract ID getId()
+    abstract void setId(ID id)
     abstract JpaRepository<T, ID> getRepository()
     abstract Class<? extends ViewConfig> getShowView()
     abstract Class<? extends ViewConfig> getListView()
@@ -85,9 +88,9 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements Appl
     public getIdName() { 'id' }
 
     public void get() {
-        if(requestEqualsView(listView))
+        if(requestEqualsView(listView)) {
             entities = list()
-        else if(isReadOnly() && requestEqualsView(saveView)) readOnly()
+        } else if(isReadOnly() && requestEqualsView(saveView)) readOnly()
         else if(id != null)  {
             entity = repository.findOne(id)
             if(!entity) notFound()
@@ -95,8 +98,8 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements Appl
     }
 
     public Page<T> list() {
-        int page = page ?: DataPager.defaultPage
-        int size = size ?: DataPager.defaultSize
+        int page = page ?: Pageable.defaultPage
+        int size = size ?: Pageable.defaultSize
         def direction = DataHeader.ascendingOrder == dir ? Sort.Direction.ASC : Sort.Direction.DESC
         if(sort)
             entities = repository.findAll(new PageRequest(page - 1, size, direction, sort))
@@ -106,6 +109,12 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements Appl
 
     public int getCount() {
         repository.count()
+    }
+
+    public Class<? extends ViewConfig> show(ID id) {
+        this.id = id
+        navigationParameterContext.addPageParameter(idName, id)
+        showView
     }
 
     public Class<? extends ViewConfig> edit() {
@@ -134,38 +143,73 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements Appl
     }
 
     public Class<? extends ViewConfig> cancel() {
-        if(id == null) listView
-        else {
+        if(id == null) {
+            back()
+        } else {
             navigationParameterContext.addPageParameter(idName, id)
             showView
         }
+    }
+
+    public Class<? extends ViewConfig> back() {
+        if(page) navigationParameterContext.addPageParameter(pageParamName, page)
+        if(size) navigationParameterContext.addPageParameter(sizeParamName, size)
+        listView
     }
 
     @Override public int getTotal() { entities?.totalElements ?: 0 }
 
     @Override void next() {
         page = page + 1
-        redirect(["page" : page])
+        redirect(["${pageParamName}" : page, "${sizeParamName}" : size])
+    }
+
+    @Override void last() {
+        page = totalPages
+        redirect(["${pageParamName}" : page, "${sizeParamName}" : size])
+    }
+
+    @Override void previous() {
+        page = page - 1
+        redirect(["${pageParamName}" : page, "${sizeParamName}" : size])
+    }
+
+    @Override void first() {
+        page = 1
+        redirect(["${pageParamName}" : page, "${sizeParamName}" : size])
     }
 
     @Override void page(int page) {
         this.page = page
-        redirect(["page" : page])
+        redirect(["${pageParamName}" : page, "${sizeParamName}" : size])
+    }
+
+    @Override String getDefaultUrl() {
+        def url = Utils.getPrettyUrl(facesContext)
+        UrlEncodedQueryString queryString = UrlEncodedQueryString.parse(url)
+        queryString.remove(pageParamName).remove(sizeParamName).toString()
     }
 }
 
 trait Pageable {
     static Integer defaultPage = 1
     static Integer defaultSize = 10
+    static String pageParamName = 'page'
+    static String sizeParamName = 'size'
 
     abstract int getTotal()
     abstract int getPage()
     abstract void setPage(int page)
     abstract int getSize()
+    abstract void setSize(int size)
     abstract String getSort()
     abstract String getDir()
     abstract void next()
+    abstract void last()
     abstract void page(int page)
+    abstract void previous()
+    abstract void first()
+    abstract String getDefaultUrl()
 
     List getSizeOptions() {
         ([size] + [5, 10, 20, 50]).unique()

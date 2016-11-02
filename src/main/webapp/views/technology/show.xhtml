@@ -18,7 +18,7 @@
                                      ajax="false" rendered="#{technologyController.readWrite and technologyController.hasPermission('manage')}"/>
                     <p:commandButton value="#{msg.deleteLabel}" icon="fa fa-remove" title="#{msg.deleteLabel}" action="#{technologyController.delete}"
                                      ajax="false" rendered="#{technologyController.readWrite and technologyController.hasPermission('manage')}"/>
-                    <p:button value="#{msg.backLabel}" icon="fa fa-arrow-left" outcome="#{technologyController.listView}"/>
+                    <p:commandButton value="#{msg.backLabel}" icon="fa fa-arrow-left" action="#{technologyController.back}" ajax="false"/>
                 </p:panelGrid>
             </h:form>
         </p:panel>
