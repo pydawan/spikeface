@@ -2,6 +2,10 @@ html {
     background:#1f1f2e;
 }
 
+.ui-widget {
+    font-size: 1em;
+}
+
 .ui-menu .ui-menuitem {
     padding: 5px;
 }

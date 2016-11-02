@@ -20,13 +20,13 @@
                 </p:outputLabel>
 
                 <p:commandLink action="#{paginator.page(page)}" ajax="false" value="#{page}"
-                               styleClass="ui-paginator-page ui-state-default ui-corner-all" rendered="#{paginator.page ne page}">
-                </p:commandLink>
+                               styleClass="ui-paginator-page ui-state-default ui-corner-all" rendered="#{paginator.page ne page}"/>
             </c:forEach>
 	    </span>
-        <a class="ui-paginator-next ui-state-default ui-corner-all" aria-label="Next Page" tabindex="0">
+        <p:commandLink action="#{paginator.next()}" ajax="false" disabled="#{paginator.page == paginator.totalPages}"
+                       styleClass="ui-paginator-next ui-state-default ui-corner-all" >
             <span class="ui-icon ui-icon-seek-next">N</span>
-        </a>
+        </p:commandLink>
         <a class="ui-paginator-last ui-state-default ui-corner-all" aria-label="Last Page" tabindex="0">
             <span class="ui-icon ui-icon-seek-end">E</span>
         </a>
