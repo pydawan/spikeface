@@ -39,6 +39,6 @@ public class TechnologyController extends ScaffoldingController<Technology, Long
     @Override @Secured(TechnologyController.class) @Transactional
     Class<? extends ViewConfig> save() { super.save() }
 
-    @Override int getPage() { this.page ?: defaultPage }
-    @Override int getSize() { this.size ?: defaultSize }
+    @Override int getPage() { page > 0 ? page : defaultPage }
+    @Override int getSize() { size > 0 ? size : defaultSize }
 }

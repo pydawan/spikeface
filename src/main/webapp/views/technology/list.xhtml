@@ -7,9 +7,6 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core">
 
     <ui:define name="container">
-        <script type="application/javascript">
-            var defaultUrl = "#{technologyController.defaultUrl}";
-        </script>
         <c:set var="totalElements" value="#{technologyController.entities.totalElements}"/>
         <o:form styleClass="hidden-sm-down">
             <ui:include src="../datatable/pager.xhtml">

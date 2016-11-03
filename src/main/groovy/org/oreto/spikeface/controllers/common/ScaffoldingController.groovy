@@ -6,8 +6,6 @@ import org.apache.deltaspike.security.api.authorization.AccessDecisionVoter
 import org.apache.deltaspike.security.api.authorization.AccessDecisionVoterContext
 import org.apache.deltaspike.security.api.authorization.SecurityViolation
 import org.oreto.spikeface.models.common.BaseEntity
-import org.oreto.spikeface.utils.UrlEncodedQueryString
-import org.oreto.spikeface.utils.Utils
 import org.primefaces.model.LazyDataModel
 import org.primefaces.model.SortOrder
 import org.springframework.data.domain.Page
@@ -152,42 +150,52 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements Appl
     }
 
     public Class<? extends ViewConfig> back() {
-        if(page) navigationParameterContext.addPageParameter(pageParamName, page)
-        if(size) navigationParameterContext.addPageParameter(sizeParamName, size)
+        addPagerParams()
         listView
+    }
+
+    def void addPagerParams() {
+        if(page > 0) navigationParameterContext.addPageParameter(pageParamName, page)
+        if(size > 0) navigationParameterContext.addPageParameter(sizeParamName, size)
+        if(sort) navigationParameterContext.addPageParameter(sortParamName, sort)
+        if(dir) navigationParameterContext.addPageParameter(dirParamName, dir)
     }
 
     @Override public int getTotal() { entities?.totalElements ?: 0 }
 
-    @Override void next() {
+    @Override Class<? extends ViewConfig> next() {
         page = page + 1
-        redirect(["${pageParamName}" : page, "${sizeParamName}" : size])
+        addPagerParams()
+        listView
     }
 
-    @Override void last() {
+    @Override Class<? extends ViewConfig> last() {
         page = totalPages
-        redirect(["${pageParamName}" : page, "${sizeParamName}" : size])
+        addPagerParams()
+        listView
     }
 
-    @Override void previous() {
+    @Override Class<? extends ViewConfig> previous() {
         page = page - 1
-        redirect(["${pageParamName}" : page, "${sizeParamName}" : size])
+        addPagerParams()
+        listView
     }
 
-    @Override void first() {
+    @Override Class<? extends ViewConfig> first() {
         page = 1
-        redirect(["${pageParamName}" : page, "${sizeParamName}" : size])
+        addPagerParams()
+        listView
     }
 
-    @Override void page(int page) {
+    @Override Class<? extends ViewConfig> sizeChanged() {
+        addPagerParams()
+        listView
+    }
+
+    @Override Class<? extends ViewConfig> page(int page) {
         this.page = page
-        redirect(["${pageParamName}" : page, "${sizeParamName}" : size])
-    }
-
-    @Override String getDefaultUrl() {
-        def url = Utils.getPrettyUrl(facesContext)
-        UrlEncodedQueryString queryString = UrlEncodedQueryString.parse(url)
-        queryString.remove(pageParamName).remove(sizeParamName).toString()
+        addPagerParams()
+        listView
     }
 }
 
@@ -196,6 +204,8 @@ trait Pageable {
     static Integer defaultSize = 10
     static String pageParamName = 'page'
     static String sizeParamName = 'size'
+    static String sortParamName = 'sort'
+    static String dirParamName = 'dir'
 
     abstract int getTotal()
     abstract int getPage()
@@ -204,12 +214,12 @@ trait Pageable {
     abstract void setSize(int size)
     abstract String getSort()
     abstract String getDir()
-    abstract void next()
-    abstract void last()
-    abstract void page(int page)
-    abstract void previous()
-    abstract void first()
-    abstract String getDefaultUrl()
+    abstract Class<? extends ViewConfig> next()
+    abstract Class<? extends ViewConfig> last()
+    abstract Class<? extends ViewConfig> page(int page)
+    abstract Class<? extends ViewConfig> previous()
+    abstract Class<? extends ViewConfig> first()
+    abstract Class<? extends ViewConfig> sizeChanged()
 
     List getSizeOptions() {
         ([size] + [5, 10, 20, 50]).unique()
