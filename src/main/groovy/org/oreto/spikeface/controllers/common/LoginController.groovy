@@ -78,11 +78,11 @@ class LoginController extends BaseAuthenticator implements ApplicationController
             try {
                 identityManager.add(user)
                 identityManager.updateCredential(user, new Password(test))
+                20.times {
+                    permissionManager.grantPermission(user, technologyData.findOptionalByName(it.toString()).get(), 'manage')
+                }
             } catch (IdentityManagementException e) {
                 logout()
-            }
-            20.times {
-                permissionManager.grantPermission(user, technologyData.findOptionalByName(it.toString()).get(), 'manage')
             }
         } else {
             setStatus(Authenticator.AuthenticationStatus.FAILURE)

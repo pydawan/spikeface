@@ -17,8 +17,8 @@
             <ui:include src="../datatable/pager.xhtml">
                 <ui:param name="paginator" value="#{technologyController}"/>
             </ui:include>
+            <p:remoteCommand name="sort" action="#{technologyController.sortBy}" />
             <p:dataTable var="tech" value="#{technologyController.entities.content}" reflow="true" selectionMode="single" rowKey="#{tech.id}">
-
                 <p:column headerText="#{msg.techNameLabel}" field="name">
                     <p:commandLink value="#{tech.name}" action="#{technologyController.show(tech.id)}" ajax="false"/>
                 </p:column>
