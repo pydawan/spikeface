@@ -14,11 +14,11 @@
 <h:body>
     <h:outputStylesheet library="css" name="application.css" />
     <o:importFunctions type="org.oreto.spikeface.utils.Utils" />
-
+    <o:importFunctions type="org.oreto.spikeface.controllers.common.Pageable" var="Page" />
     <p:menubar>
         <p:menuitem value="#{msg.homeNavLabel}" url="/" />
         <p:submenu label="#{msg.technologyNavLabel}">
-            <p:menuitem value="#{msg.listLabel}" url="#{navigationController.techListView}" />
+            <p:menuitem value="#{msg.listLabel}" url="#{navigationController.techListView}?page=#{Page.defaultPage}&amp;size=#{Page.defaultSize}" />
             <p:menuitem value="#{msg.createLabel}" url="#{navigationController.techSaveView}" rendered="#{technologyController.readWrite}" />
         </p:submenu>
         <f:facet name="options">

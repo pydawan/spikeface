@@ -159,8 +159,10 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements Appl
     def void addPagerParams() {
         if(page > 0) navigationParameterContext.addPageParameter(pageParamName, page)
         if(size > 0) navigationParameterContext.addPageParameter(sizeParamName, size)
-        if(sort) navigationParameterContext.addPageParameter(sortParamName, sort)
-        if(dir) navigationParameterContext.addPageParameter(dirParamName, dir)
+        if(sort) {
+            navigationParameterContext.addPageParameter(sortParamName, sort)
+            if(dir) navigationParameterContext.addPageParameter(dirParamName, dir)
+        }
     }
 
     @Override public int getTotal() { entities?.totalElements ?: 0 }
@@ -195,6 +197,10 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements Appl
         listView
     }
 
+    @Override void sizeChanged() {
+        page = 1
+    }
+
     @Override String getDefaultUrl() {
         def url = Utils.getPrettyUrl(facesContext)
         UrlEncodedQueryString queryString = UrlEncodedQueryString.parse(url)
@@ -223,6 +229,7 @@ trait Pageable {
     abstract Class<? extends ViewConfig> previous()
     abstract Class<? extends ViewConfig> first()
     abstract String getDefaultUrl()
+    abstract void sizeChanged()
 
     List getSizeOptions() {
         ([size] + [5, 10, 20, 50]).unique()
