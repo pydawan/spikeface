@@ -6,6 +6,8 @@ import org.apache.deltaspike.security.api.authorization.AccessDecisionVoter
 import org.apache.deltaspike.security.api.authorization.AccessDecisionVoterContext
 import org.apache.deltaspike.security.api.authorization.SecurityViolation
 import org.oreto.spikeface.models.common.BaseEntity
+import org.oreto.spikeface.utils.UrlEncodedQueryString
+import org.oreto.spikeface.utils.Utils
 import org.primefaces.model.LazyDataModel
 import org.primefaces.model.SortOrder
 import org.springframework.data.domain.Page
@@ -187,15 +189,16 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements Appl
         listView
     }
 
-    @Override Class<? extends ViewConfig> sizeChanged() {
-        addPagerParams()
-        listView
-    }
-
     @Override Class<? extends ViewConfig> page(int page) {
         this.page = page
         addPagerParams()
         listView
+    }
+
+    @Override String getDefaultUrl() {
+        def url = Utils.getPrettyUrl(facesContext)
+        UrlEncodedQueryString queryString = UrlEncodedQueryString.parse(url)
+        queryString.remove(pageParamName).remove(sizeParamName).toString()
     }
 }
 
@@ -219,7 +222,7 @@ trait Pageable {
     abstract Class<? extends ViewConfig> page(int page)
     abstract Class<? extends ViewConfig> previous()
     abstract Class<? extends ViewConfig> first()
-    abstract Class<? extends ViewConfig> sizeChanged()
+    abstract String getDefaultUrl()
 
     List getSizeOptions() {
         ([size] + [5, 10, 20, 50]).unique()
