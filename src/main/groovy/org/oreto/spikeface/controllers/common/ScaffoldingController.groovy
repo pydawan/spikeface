@@ -206,6 +206,10 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements Appl
         UrlEncodedQueryString queryString = UrlEncodedQueryString.parse(url)
         queryString.remove(pageParamName).remove(sizeParamName).toString()
     }
+
+    def sortBy() {
+        sort = getParam('name')
+    }
 }
 
 trait Pageable {
@@ -222,6 +226,7 @@ trait Pageable {
     abstract int getSize()
     abstract void setSize(int size)
     abstract String getSort()
+    abstract void setSort(String sort)
     abstract String getDir()
     abstract Class<? extends ViewConfig> next()
     abstract Class<? extends ViewConfig> last()

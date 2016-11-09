@@ -14,7 +14,8 @@ import javax.faces.event.PreRenderViewEvent
 import javax.faces.view.ViewDeclarationLanguage
 import javax.servlet.http.HttpServletRequest
 
-class Utils {
+public class Utils {
+
     public static String getHeader(String header) {
         FacesContext.currentInstance.externalContext.requestHeaderMap.get(header)
     }

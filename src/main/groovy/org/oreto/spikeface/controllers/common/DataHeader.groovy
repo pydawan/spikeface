@@ -40,7 +40,7 @@ class DataHeader extends DataTableRenderer {
 
         ResponseWriter writer = context.getResponseWriter()
         def header = """<th class="ui-state-default ui-state-hover" role="columnheader"
-aria-label="$text: activate to sort column $sortDirection" onclick="window.location.href='$queryString';"
+aria-label="$text: activate to sort column $sortDirection" onclick="sort([{name:'name',value:'$field'}]); window.location.href='$queryString';"
  scope="col" tabindex="0" aria-sort="other"><span class="ui-column-title">$text</span><span class="ui-sortable-column-icon ui-icon $sortIconClass"></span></th>
 """
         writer.write(header)

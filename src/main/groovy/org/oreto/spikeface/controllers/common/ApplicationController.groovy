@@ -136,4 +136,9 @@ trait ApplicationController implements Serializable {
     public void putSession(String key, Object val) {
         getSession().put(key, val)
     }
+
+    public String getParam(String name) {
+        Map<String,String> params = facesContext.getExternalContext().getRequestParameterMap()
+        params.get(name)
+    }
 }
