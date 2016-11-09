@@ -6,7 +6,6 @@ import org.apache.deltaspike.security.api.authorization.AccessDecisionVoter
 import org.apache.deltaspike.security.api.authorization.AccessDecisionVoterContext
 import org.apache.deltaspike.security.api.authorization.SecurityViolation
 import org.oreto.spikeface.models.common.BaseEntity
-import org.oreto.spikeface.utils.UrlEncodedQueryString
 import org.oreto.spikeface.utils.Utils
 import org.primefaces.model.LazyDataModel
 import org.primefaces.model.SortOrder
@@ -69,7 +68,7 @@ abstract class ScaffoldingController<T extends BaseEntity, ID extends Serializab
     }
 }
 
-trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements ApplicationController, Pageable  {
+trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements ApplicationController, Pageable {
 
     abstract void setEntity(T entity)
     abstract T getEntity()
@@ -202,13 +201,12 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements Appl
     }
 
     @Override String getDefaultUrl() {
-        def url = Utils.getPrettyUrl(facesContext)
-        UrlEncodedQueryString queryString = UrlEncodedQueryString.parse(url)
-        queryString.remove(pageParamName).remove(sizeParamName).toString()
+        Utils.newQueryString(facesContext, pageParamName, sizeParamName)
     }
 
     def sortBy() {
-        sort = getParam('name')
+        sort = getParam(DataHeader.sortParamName)
+        dir = getParam(DataHeader.dirParamName)
     }
 }
 
@@ -228,6 +226,7 @@ trait Pageable {
     abstract String getSort()
     abstract void setSort(String sort)
     abstract String getDir()
+    abstract void setDir(String dir)
     abstract Class<? extends ViewConfig> next()
     abstract Class<? extends ViewConfig> last()
     abstract Class<? extends ViewConfig> page(int page)

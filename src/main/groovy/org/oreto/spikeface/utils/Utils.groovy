@@ -1,6 +1,8 @@
 package org.oreto.spikeface.utils
 
 import com.ocpsoft.pretty.PrettyContext
+import org.apache.http.client.utils.URLEncodedUtils
+import org.apache.http.message.BasicNameValuePair
 import org.omnifaces.context.OmniPartialViewContext
 import org.primefaces.util.ComponentUtils
 
@@ -13,6 +15,7 @@ import javax.faces.event.PhaseId
 import javax.faces.event.PreRenderViewEvent
 import javax.faces.view.ViewDeclarationLanguage
 import javax.servlet.http.HttpServletRequest
+import java.nio.charset.Charset
 
 public class Utils {
 
@@ -77,7 +80,33 @@ public class Utils {
         else "${request.getContextPath()}$pretty.requestURL"
     }
 
-    static UrlEncodedQueryString newQueryString(FacesContext context) {
-        UrlEncodedQueryString.parse(getPrettyUrl(context))
+    static String newQueryString(FacesContext context, Map<String, String> params) {
+        def pretty = PrettyContext.currentInstance
+        Map<String, String> paramMap = URLEncodedUtils.parse(pretty.requestQueryString.toString(), Charset.defaultCharset()).collectEntries {
+            [(it.name.startsWith('?') ? it.name.substring(1) : it.name) : it.value]
+        }
+        params.each {
+            paramMap.put(it.key.toString(), it.value)
+        }
+        def nameValues = paramMap.collect {
+            new BasicNameValuePair(it.key, it.value)
+        }
+        String newQS = URLDecoder.decode(URLEncodedUtils.format(nameValues, Charset.defaultCharset()), Charset.defaultCharset().name())
+        def request = context.getExternalContext().request as HttpServletRequest
+        "${request.getContextPath()}${pretty.requestURL}?${newQS}"
+    }
+
+    static String newQueryString(FacesContext context, String...exclude) {
+        def pretty = PrettyContext.currentInstance
+        Map<String, String> paramMap = URLEncodedUtils.parse(pretty.requestQueryString.toString(), Charset.defaultCharset()).collectEntries {
+            [(it.name.startsWith('?') ? it.name.substring(1) : it.name) : it.value]
+        }
+        exclude.each { paramMap.remove(it) }
+        def nameValues = paramMap.collect {
+            new BasicNameValuePair(it.key, it.value)
+        }
+        String newQS = URLDecoder.decode(URLEncodedUtils.format(nameValues, Charset.defaultCharset()), Charset.defaultCharset().name())
+        def request = context.getExternalContext().request as HttpServletRequest
+        "${request.getContextPath()}${pretty.requestURL}?${newQS}"
     }
 }
