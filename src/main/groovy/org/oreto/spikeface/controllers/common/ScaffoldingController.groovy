@@ -126,6 +126,7 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements Appl
         if(isReadOnly()) Views.Error.Readonly
         else {
             entity = repository.save(entity)
+            id = entity.id as ID
             navigationParameterContext.addPageParameter(idName, entity.id)
             showView
         }
@@ -137,13 +138,16 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements Appl
         else if(isReadOnly()) readOnly()
         else {
             repository.delete(entity.id as ID)
-            listView
+            //// TODO; handle deleting record and encountering broken paging.
+            if(page > totalPages) page(1)
+            else listView
         }
     }
 
     public Class<? extends ViewConfig> cancel() {
         if(id == null) {
-            back()
+            addPagerParams()
+            listView
         } else {
             navigationParameterContext.addPageParameter(idName, id)
             showView

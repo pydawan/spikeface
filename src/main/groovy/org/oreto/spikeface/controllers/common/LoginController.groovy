@@ -50,9 +50,9 @@ class LoginController extends BaseAuthenticator implements ApplicationController
     }
 
     public void logout() {
-        if(identity.getAccount())
+        if(identity?.getAccount())
             identityManager.remove(identity.getAccount())
-        identity.logout()
+        identity?.logout()
         redirect(Views.Login)
     }
 
