@@ -138,9 +138,10 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements Appl
         else if(isReadOnly()) readOnly()
         else {
             repository.delete(entity.id as ID)
-            //// TODO; handle deleting record and encountering broken paging.
-            if(page > totalPages) page(1)
-            else listView
+
+            int newTotal = total - 1
+            page = newTotal / size + (newTotal % size > 0 ? 1 : 0)
+            listView
         }
     }
 
