@@ -50,7 +50,7 @@ class LoginController extends BaseAuthenticator implements ApplicationController
     }
 
     public void logout() {
-        if(identity?.getAccount())
+        if(identity?.getAccount()?.id != null)
             identityManager.remove(identity.getAccount())
         identity?.logout()
         redirect(Views.Login)
@@ -82,7 +82,10 @@ class LoginController extends BaseAuthenticator implements ApplicationController
                     permissionManager.grantPermission(user, technologyData.findOptionalByName(it.toString()).get(), 'manage')
                 }
             } catch (IdentityManagementException e) {
-                logout()
+                if(identity?.getAccount()?.id != null)
+                    identityManager.remove(identity.getAccount())
+                identity?.logout()
+                setStatus(Authenticator.AuthenticationStatus.FAILURE)
             }
         } else {
             setStatus(Authenticator.AuthenticationStatus.FAILURE)

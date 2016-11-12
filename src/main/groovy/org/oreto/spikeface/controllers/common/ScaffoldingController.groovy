@@ -140,7 +140,9 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements Appl
             repository.delete(entity.id as ID)
 
             int newTotal = total - 1
-            page = newTotal / size + (newTotal % size > 0 ? 1 : 0)
+            int lastPage = newTotal / size + (newTotal % size > 0 ? 1 : 0)
+            if(page > lastPage) page = lastPage
+            addPagerParams()
             listView
         }
     }

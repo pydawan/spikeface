@@ -49,4 +49,8 @@
         <location>/404</location>
     </error-page>
 
+    <session-config>
+        <!-- Session idle timeout in min. -->
+        <session-timeout>1</session-timeout>
+    </session-config>
 </web-app>

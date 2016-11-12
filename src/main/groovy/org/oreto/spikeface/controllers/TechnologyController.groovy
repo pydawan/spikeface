@@ -36,13 +36,13 @@ public class TechnologyController extends ScaffoldingController<Technology, Long
 
     @PreRenderView protected void preRenderView() { get() }
 
+    @Override int getPage() { page > 0 ? page : defaultPage }
+    @Override int getSize() { size > 0 ? size : defaultSize }
+
     @Override @Secured(TechnologyController.class) @Transactional
     Class<? extends ViewConfig> save() {
         def view = super.save()
         permissionManager.grantPermission(identity.getAccount(), entity, 'manage')
         view
     }
-
-    @Override int getPage() { page > 0 ? page : defaultPage }
-    @Override int getSize() { size > 0 ? size : defaultSize }
 }
