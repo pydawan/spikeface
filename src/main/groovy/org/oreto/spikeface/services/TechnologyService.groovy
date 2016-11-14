@@ -2,6 +2,8 @@ package org.oreto.spikeface.services
 
 import com.ocpsoft.pretty.PrettyContext
 import org.apache.deltaspike.core.api.common.DeltaSpike
+import org.apache.deltaspike.core.api.projectstage.ProjectStage
+import org.apache.deltaspike.core.util.ProjectStageProducer
 import org.hibernate.Hibernate
 import org.omnifaces.config.OmniFaces
 import org.oreto.spikeface.models.Technology
@@ -22,6 +24,9 @@ public class TechnologyService implements Serializable {
 
     @PostConstruct
     public void initDatabase() {
+        //System.setProperty("org.apache.deltaspike.ProjectStage", "Development")
+        resolveProjectStage()
+
         def technologies = [:]
         technologies[GroovySystem.name] = GroovySystem.version
         technologies[DeltaSpike.package.name] = DeltaSpike.package.implementationVersion
@@ -47,5 +52,14 @@ public class TechnologyService implements Serializable {
                 entityRepository.save(technology)
             }
         }
+    }
+
+    public ProjectStage resolveProjectStage() {
+        ProjectStage projectStage = ProjectStage.valueOf('Development')
+        String hostname = InetAddress.getLocalHost()
+        if(hostname.contains('lt.')) projectStage = ProjectStage.valueOf('Staging')
+        else if(hostname.contains('lp.')) projectStage = ProjectStage.valueOf('Production')
+        ProjectStageProducer.projectStage = projectStage
+        projectStage
     }
 }

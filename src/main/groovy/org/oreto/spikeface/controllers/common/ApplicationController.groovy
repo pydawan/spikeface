@@ -5,6 +5,7 @@ import org.apache.deltaspike.core.api.config.view.ViewConfig
 import org.apache.deltaspike.core.api.config.view.metadata.ViewConfigResolver
 import org.apache.deltaspike.core.api.config.view.navigation.NavigationParameterContext
 import org.apache.deltaspike.core.api.config.view.navigation.ViewNavigationHandler
+import org.apache.deltaspike.core.api.projectstage.ProjectStage
 import org.omnifaces.util.Servlets
 import org.oreto.spikeface.utils.Utils
 import org.picketlink.Identity
@@ -26,6 +27,7 @@ trait ApplicationController implements Serializable {
     @Inject Identity identity
     @Inject IdentityManager identityManager
     @Inject PermissionManager permissionManager
+    @Inject ProjectStage projectStage
 
     @ManagedProperty("#{msg}") ResourceBundle bundle
 
