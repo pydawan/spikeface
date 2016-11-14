@@ -40,4 +40,10 @@
         <view-id value="/views/technology/save.xhtml" />
     </url-mapping>
 
+    <!-- attribute routes-->
+    <url-mapping id="list-attribute">
+        <pattern value="/attribute" />
+        <view-id value="/views/attribute/list.xhtml" />
+    </url-mapping>
+
 </pretty-config>
