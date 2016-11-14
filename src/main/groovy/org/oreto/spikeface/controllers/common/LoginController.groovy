@@ -76,20 +76,26 @@ class LoginController extends BaseAuthenticator implements ApplicationController
             User user = new User(test)
             setAccount(user)
             try {
-                identityManager.add(user)
-                identityManager.updateCredential(user, new Password(test))
+                updateUser(user, new Password(test))
                 20.times {
                     permissionManager.grantPermission(user, technologyData.findOptionalByName(it.toString()).get(), 'manage')
                 }
             } catch (IdentityManagementException e) {
-                if(identity?.getAccount()?.id != null)
-                    identityManager.remove(identity.getAccount())
-                identity?.logout()
                 setStatus(Authenticator.AuthenticationStatus.FAILURE)
             }
         } else {
             setStatus(Authenticator.AuthenticationStatus.FAILURE)
         }
+    }
+
+    protected void updateUser(User user, Password password) {
+        List<User> removeList = []
+        identityManager.getQueryBuilder().createIdentityQuery(User.class).resultList.each {
+            if(it.loginName == user.loginName) removeList.add(it)
+        }
+        removeList.each { identityManager.remove(it) }
+        identityManager.add(user)
+        identityManager.updateCredential(user, password)
     }
 
     @PreRenderView protected void preRenderView() {
