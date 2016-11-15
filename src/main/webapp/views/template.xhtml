@@ -20,6 +20,7 @@
             <p:menuitem value="#{msg.listLabel}" url="#{navigationController.techListView}?page=1&amp;size=10" />
             <p:menuitem value="#{msg.createLabel}" url="#{navigationController.techSaveView}" rendered="#{technologyController.readWrite}" />
         </p:submenu>
+        <p:menuitem value="#{msg.attributeNavLabel}" url="#{navigationController.attributeListView}"/>
         <f:facet name="options">
             <h:form>
                 <p:commandButton action="#{loginController.logout}" ajax="false" value="#{msg.logoutLabel}" icon="ui-icon-extlink" rendered="#{identity.loggedIn}" />

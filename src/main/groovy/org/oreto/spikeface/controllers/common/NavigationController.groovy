@@ -14,4 +14,8 @@ class NavigationController implements ApplicationController {
     String getTechSaveView() {
         getViewId(Views.Technology.Save)
     }
+
+    String getAttributeListView() {
+        getViewId(Views.Attribute.List)
+    }
 }

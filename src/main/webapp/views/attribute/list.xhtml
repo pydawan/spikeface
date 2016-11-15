@@ -2,17 +2,23 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" template="../template.xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
-                xmlns:p="http://primefaces.org/ui"
->
+                xmlns:p="http://primefaces.org/ui">
 
     <ui:define name="container">
-        <p:dataScroller value="#{attributeController.entities.content}" var="attribute">
-            <p:column headerText="name" field="name">
+        <p:dataTable id="attribute-table" value="#{attributeController.entities.content}" var="attribute">
+            <p:column headerText="#{msg.attributeNameLabel}" field="name">
                 <h:outputText value="#{attribute.name}" />
             </p:column>
-            <p:column headerText="value" field="value">
+            <p:column headerText="#{msg.attributeValueLabel}" field="value">
                 <h:outputText value="#{attribute.value}" />
             </p:column>
-        </p:dataScroller>
+        </p:dataTable>
+        <h:form>
+            <p:panelGrid columns="3">
+                <p:inputText id="attribute-name" placeholder="#{msg.attributeNameLabel}" value="#{attributeController.entity.name}"/>
+                <p:inputText placeholder="#{msg.attributeValueLabel}" value="#{attributeController.entity.value}"/>
+                <p:commandButton icon="fa fa-plus-circle" action="#{attributeController.save}" update="attribute-table"/>
+            </p:panelGrid>
+        </h:form>
     </ui:define>
 </ui:composition>

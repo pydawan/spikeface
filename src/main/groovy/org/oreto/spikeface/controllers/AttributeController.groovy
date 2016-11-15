@@ -3,10 +3,10 @@ package org.oreto.spikeface.controllers
 import org.apache.deltaspike.core.api.config.view.ViewConfig
 import org.apache.deltaspike.core.api.config.view.ViewRef
 import org.apache.deltaspike.core.api.config.view.controller.PreRenderView
-import org.apache.deltaspike.core.api.scope.ViewAccessScoped
 import org.apache.deltaspike.jpa.api.transaction.Transactional
 import org.apache.deltaspike.security.api.authorization.Secured
 import org.omnifaces.cdi.Param
+import org.omnifaces.cdi.ViewScoped
 import org.oreto.spikeface.controllers.common.ScaffoldingController
 import org.oreto.spikeface.controllers.common.Views
 import org.oreto.spikeface.models.Attribute
@@ -16,7 +16,7 @@ import org.springframework.data.domain.Page
 import javax.inject.Inject
 import javax.inject.Named
 
-@Named @ViewAccessScoped @ViewRef(config = Views.Attribute.List)
+@Named @ViewScoped @ViewRef(config = Views.Attribute.List)
 public class AttributeController extends ScaffoldingController<Attribute, Long> {
 
     @Inject AttributeRepository repository
