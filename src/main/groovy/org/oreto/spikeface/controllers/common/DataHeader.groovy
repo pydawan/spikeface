@@ -38,10 +38,10 @@ class DataHeader extends DataTableRenderer {
 
         def queryString = Utils.newQueryString(context, ["${sortParamName}" : field, "${dirParamName}" : direction])
         ResponseWriter writer = context.getResponseWriter()
-        def header = """<th class="ui-state-default ui-state-hover" role="columnheader" onmouseup="window.location.href='$queryString';"
+        def header = column.headerText ? """<th class="ui-state-default ui-state-hover" role="columnheader" onmouseup="window.location.href='$queryString';"
 aria-label="$text: activate to sort column $sortDirection" onclick="sort([{name:'$sortParamName',value:'$field'},{name:'$dirParamName',value:'$direction'}]);"
  scope="col" tabindex="0" aria-sort="other"><span class="ui-column-title">$text</span><span class="ui-sortable-column-icon ui-icon $sortIconClass"></span></th>
-"""
+""" : """<th class="ui-state-default" role="columnheader" width="${column.width}" />"""
         writer.write(header)
     }
 }

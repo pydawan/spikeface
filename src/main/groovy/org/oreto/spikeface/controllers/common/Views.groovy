@@ -5,7 +5,6 @@ import org.apache.deltaspike.core.api.config.view.ViewConfig
 import org.apache.deltaspike.jsf.api.config.view.View
 import org.apache.deltaspike.jsf.api.config.view.View.NavigationMode
 import org.apache.deltaspike.security.api.authorization.Secured
-import org.oreto.spikeface.controllers.AttributeController
 import org.oreto.spikeface.controllers.TechnologyController
 
 interface Views {
@@ -32,7 +31,7 @@ interface Views {
         class Show implements RedirectedPages { }
     }
 
-    @Secured(value = AttributeController.class, errorView = Login)
+    @Secured(value = LoginController.class, errorView = Login)
     interface Attribute extends ViewConfig {
         class List implements RedirectedPages { }
     }

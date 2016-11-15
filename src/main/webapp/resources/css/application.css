@@ -16,8 +16,13 @@ html {
     width: 94%;
 }
 
-.ui-panel.panel-form {
+.panel-form {
     max-width: 600px; margin: 0 auto;
+}
+
+.panel-form .ui-datatable-footer {
+    padding: 0px;
+    border: none;
 }
 
 .ui-datascroller tr:nth-child(odd):hover {
@@ -50,6 +55,14 @@ html {
 
 .hidden-xs-up {
     display: none !important;
+}
+
+.col-45 {
+    width: 45%;
+}
+
+.col-10 {
+    width: 10%;
 }
 
 @media (max-width: 543px) {

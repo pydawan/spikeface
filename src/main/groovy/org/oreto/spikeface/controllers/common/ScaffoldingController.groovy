@@ -7,6 +7,7 @@ import org.apache.deltaspike.security.api.authorization.AccessDecisionVoterConte
 import org.apache.deltaspike.security.api.authorization.SecurityViolation
 import org.oreto.spikeface.models.common.BaseEntity
 import org.oreto.spikeface.utils.Utils
+import org.primefaces.event.CellEditEvent
 import org.primefaces.model.LazyDataModel
 import org.primefaces.model.SortOrder
 import org.springframework.data.domain.Page
@@ -122,6 +123,12 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements Appl
     }
 
     @Transactional
+    public void onCellEdit(CellEditEvent event) {
+        println(event)
+        //entity = repository.save(entity)
+    }
+
+    @Transactional
     public Class<? extends ViewConfig> save() {
         if(isReadOnly()) Views.Error.Readonly
         else {
@@ -145,6 +152,11 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements Appl
             addPagerParams()
             listView
         }
+    }
+
+    @Transactional
+    public void delete(T entity) {
+        repository.delete(entity.id as ID)
     }
 
     public Class<? extends ViewConfig> cancel() {
