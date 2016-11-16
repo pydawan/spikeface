@@ -7,10 +7,10 @@
 
     <ui:define name="container">
         <h:form id="new-attribute-form" styleClass="panel-form">
-            <p:message for="attribute-name"/> <br/>
+            <p:messages /> <br/>
             <p:panelGrid columns="3" columnClasses="col-45,col-45,col-10" >
-                <p:inputText id="attribute-name" placeholder="#{msg.attributeNameLabel}" value="#{attributeController.entity.name}"/>
-                <p:inputText placeholder="#{msg.attributeValueLabel}" value="#{attributeController.entity.value}"/>
+                <p:inputText placeholder="#{msg.attributeNameLabel}" value="#{attributeController.entity.name}" validatorMessage="#{msg.attributeNameLabel} may not be empty" />
+                <p:inputText placeholder="#{msg.attributeValueLabel}" value="#{attributeController.entity.value}" label="#{msg.attributeValueLabel}" />
                 <p:commandButton icon="fa fa-plus-circle" actionListener="#{attributeController.save}" update=":attribute-form:attribute-table,:new-attribute-form" ajax="true"/>
             </p:panelGrid>
         </h:form>
