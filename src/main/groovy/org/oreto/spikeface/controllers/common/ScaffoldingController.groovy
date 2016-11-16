@@ -18,7 +18,16 @@ import org.springframework.data.jpa.repository.JpaRepository
 import java.text.MessageFormat
 
 abstract class ScaffoldingController<T extends BaseEntity, ID extends Serializable> extends LazyDataModel<T>
-        implements Scaffolding<T, ID>, AccessDecisionVoter {
+        implements Scaffolding<T, ID>, Pageable, AccessDecisionVoter {
+
+    abstract Class<? extends ViewConfig> getShowView()
+    abstract Class<? extends ViewConfig> getListView()
+    abstract Class<? extends ViewConfig> getSaveView()
+
+    abstract ID getId()
+    abstract void setId(ID id)
+    abstract void setEntities(Page<T> entities)
+    abstract Page<T> getEntities()
 
     @Override
     public List<T> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
@@ -53,7 +62,7 @@ abstract class ScaffoldingController<T extends BaseEntity, ID extends Serializab
             violations.add(new SecurityViolation() {
                 @Override
                 String getReason() {
-                    MessageFormat.format(bundle.getString('permissionError'), entity.class.simpleName, id)
+                    MessageFormat.format(bundle.getString('permissionError'), entity.class.simpleName, entity.id)
                 }
             })
         }
@@ -67,25 +76,6 @@ abstract class ScaffoldingController<T extends BaseEntity, ID extends Serializab
             true
         }
     }
-}
-
-trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements ApplicationController, Pageable {
-
-    abstract void setEntity(T entity)
-    abstract T getEntity()
-    abstract void setEntities(Page<T> entities)
-    abstract Page<T> getEntities()
-    abstract ID getId()
-    abstract void setId(ID id)
-    abstract JpaRepository<T, ID> getRepository()
-    abstract Class<? extends ViewConfig> getShowView()
-    abstract Class<? extends ViewConfig> getListView()
-    abstract Class<? extends ViewConfig> getSaveView()
-
-    boolean isReadOnly() { false }
-    boolean isReadWrite() { !isReadOnly() }
-
-    public getIdName() { 'id' }
 
     public void get() {
         if(requestEqualsView(listView)) {
@@ -107,10 +97,6 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements Appl
             entities = repository.findAll(new PageRequest(page - 1, size))
     }
 
-    public int getCount() {
-        repository.count()
-    }
-
     public Class<? extends ViewConfig> show(ID id) {
         this.id = id
         navigationParameterContext.addPageParameter(idName, id)
@@ -120,11 +106,6 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements Appl
     public Class<? extends ViewConfig> edit() {
         navigationParameterContext.addPageParameter(idName, entity.id)
         saveView
-    }
-
-    @Transactional
-    public void onCellEdit(CellEditEvent event) {
-        repository.save(entities.content.get(event.rowIndex))
     }
 
     @Transactional
@@ -153,11 +134,6 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements Appl
         }
     }
 
-    @Transactional
-    public void delete(T entity) {
-        repository.delete(entity.id as ID)
-    }
-
     public Class<? extends ViewConfig> cancel() {
         if(id == null) {
             addPagerParams()
@@ -171,15 +147,6 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements Appl
     public Class<? extends ViewConfig> back() {
         addPagerParams()
         listView
-    }
-
-    def void addPagerParams() {
-        if(page > 0) navigationParameterContext.addPageParameter(pageParamName, page)
-        if(size > 0) navigationParameterContext.addPageParameter(sizeParamName, size)
-        if(sort) {
-            navigationParameterContext.addPageParameter(sortParamName, sort)
-            if(dir) navigationParameterContext.addPageParameter(dirParamName, dir)
-        }
     }
 
     @Override public int getTotal() { entities?.totalElements ?: 0 }
@@ -225,6 +192,73 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements Appl
     def sortBy() {
         sort = getParam(DataHeader.sortParamName)
         dir = getParam(DataHeader.dirParamName)
+    }
+
+    def void addPagerParams() {
+        if(page > 0) navigationParameterContext.addPageParameter(pageParamName, page)
+        if(size > 0) navigationParameterContext.addPageParameter(sizeParamName, size)
+        if(sort) {
+            navigationParameterContext.addPageParameter(sortParamName, sort)
+            if(dir) navigationParameterContext.addPageParameter(dirParamName, dir)
+        }
+    }
+}
+
+abstract class SimpleScaffoldingController<T extends BaseEntity, ID extends Serializable>
+        implements Scaffolding<T, ID> {
+
+    abstract void setEntities(List<T> entities)
+    abstract List<T> getEntities()
+    abstract T newEntity()
+
+    @Override
+    public void get() {
+        entities = list()
+    }
+
+    public List<T> list() {
+        repository.findAll()
+    }
+
+    @Transactional
+    public void onCellEdit(CellEditEvent event) {
+        repository.save(entities.get(event.rowIndex))
+    }
+
+    @Transactional
+    public void delete(T entity) {
+        repository.delete(entity.id as ID)
+    }
+
+    @Transactional
+    public void save() {
+        repository.save(entity)
+        entity = newEntity()
+    }
+
+    boolean hasPermission(T entity, String action) {
+        if (entity) {
+            identity.hasPermission(entity.class, entity.id, action)
+        } else {
+            true
+        }
+    }
+}
+
+trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements ApplicationController {
+
+    abstract void setEntity(T entity)
+    abstract T getEntity()
+
+    abstract JpaRepository<T, ID> getRepository()
+    abstract void get()
+
+    boolean isReadOnly() { false }
+    boolean isReadWrite() { !isReadOnly() }
+
+    public String getIdName() { 'id' }
+    public int getCount() {
+        repository.count()
     }
 }
 

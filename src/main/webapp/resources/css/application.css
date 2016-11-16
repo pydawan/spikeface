@@ -17,7 +17,7 @@ html {
 }
 
 .panel-form {
-    max-width: 600px; margin: 0 auto;
+    max-width: 700px; margin: 0 auto;
 }
 
 .panel-form .ui-datatable-footer {
@@ -58,11 +58,11 @@ html {
 }
 
 .col-45 {
-    width: 45%;
+    width: 46%;
 }
 
 .col-10 {
-    width: 10%;
+    width: 8%;
 }
 
 @media (max-width: 543px) {
