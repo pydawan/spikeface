@@ -124,8 +124,7 @@ trait Scaffolding<T extends BaseEntity, ID extends Serializable> implements Appl
 
     @Transactional
     public void onCellEdit(CellEditEvent event) {
-        println(event)
-        //entity = repository.save(entity)
+        repository.save(entities.content.get(event.rowIndex))
     }
 
     @Transactional
