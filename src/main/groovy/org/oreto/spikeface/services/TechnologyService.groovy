@@ -55,10 +55,10 @@ public class TechnologyService implements Serializable {
     }
 
     public ProjectStage resolveProjectStage() {
-        ProjectStage projectStage = ProjectStage.valueOf('Development')
+        ProjectStage projectStage = ProjectStage.valueOf(ProjectStage.Development.name)
         String hostname = InetAddress.getLocalHost()
-        if(hostname.contains('lt.')) projectStage = ProjectStage.valueOf('Staging')
-        else if(hostname.contains('lp.')) projectStage = ProjectStage.valueOf('Production')
+        if(hostname.contains('lt.')) projectStage = ProjectStage.valueOf(ProjectStage.Staging.name)
+        else if(hostname.contains('lp.')) projectStage = ProjectStage.valueOf(ProjectStage.Production.name)
         ProjectStageProducer.projectStage = projectStage
         projectStage
     }
