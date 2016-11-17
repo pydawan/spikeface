@@ -18,12 +18,14 @@
 * Arquillian test cases
 * Primefaces UI
 * modified Primefaces data grid component to use request based pagination and sorting
-* automatic scaffolding using spring data pagination and crud
+* automatic scaffolding using spring data pagination and crud (request based)
+* simple scaffolding for single page ajax based crud
 * data grid is also scrollable on small devices and responsive
 * all around responsive design
 * request based views
 * type checked routes
 * pretty URLs
+* dynamic project stage based on environment
 * mavenized
 
 ### initialize Wildfly
